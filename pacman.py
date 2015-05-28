@@ -5,6 +5,7 @@
 import sys
 import time
 import pygame
+import random
 import Image
 from pygame.locals import * 
 # Constantes
@@ -12,8 +13,20 @@ WIDTH = 640
 HEIGHT = 480 
 SPEED = 0.3
 BORDES = 3
+activado = 0
 # Clases
 # ---------------------------------------------------------------------
+
+class Galleta(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = load_image("./Imagenes/galleta.png", True)
+        self.rect = self.image.get_rect()
+        print self.rect.width,self.rect.width
+        self.rect.centerx = WIDTH/2
+        self.rect.centery = HEIGHT/2  
+
+# ----------------------------------------------------------------------      
 class Pacman(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -70,9 +83,13 @@ def load_image(filename, transparent=False):
 
 #----------------------------------------------------------------------
 def main():
+    activado = 0
     screen = pygame.display.set_mode((WIDTH,HEIGHT))
     pygame.display.set_caption("Prueba de ventana")
     pacman = Pacman()
+    galleta = Galleta()
+    pygame.mixer.init()
+    pygame.mixer.music.load("./Sound/pacman_chomp.wav")
     keys = pygame.key.get_pressed()
     clock = pygame.time.Clock()
     while True:
@@ -84,7 +101,11 @@ def main():
                 sys.exit()
         screen.fill((0,0,0))
         #pacman.actualizar(time)
+        if keys[K_UP] or keys[K_DOWN] or keys[K_LEFT] or keys[K_RIGHT] and activado == 0:
+            pygame.mixer.music.play(-1)
+            activado = 1
         pacman.mover(time,keys)
+        screen.blit(galleta.image, galleta.rect)
         screen.blit(pacman.image, pacman.rect)
 
         pygame.display.update()
