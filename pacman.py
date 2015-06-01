@@ -18,7 +18,44 @@ activado = 0
 screen = pygame.display.set_mode((WIDTH,HEIGHT))
 # Clases
 # ---------------------------------------------------------------------
-
+class Laberinto(pygame.sprite.Sprite):
+    def __init__(self,width,height):
+        pygame.sprite.Sprite.__init__(self)
+        laberintoParteIZQ = [[0 for _ in range((height))] for _ in range((width/2))]
+        #insertar funcion para crear laberinto parte IZQ
+        laberintoParteDER = espejo(laberintoParteIZQ, width, height)
+        laberintoMatriz = fusion(laberintoParteIZQ,laberintoParteDER,width,height)
+        
+    
+    def espejo(laberintoParteIZQ,height,width):
+        laberintoParteDER = [[0 for _ in range((height))] for _ in range((width/2))]
+        mirrorContj = width/2 - 1
+        for i in range(0,height):
+            for j in range(0,width/2):
+                 laberintoParteDER[i][mirrorContj] = laberintoParteIZQ[i][j]
+                 mirrorContj -= 1
+            mirrorContj = width/2 - 1
+        return laberintoParteDER
+    
+    def fusion(laberintoParteIZQ, laberintoParteDER, height, width):
+        laberintoMatriz = [[0 for _ in range((height))] for _ in range((width))]
+        contizqj = 0
+        contderj = 0
+        for i in range(0,height):
+            for j in range(0,width):
+                #recorrido parte IZQ
+                if(j>=0 and j<width/2):
+                    laberintoMatriz[i][j] = laberintoParteIZQ[i][contizqj]
+                    contizqj += 1
+                else:
+                    laberintoMatriz[i][j] = laberintoParteDER[i][contderj]    
+                    contderj += 1
+            contizqj = 0
+            contderj = 0
+        return laberintoMatriz
+        
+        
+# ---------------------------------------------------------------------
 class Galleta(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -98,7 +135,14 @@ def load_image(filename, transparent=False):
         image.set_colorkey(color, RLEACCEL)
     return image
 # ---------------------------------------------------------------------
-
+def printMatrix(testMatrix):
+        print ' ',
+        for i in range(len(testMatrix[1])):
+              print i,
+        print
+        for i, element in enumerate(testMatrix):
+              print i, ' '.join(str(element))
+              
 #----------------------------------------------------------------------
 def main():
     pos = 0
