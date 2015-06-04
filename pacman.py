@@ -64,6 +64,13 @@ class Galleta(pygame.sprite.Sprite):
         #print self.rect.width,self.rect.width
         self.rect.centerx = WIDTH/2
         self.rect.centery = HEIGHT/2  
+    def render(self,collision):
+        if (collision==True):
+            print "llego"
+            self.kill()
+            self.image.fill((0,0,0))
+            
+        
 
 # ----------------------------------------------------------------------      
 class Pacman(pygame.sprite.Sprite):
@@ -72,10 +79,9 @@ class Pacman(pygame.sprite.Sprite):
         self.ani = glob.glob("./Imagenes/moviendose/pac*.png")
         self.ani.sort()
         self.ani_pos = 0
-        self.ani_max = len(self.ani) - 1
+        self.ani_max = len(self.ani) - 1 
         self.image = load_image(self.ani[0], True)
         self.rect = self.image.get_rect()
-        print self.rect.width,self.rect.height
         self.rect.centerx = BORDES + self.rect.width/2
         self.rect.centery = HEIGHT - self.rect.height/2 - BORDES
         self.speed = [0, 0]
@@ -91,6 +97,20 @@ class Pacman(pygame.sprite.Sprite):
             self.speed[1] = -self.speed[1]
             self.rect.centery += self.speed[1] * time
             
+    #def actualizarMovimiento(self,pos):
+        #if pos != 0:
+            #if self.speed != [0,0]:
+                #pos_init = pos
+                #self.ani_pos = pos
+                #self.ani_max = pos + 8
+                
+                #self.image = load_image(self.ani[self.ani_pos], True)
+                #print self.ani[self.ani_pos]
+                #if self.ani_pos == self.ani_max:
+                    #self.ani_pos=pos_init
+                #else:
+                    #self.ani_pos+= 1
+                    
     def actualizarMovimiento(self,pos):
         if pos != 0:
             if self.speed != [0,0]:
@@ -98,8 +118,8 @@ class Pacman(pygame.sprite.Sprite):
                 if self.ani_pos == self.ani_max:
                     self.ani_pos=0
                 else:
-                    self.ani_pos+=1
-                    
+                    self.ani_pos+=1 
+    
     def mover(self, time, keys):
         if self.rect.top >= 0:
             if keys[K_UP]:
@@ -117,6 +137,8 @@ class Pacman(pygame.sprite.Sprite):
             if keys[K_RIGHT]:
                 self.speed[0] = SPEED
                 self.speed[1] = 0
+                
+        #Para paredes de la ventana.
         if self.speed[0] > 0 and self.rect.right < WIDTH - BORDES or self.speed[0] < 0 and self.rect.left >= 0 + BORDES:
             self.rect.centerx += self.speed[0] * time
         if self.speed[1] < 0 and self.rect.top >= 0 + BORDES or self.speed[1] > 0 and self.rect.bottom < HEIGHT - BORDES:
@@ -147,13 +169,26 @@ def printMatrix(testMatrix):
 def main():
     pos = 0
     activado = 0
-    pygame.display.set_caption("Prueba de ventana")
+    pygame.display.set_caption("Prueba Pacman")
     pacman = Pacman()
     galleta = Galleta()
     pygame.mixer.init()
     pygame.mixer.music.load("./Sound/pacman_chomp.wav")
     keys = pygame.key.get_pressed()
     clock = pygame.time.Clock()
+    
+    def comerGalleta(x1,y1,w1,h1,x2,y2,w2,h2):
+        if (x2+w2>=x1>=x2 and y2+h2>=y1>=y2):
+            return True    
+        elif (x2+w2>=x1+w1>=x2 and y2+h2>=y1>=y2):
+            return True
+        elif (x2+w2>=x1>=x2 and y2+h2>=y1+h1>=y2):
+            return True
+        elif (x2+w2>=x1+w1>=x2 and y2+h2>=y1+h1>=y2):
+            return True
+        else:
+            return False
+        
     while True:
         keys = pygame.key.get_pressed()
         time = clock.tick(60)
@@ -165,8 +200,11 @@ def main():
             pygame.mixer.music.play(-1)
             activado = 1
             pos = 1
-        pacman.mover(time,keys)
+            
+        comiendoGalleta=comerGalleta(galleta.rect.x,galleta.rect.y,galleta.rect.width,galleta.rect.height,pacman.rect.x,pacman.rect.y,pacman.rect.width,pacman.rect.height)
+        galleta.render(comiendoGalleta)
         pacman.actualizarMovimiento(pos)
+        pacman.mover(time,keys)
         screen.blit(galleta.image, galleta.rect)
         screen.blit(pacman.image, pacman.rect)
         pygame.display.update()
