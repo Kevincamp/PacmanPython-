@@ -244,13 +244,9 @@ def main():
     lista = []
     maze = Laberinto(DIMMAZE,DIMMAZE)
     sprites = pygame.sprite.RenderUpdates()
-    laberinto = [[0 for _ in range((DIMMAZE))] for _ in range((DIMMAZE))]
     pygame.display.set_caption("Prueba Pacman")
     background = screen.copy()
-    laberinto  = maze.marcoLaberinto(laberinto,DIMMAZE,DIMMAZE)
-    laberinto = maze.generacionAleatoria(laberinto,DIMMAZE,DIMMAZE)
-    maze.generarSalida(laberinto,DIMMAZE,DIMMAZE)
-    print laberinto
+    laberinto  = maze.getMaze()
     pacman = Pacman()
     galleta = Galleta()
     sprites.add(pacman)
