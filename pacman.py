@@ -257,9 +257,7 @@ def main():
     pygame.mixer.init()
     pygame.mixer.music.load("./Sound/pacman_chomp.wav")
     keys = pygame.key.get_pressed()
-    clock = pygame.time.Clock()
-<<<<<<< HEAD
-	
+    clock = pygame.time.Clock()	
     for i in range(DIMMAZE):
             for j in range(DIMMAZE):
                 if(laberinto[i][j] == 1):
@@ -271,10 +269,8 @@ def main():
             Pared_y+=DIMENSION 
 
     #maze = Laberinto(WIDTH,HEIGHT)
-=======
     maze = Laberinto(10,10)
     printMatrix(maze.getMaze())
->>>>>>> origin/master
     def comerGalleta(x1,y1,w1,h1,x2,y2,w2,h2):
         if (x2+w2>=x1>=x2 and y2+h2>=y1>=y2):
             return True    
