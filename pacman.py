@@ -142,13 +142,12 @@ class Laberinto():
         
 # ---------------------------------------------------------------------
 class Galleta(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self)
         self.image = load_image("./Imagenes/cookie.png", True)
         self.rect = self.image.get_rect()
-        #print self.rect.width,self.rect.width
-        self.rect.centerx = WIDTH/2
-        self.rect.centery = HEIGHT/2  
+        self.rect.centerx = x + 16
+        self.rect.centery = y + 16
     def render(self,collision):
         if (collision==True):
             print "llego"
@@ -248,9 +247,8 @@ def main():
     background = screen.copy()
     laberinto  = maze.getMaze()
     pacman = Pacman()
-    galleta = Galleta()
+    galleta = Galleta(0,0)
     sprites.add(pacman)
-    sprites.add(galleta)
     pygame.mixer.init()
     pygame.mixer.music.load("./Sound/pacman_chomp.wav")
     keys = pygame.key.get_pressed()
@@ -261,13 +259,12 @@ def main():
                     sprites.add(Pared((0,0,255),(Pared_x,Pared_y),(DIMENSION,DIMENSION)))
                     Pared_x+=DIMENSION
                 else:
+                    sprites.add(Galleta(Pared_x,Pared_y))
                     Pared_x+=DIMENSION
             Pared_x=0
             Pared_y+=DIMENSION 
 
     #maze = Laberinto(WIDTH,HEIGHT)
-    maze = Laberinto(10,10)
-    printMatrix(maze.getMaze())
     def comerGalleta(x1,y1,w1,h1,x2,y2,w2,h2):
         if (x2+w2>=x1>=x2 and y2+h2>=y1>=y2):
             return True    
