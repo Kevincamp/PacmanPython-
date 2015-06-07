@@ -32,6 +32,7 @@ class Laberinto():
         laberinto = [[0 for _ in range((self.mazeWidth))] for _ in range((self.mazeHeight))]
         laberinto = self.marcoLaberinto(laberinto,self.mazeHeight,self.mazeWidth)
         laberinto = self.generacionAleatoria(laberinto,self.mazeHeight,self.mazeWidth)
+        self.generarSalida(laberinto,self.mazeHeight,self.mazeWidth)
         return laberinto
     
     def generacionAleatoria(self,laberinto, height, width):
@@ -106,6 +107,37 @@ class Laberinto():
             return True
         else:
             return False
+    
+    def generarSalida(self, laberinto, height, width):
+        murosSalidaUP = list()
+        murosSalidaLEFT = list()
+        murosSalidaRIGHT = list()
+        murosSalidaDOWN = list()
+        for j in range (0,width):
+            if(laberinto[1][j]==0):
+                murosSalidaUP.append(j)
+            elif(laberinto[height-2][j]==0):
+                murosSalidaDOWN.append(j)
+        for i in range (0,height):
+            if(laberinto[i][1]==0):
+                murosSalidaLEFT.append(i)
+            elif(laberinto[i][width-2]==0):
+                murosSalidaRIGHT.append(i)
+        selectorLista = random.randint(1,4)
+        if(selectorLista == 1):
+            muroSalida = random.choice(murosSalidaUP)
+            laberinto[0][muroSalida] = 0
+        elif(selectorLista == 2):
+            muroSalida = random.choice(murosSalidaDOWN)
+            laberinto[height-1][muroSalida] = 0
+        elif(selectorLista == 3):
+            muroSalida = random.choice(murosSalidaLEFT)
+            laberinto[muroSalida][0] = 0
+        else:
+            muroSalida = random.choice(murosSalidaRIGHT)
+            laberinto[muroSalida][width-1] = 0
+        return 0
+    
         
         
 # ---------------------------------------------------------------------
@@ -226,6 +258,7 @@ def main():
     pygame.mixer.music.load("./Sound/pacman_chomp.wav")
     keys = pygame.key.get_pressed()
     clock = pygame.time.Clock()
+<<<<<<< HEAD
 	
     for i in range(DIMMAZE):
             for j in range(DIMMAZE):
@@ -238,6 +271,10 @@ def main():
             Pared_y+=DIMENSION 
 
     #maze = Laberinto(WIDTH,HEIGHT)
+=======
+    maze = Laberinto(10,10)
+    printMatrix(maze.getMaze())
+>>>>>>> origin/master
     def comerGalleta(x1,y1,w1,h1,x2,y2,w2,h2):
         if (x2+w2>=x1>=x2 and y2+h2>=y1>=y2):
             return True    
