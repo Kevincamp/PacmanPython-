@@ -59,17 +59,30 @@ class Laberinto():
                 elif(j == width-2):
                     if(laberinto[i][j]==0 and laberinto[i][j-1] == 0 and laberinto[i-1][j-1] == 0 and laberinto[i-1][j] == 0):
                         laberinto[i][j] = 1
+                    elif(i==height-2):
+                        if(laberinto[i-1][j]==1 and laberinto[i][j-1]==1):
+                            laberinto[i][j]=1
+                            
+                            
                 #abajoconMarco    
                 elif(i == height-2 and j>1 and j<width-2):
                     if(laberinto[i][j]==0 and laberinto[i][j-1]==0 and laberinto[i-1][j-1]==0 and laberinto[i-1][j]==0 and laberinto[i-1][j+1]==0 and laberinto[i][j+1]==0):
                         laberinto[i][j] = 1
-                        self.ponerMuro(laberinto,i,j,"abajo")
+                    elif(laberinto[i][j]==0 and j!=2 and j!=width-2 and laberinto[i-1][j]==0 and laberinto[i][j-1]==0 and laberinto[i-1][j-1]==0):
+                        laberinto[i][j] = 1
                 else:
                     if(laberinto[i][j]==0 and laberinto[i][j-1]==0 and laberinto[i-1][j-1]==0 and laberinto[i-1][j]==0 and laberinto[i-1][j+1]==0 and laberinto[i][j+1]==0):
                         laberinto[i][j] = 1
-                        self.ponerMuro(laberinto,i,j,"centro")
+                        if(i!=height-3):
+                            self.ponerMuro(laberinto,i,j,"centro")
+                        else:
+                            self.ponerMuro(laberinto,i,j,"centropenultimo")
                     elif(laberinto[i][j]==0 and laberinto[i][j-1]==0 and laberinto[i-1][j-1]==0 and laberinto[i-1][j]==0):
-                        laberinto[i][j] = 1
+                        if(i==height-3 and j==width-3):
+                            laberinto[i][j] = 0
+                        else:
+                            laberinto[i][j] = 1
+                    
         return laberinto
     
     def ponerMuro(self,laberinto,i,j,estado):
@@ -86,12 +99,11 @@ class Laberinto():
                     laberinto[i][j-1] = 1
                     laberinto[i+1][j] = 1
             return 0
-        elif(estado == "abajo"):
-            pickDR = random.randint(0,1)
-            if(pickDR == 1):
+        elif(estado=="centropenultimo"):
+            pickR = random.randint(0,1)
+            if(pickR==1):
                 if(self.espaciosBlancoMuro(laberinto,i,j+1)):
                     laberinto[i][j+1] = 1
-            return 0
             
     def marcoLaberinto(self,laberinto, height, width):
         for i in range(0,height):
@@ -123,19 +135,25 @@ class Laberinto():
                 murosSalidaLEFT.append(i)
             elif(laberinto[i][width-2]==0):
                 murosSalidaRIGHT.append(i)
-        selectorLista = random.randint(1,4)
+                
+        selectorLista = random.randint(1,4)        
+        
         if(selectorLista == 1):
-            muroSalida = random.choice(murosSalidaUP)
-            laberinto[0][muroSalida] = 0
+            if(len(murosSalidaUP)!=0):
+                muroSalida = random.choice(murosSalidaUP)
+                laberinto[0][muroSalida] = 0
         elif(selectorLista == 2):
-            muroSalida = random.choice(murosSalidaDOWN)
-            laberinto[height-1][muroSalida] = 0
+            if(len(murosSalidaDOWN)!=0):
+                muroSalida = random.choice(murosSalidaDOWN)
+                laberinto[height-1][muroSalida] = 0
         elif(selectorLista == 3):
-            muroSalida = random.choice(murosSalidaLEFT)
-            laberinto[muroSalida][0] = 0
+            if(len(murosSalidaLEFT)!=0):
+                muroSalida = random.choice(murosSalidaLEFT)
+                laberinto[muroSalida][0] = 0
         else:
-            muroSalida = random.choice(murosSalidaRIGHT)
-            laberinto[muroSalida][width-1] = 0
+            if(len(murosSalidaRIGHT)!=0):
+                muroSalida = random.choice(murosSalidaRIGHT)
+                laberinto[muroSalida][width-1] = 0
         return 0
     
         
