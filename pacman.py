@@ -249,6 +249,7 @@ def main():
     background = screen.copy()
     laberinto  = maze.marcoLaberinto(laberinto,DIMMAZE,DIMMAZE)
     laberinto = maze.generacionAleatoria(laberinto,DIMMAZE,DIMMAZE)
+    maze.generarSalida(laberinto,DIMMAZE,DIMMAZE)
     print laberinto
     pacman = Pacman()
     galleta = Galleta()
