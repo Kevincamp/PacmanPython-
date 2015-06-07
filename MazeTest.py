@@ -93,7 +93,7 @@ def main():
     laberinto = [[0 for _ in range((WIDTH))] for _ in range((HEIGHT))]
     laberinto = marcoLaberinto(laberinto,HEIGHT,WIDTH)
     laberinto = generacionAleatoria(laberinto,HEIGHT,WIDTH)
-    printMatrix(laberinto)
+    
     
     
 if __name__ == '__main__':

@@ -8,11 +8,14 @@ import time
 import pygame
 import random
 #import Image
+from pared import Pared
 from pygame.locals import * 
 # Constantes
 WIDTH = 640
-HEIGHT = 480 
+HEIGHT = 640 
+DIMMAZE = 20
 SPEED = 0.3
+DIMENSION = 32
 BORDES = 3
 activado = 0
 screen = pygame.display.set_mode((WIDTH,HEIGHT))
@@ -132,8 +135,7 @@ class Pacman(pygame.sprite.Sprite):
         self.ani_max = len(self.ani) - 1 
         self.image = load_image(self.ani[0], True)
         self.rect = self.image.get_rect()
-        self.rect.centerx = BORDES + self.rect.width/2
-        self.rect.centery = HEIGHT - self.rect.height/2 - BORDES
+        self.rect.topleft = (32,HEIGHT-66)
         self.speed = [0, 0]
         self.actualizarMovimiento(0)
         
@@ -146,21 +148,7 @@ class Pacman(pygame.sprite.Sprite):
         if self.rect.top <= 0 or self.rect.bottom >= HEIGHT:
             self.speed[1] = -self.speed[1]
             self.rect.centery += self.speed[1] * time
-            
-    #def actualizarMovimiento(self,pos):
-        #if pos != 0:
-            #if self.speed != [0,0]:
-                #pos_init = pos
-                #self.ani_pos = pos
-                #self.ani_max = pos + 8
-                
-                #self.image = load_image(self.ani[self.ani_pos], True)
-                #print self.ani[self.ani_pos]
-                #if self.ani_pos == self.ani_max:
-                    #self.ani_pos=pos_init
-                #else:
-                    #self.ani_pos+= 1
-                    
+                               
     def actualizarMovimiento(self,pos):
         if pos != 0:
             if self.speed != [0,0]:
@@ -219,13 +207,36 @@ def printMatrix(testMatrix):
 def main():
     pos = 0
     activado = 0
+    Pared_x=0
+    Pared_y=0
+    lista = []
+    maze = Laberinto(DIMMAZE,DIMMAZE)
+    sprites = pygame.sprite.RenderUpdates()
+    laberinto = [[0 for _ in range((DIMMAZE))] for _ in range((DIMMAZE))]
     pygame.display.set_caption("Prueba Pacman")
+    background = screen.copy()
+    laberinto  = maze.marcoLaberinto(laberinto,DIMMAZE,DIMMAZE)
+    laberinto = maze.generacionAleatoria(laberinto,DIMMAZE,DIMMAZE)
+    print laberinto
     pacman = Pacman()
     galleta = Galleta()
+    sprites.add(pacman)
+    sprites.add(galleta)
     pygame.mixer.init()
     pygame.mixer.music.load("./Sound/pacman_chomp.wav")
     keys = pygame.key.get_pressed()
     clock = pygame.time.Clock()
+	
+    for i in range(DIMMAZE):
+            for j in range(DIMMAZE):
+                if(laberinto[i][j] == 1):
+                    sprites.add(Pared((0,0,255),(Pared_x,Pared_y),(DIMENSION,DIMENSION)))
+                    Pared_x+=DIMENSION
+                else:
+                    Pared_x+=DIMENSION
+            Pared_x=0
+            Pared_y+=DIMENSION 
+
     #maze = Laberinto(WIDTH,HEIGHT)
     def comerGalleta(x1,y1,w1,h1,x2,y2,w2,h2):
         if (x2+w2>=x1>=x2 and y2+h2>=y1>=y2):
@@ -242,7 +253,6 @@ def main():
     while True:
         keys = pygame.key.get_pressed()
         time = clock.tick(60)
-        screen.fill((0,0,0))
         for eventos in pygame.event.get():
             if eventos.type == QUIT:
                 sys.exit()
@@ -250,13 +260,16 @@ def main():
             pygame.mixer.music.play(-1)
             activado = 1
             pos = 1
-            
+           
         comiendoGalleta=comerGalleta(galleta.rect.x,galleta.rect.y,galleta.rect.width,galleta.rect.height,pacman.rect.x,pacman.rect.y,pacman.rect.width,pacman.rect.height)
         galleta.render(comiendoGalleta)
         pacman.actualizarMovimiento(pos)
         pacman.mover(time,keys)
-        screen.blit(galleta.image, galleta.rect)
-        screen.blit(pacman.image, pacman.rect)
+        sprites.update ()
+        sprites.clear (screen, background)
+        pygame.display.update (sprites.draw (screen))
+        #screen.blit(galleta.image, galleta.rect)
+        #screen.blit(pacman.image, pacman.rect)
         pygame.display.update()
     return 0
 #---------------------------------------------------------------------------------------------
