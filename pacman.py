@@ -160,8 +160,9 @@ class Laberinto():
         
 # ---------------------------------------------------------------------
 class Galleta(pygame.sprite.Sprite):
-    def __init__(self,x,y):
+    def __init__(self,x,y, nombre):
         pygame.sprite.Sprite.__init__(self)
+        self.nombre = nombre
         self.image = load_image("./Imagenes/cookie.png", True)
         self.rect = self.image.get_rect()
         self.rect.centerx = x + 16
@@ -255,6 +256,8 @@ def printMatrix(testMatrix):
 #----------------------------------------------------------------------
 def main():
     pos = 0
+    countgalleta = 1
+    countmuro = 1
     activado = 0
     Pared_x=0
     Pared_y=0
@@ -274,10 +277,12 @@ def main():
     for i in range(DIMMAZE):
             for j in range(DIMMAZE):
                 if(laberinto[i][j] == 1):
-                    sprites.add(Pared((0,0,255),(Pared_x,Pared_y),(DIMENSION,DIMENSION)))
+                    sprites.add(Pared((0,0,255),(Pared_x,Pared_y),(DIMENSION,DIMENSION),("muro"+str(countmuro))))
+                    countmuro += 1
                     Pared_x+=DIMENSION
                 else:
-                    sprites.add(Galleta(Pared_x,Pared_y))
+                    sprites.add(Galleta(Pared_x,Pared_y,("galleta"+str(countgalleta))))
+                    countgalleta += 1
                     Pared_x+=DIMENSION
             Pared_x=0
             Pared_y+=DIMENSION 
