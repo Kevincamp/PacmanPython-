@@ -558,21 +558,69 @@ def informar ( posicion, texto ):
     mensaje = Mensaje ( texto, posicion, 20, 2000)
     sprites.add ( mensaje )
     
+def text_objects(text, font):
+    textSurface = font.render(text, True, [255,255,0])
+    return textSurface, textSurface.get_rect()
+    
+def text_objects_2(text, font):
+    textSurface = font.render(text, True, [0,0,0])
+    return textSurface, textSurface.get_rect()
 
-#--- Codigo de ejecucion inicial ------------------------------
+def menu_intro():
+    intro = True
+    while intro:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+        screen.fill([0,0,0])
+        
+        largeText = pygame.font.Font('./Fonts/PAC-FONT.TTF',30)
+        TextSurf,TextRect = text_objects("PacMan",largeText)
+        TextRect.center = ((300/2), (300/5))
+        screen.blit(TextSurf,TextRect)
+        
+        pacman_intro = cargar_imagen("intro_pacman.png")
+        screen.blit(pacman_intro,(60/3,200/3))
+        
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+        if (screen.get_width()*0.30) < mouse[0] < (screen.get_width()*0.30 +130) and (screen.get_height()*0.80) < mouse[1] < (screen.get_height()*0.80 + 30):
+            pygame.draw.rect(screen, [192,255,192],(screen.get_width()*0.30,screen.get_height()*0.80,130,30))
+            if click[0] == 1:
+               juego()
+        else:
+            pygame.draw.rect(screen, [0,255,0] , (screen.get_width()*0.30,screen.get_height()*0.80,130,30))
+            
+        if (screen.get_width()*0.30) < mouse[0] < (screen.get_width()*0.30 +130) and (screen.get_height()*0.90) < mouse[1] < (screen.get_height()*0.90 + 30):
+            pygame.draw.rect(screen, [255,192,192],(screen.get_width()*0.30,screen.get_height()*0.90,130,30))
+            if click[0] == 1 :
+                print "EXIT"
+                pygame.quit()
+                quit()
+        else:
+            pygame.draw.rect(screen, [255,0,0] , (screen.get_width()*0.30,screen.get_height()*0.90,130,30))
+            
+       #pygame.draw.rect(screen, [255,0,0] , (screen.get_width()*0.30,screen.get_height()*0.90,130,30))
+        
+        smallText = pygame.font.Font('./Fonts/PAC-FONT.TTF',20)
+        textSurf_jugar,textRect_jugar = text_objects_2("Jugar",smallText)
+        textRect_jugar.center = (screen.get_width()*0.507,screen.get_height()*0.84)
+        screen.blit(textSurf_jugar,textRect_jugar)
+        
+        textSurf_salir,textRect_salir = text_objects_2("Salir",smallText)
+        textRect_salir.center = (screen.get_width()*0.507,screen.get_height()*0.94)
+        screen.blit(textSurf_salir,textRect_salir)
+        
+        pygame.display.update()
+        reloj.tick(15)   
 
-if __name__ == "__main__":    
-    #inicializamos pygame y la pantalla de juego
-    pygame.init()
+def juego():
     Pared_x=0
     Salir = False
     Pared_y=0
-    #Indicamos la dimension de la pantlla de juego
-    window = pygame.display.set_mode([300,400])
-    pygame.display.set_caption("pacman")  
     maze = Laberinto(15,20)
     laberinto = maze.getMaze()
-    #Inicializamos la pantalla con fondo negro
     screen = pygame.display.get_surface()
     screen.fill ([0,0,0])
     
@@ -582,8 +630,6 @@ if __name__ == "__main__":
 
     #creamos los sprites
     sprites = pygame.sprite.RenderUpdates()  
-    
-
     ubicado = 0
     for i in range(20):
             for j in range(15):
@@ -597,18 +643,13 @@ if __name__ == "__main__":
                     sprites.add (sprite)
                     Pared_x+=20
                 else:
-                    sprite = MiSprite ("bola.gif", [Pared_x+2, Pared_y+2])
+                    sprite = MiSprite ("bola.png", [Pared_x+2, Pared_y+2])
                     sprite.comestible = True
                     sprite.puntos = 5
                     sprites.add ( sprite )
                     Pared_x+=20
             Pared_x=0
-            Pared_y+=20 
-
-    
-    
-    
-    #bucle de redibujado de los screens
+            Pared_y+=20
     reloj = pygame.time.Clock() 
       
     sonido_fondo = cargar_sonido ("sonido_fondo.wav").play(-1) #este sonido se repetira indefinidamente al indicar -1 como parametro   
@@ -629,6 +670,79 @@ if __name__ == "__main__":
     while True:
         eventos = pygame.event.get()
         ManejarEventos()
+    
+
+#--- Codigo de ejecucion inicial ------------------------------
+
+if __name__ == "__main__":    
+    #inicializamos pygame y la pantalla de juego
+    pygame.init()
+    #Pared_x=0
+    Salir = False
+    #Pared_y=0
+    #Indicamos la dimension de la pantlla de juego
+    window = pygame.display.set_mode([300,400])
+    pygame.display.set_caption("pacman")  
+    #maze = Laberinto(15,20)
+    #laberinto = maze.getMaze()
+    #Inicializamos la pantalla con fondo negro
+    screen = pygame.display.get_surface()
+    screen.fill ([0,0,0])
+    
+    #creamos una copia de la pantalla para evitar su repintado completo cuando
+    #    se redibujen los sprites
+    #background = screen.copy()
+
+    #creamos los sprites
+    sprites = pygame.sprite.RenderUpdates()  
+    
+
+    #ubicado = 0
+    #for i in range(20):
+    #        for j in range(15):
+    #            if(i == 18 and ubicado == 0 and laberinto[i][j] == 0):
+    #                    pacman = Pacman("pacman.gif", [Pared_x+2,Pared_y+2])
+    #                    sprites.add ( pacman )
+    #                    ubicado = 1
+                    
+    #            if(laberinto[i][j] == 1):
+    #                sprite = Pared ( [150,150,150], [Pared_x,Pared_y], [20,20] )
+    #                sprites.add (sprite)
+    #                Pared_x+=20
+    #            else:
+    #                sprite = MiSprite ("bola.png", [Pared_x+2, Pared_y+2])
+    #                sprite.comestible = True
+    #                sprite.puntos = 5
+    #                sprites.add ( sprite )
+    #                Pared_x+=20
+    #        Pared_x=0
+    #        Pared_y+=20 
+
+    
+    
+    
+    #bucle de redibujado de los screens
+    reloj = pygame.time.Clock() 
+      
+    #sonido_fondo = cargar_sonido ("sonido_fondo.wav").play(-1) #este sonido se repetira indefinidamente al indicar -1 como parametro   
+    eventos = pygame.event.get()
+    ManejarEventos ()
+    while Salir == False:
+        menu_intro()
+        eventos = pygame.event.get()
+        ManejarEventos ()
+        
+        sprites.update ()
+        sprites.clear (screen, background) 
+        pygame.display.update (sprites.draw (screen))        
+        
+        reloj.tick (40) #tiempo de espera entre frames
+    
+    #--el juego ha finalizado
+    
+    #while True:
+        #eventos = pygame.event.get()
+        #ManejarEventos()
             
 
 
