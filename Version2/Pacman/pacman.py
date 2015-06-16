@@ -232,7 +232,8 @@ class Pacman ( SpriteMovil ):
 
 
     def update (self):
-        global eventos # explicitamente declaramos que "eventos" es una variable global
+        #global eventos # explicitamente declaramos que "eventos" es una variable global
+        global sprites 
         v = 1
         for event in eventos:
             if event.type == pygame.KEYDOWN:
@@ -276,7 +277,7 @@ class Pacman ( SpriteMovil ):
 
         self.image = self.__fotogramasActuales[self.__fotogramaActual]
         
-        global sprites  
+         
         #se obtiene todos los sprites con los que colisiona. El ultimo parametro indica que no queremos destruir automaticamente los sprites con los que colisiona  
         sprites_choque = pygame.sprite.spritecollide(self, sprites, False)
         for sprite in sprites_choque:
@@ -510,6 +511,7 @@ class Mensaje (MiSprite):
 
 def ManejarEventos():
     global eventos # explicitamente declaramos que "eventos" es una variable global
+    eventos = pygame.event.get()
     for event in eventos: 
         print event
         if event.type == pygame.QUIT: 
@@ -656,11 +658,12 @@ def juego():
     eventos = pygame.event.get()
     ManejarEventos ()
     while Salir == False:
-        eventos = pygame.event.get()
+        #eventos = pygame.event.get()
         ManejarEventos ()
         
         sprites.update ()
         sprites.clear (screen, background) 
+        
         pygame.display.update (sprites.draw (screen))        
         
         reloj.tick (40) #tiempo de espera entre frames
@@ -729,12 +732,13 @@ if __name__ == "__main__":
     ManejarEventos ()
     while Salir == False:
         menu_intro()
-        eventos = pygame.event.get()
-        ManejarEventos ()
         
-        sprites.update ()
-        sprites.clear (screen, background) 
-        pygame.display.update (sprites.draw (screen))        
+        #eventos = pygame.event.get()
+        #ManejarEventos ()
+        
+        #sprites.update ()
+        #sprites.clear (screen, background) 
+        #pygame.display.update (sprites.draw (screen))        
         
         reloj.tick (40) #tiempo de espera entre frames
     
