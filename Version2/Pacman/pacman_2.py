@@ -20,7 +20,7 @@ class MiSprite ( pygame.sprite.Sprite ):
         pygame.sprite.Sprite.update ( self )
         
 #--- Fin MiSprite -----------------------------------------------            
- #--- Inicio Laberinto -------------------------------------------
+#--- Inicio Laberinto -------------------------------------------
 class Laberinto():
     mazeWidth = 0
     mazeHeight = 0
@@ -205,7 +205,7 @@ class SpriteMovil ( MiSprite ):
 
          
 #--- Inicio Pacman -----------------------------------------------            
- 
+
 class Pacman ( SpriteMovil ):
     NUMERO_FOTOGRAMAS = 8
     
@@ -278,78 +278,23 @@ class Pacman ( SpriteMovil ):
         self.image = self.__fotogramasActuales[self.__fotogramaActual]
         
          
-        #se obtiene todos los sprites con los que colisiona. El ultimo parametro indica que no queremos destruir automaticamente los sprites con los que colisiona  
+        #se obtiene todos los sprites con los que colisiona. El ultimo parametro indica que no queremos destruir automaticamente los sprites con los que colisiona 
+        MiSprite.update(self) 
+        
+        #global sprites
         sprites_choque = pygame.sprite.spritecollide(self, sprites, False)
+        
         for sprite in sprites_choque:
             if sprite != self:
-                if hasattr ( sprite, "disparos" ):
-                    self.disparos += sprite.disparos
-                    informar ( self.rect.topright, "disparos %d" % (sprite.disparos) )
                 if hasattr ( sprite, "comestible" ): #comprobamos si el sprite tiene un atributo llamado "comestible"
                     if sprite.comestible:
-                        if hasattr ( sprite, "puntos" ):
-                            self.puntos += sprite.puntos
-                            informar ( self.rect.bottomright, "puntos %d" % (sprite.puntos) )
-                        kill(sprite) #destruimos el sprite
+                        sprite.kill() # destruimos el sprite
+                        #if hasattr ( sprite, "puntos" ):
+                         #   self.puntos += sprite.puntos
+                          #  informar ( self.rect.bottomright, "puntos %d" % (sprite.puntos) )
         
+
 #--- Fin Pacman -----------------------------------------------            
-
-
-#--- Inicio fantasma -----------------------------------------------  
-
-class Fantasma ( SpriteMovil ):
-    def __init__(self, fichero_imagen, pos_inicial, velocidad):
-        SpriteMovil.__init__(self, fichero_imagen, pos_inicial, velocidad) 
-        self.vidas = 1
-        Fantasma.tiempo_reproduccion = pygame.time.get_ticks()
-
-    def reproducirse(self):
-        '''cada 20 segundos los fantasmas se reproducen'''
-        if pygame.time.get_ticks() - Fantasma.tiempo_reproduccion > 20000:
-            nuevo_fantasma = Fantasma ( "fantasma.gif", self.rect.topleft, 
-                                            [-self.velocidad[0], -self.velocidad[1]] )
-            sprites.add ( nuevo_fantasma )
-
-    def update (self):  
-        self.reproducirse()
-                
-        #comprobamos si el fantasma ha capturado al pacman 
-        global sprites
-        sprites_choque = pygame.sprite.spritecollide(self, sprites, False)
-        for sprite in sprites_choque:
-            if sprite!= self:
-                if not isinstance(sprite,Fantasma) and hasattr(sprite, "vidas"):
-                    sprite.vidas -= 1
-                    cargar_sonido("kill.wav").play()
-                    if sprite.vidas <= 0:
-                        kill(sprite)
-                    else:
-                        cargar_sonido ("death.wav").play()
-                        sprite.rect.topleft = [0,0]  
-        
-        #su velocidad es 0 si ha colisionado con un objeto infranqueable   
-        if self.velocidad[0] == 0 and self.velocidad[1] == 0:
-            self.velocidad[0]= random.choice([-2, -1, 1 , 2])
-            self.velocidad[1] = random.choice([-2, -1, 1 , 2])
-        else:
-            if self.rect.top <= 0:
-                self.velocidad[1] = random.choice([1,2])
-                self.velocidad[0]= random.choice([-2, -1, 1 , 2])
-            elif self.rect.bottom >= pygame.display.get_surface().get_height():
-                self.velocidad[1] = -random.choice([1,2])
-                self.velocidad[0]= random.choice([-2, -1, 1 , 2])
-            
-            if self.rect.left <= 0:
-                self.velocidad[0] = random.choice([1,2])
-                self.velocidad[1]= random.choice([-2, -1, 1 , 2])
-            elif self.rect.right >= pygame.display.get_surface().get_width():
-                self.velocidad[0] = -random.choice([1,2])
-                self.velocidad[1]= random.choice([-2, -1, 1 , 2])
-        
-        SpriteMovil.update (self)
-      
-        
-#--- Fin fantasma -----------------------------------------------  
         
 #--- Inicio Pared ---------------------------------------------
 
@@ -367,90 +312,6 @@ class Pared ( MiSprite ):
     
     def update(self):
         MiSprite.update(self)
-
-#--- Inicio teletransportador --------------------------------
-
-teletransportadores = []
-class Teletransportador ( MiSprite ):
-    def __init__(self, fichero_imagen, pos_inicial):
-        global teletransportadores
-        MiSprite.__init__(self, fichero_imagen, pos_inicial)
-        self.activo = True
-        teletransportadores.append ( self ) #todos los teletransportadores se insertan en esta lista
-    
-    def update(self):
-        if self.activo:
-            global teletransportadores
-            sprites_choque = pygame.sprite.spritecollide(self, sprites, False)
-            for sprite in sprites_choque:
-                if sprite != self:
-                    while True:
-                        idx_destino = random.randint ( 0, len(teletransportadores) - 1 )
-                        if teletransportadores[idx_destino] != self:
-                            break
-                    
-                    #desactivamos el teletransportador destino hasta que este vacio
-                    teletransportadores[idx_destino].activo = False
-                    sprite.rect.topleft = teletransportadores[idx_destino].rect.topleft
-                    cargar_sonido ( "teletransportador.wav" ).play()
-        else:
-            self.activo = len (pygame.sprite.spritecollide(self, sprites, False)) == 1
-        
-        MiSprite.update(self)
-
-
-#--- Fin teletransportador ---------------------------------
-
-
-class Bala ( MiSprite ):
-    RADIO = 4
-    COLOR = [255,0,0]
-    
-    def __init__(self, disparador, velocidad):
-        MiSprite.__init__(self)
-        
-        self.velocidad = velocidad
-        self.disparador = disparador
-            
-        pos_disparo = [disparador.rect.center[0], disparador.rect.center[1]]                         
-        
-        self.image = pygame.Surface([Bala.RADIO * 2, Bala.RADIO * 2]) #creamos una superficie de las dimensiones indicadas
-        pygame.draw.circle(self.image, Bala.COLOR, [Bala.RADIO, Bala.RADIO], Bala.RADIO)        
-        
-            
-        self.rect = self.image.get_rect()
-        self.rect.topleft = pos_disparo
-        
-        cargar_sonido ( "disparo.wav" ).play()
-
-
-    
-    def update(self):
-        sprites_choque = pygame.sprite.spritecollide(self, sprites, False)
-        for sprite in sprites_choque:
-            if sprite != self and sprite != self.disparador: # a chocado con algo
-                if hasattr(sprite, "vidas"):
-                    sprite.vidas -= 1
-                    cargar_sonido("kill.wav").play()
-                    if sprite.vidas <= 0:
-                        if hasattr ( sprite, "puntos" ) and hasattr (self.disparador, "puntos"):
-                            self.disparador.puntos += sprite.puntos
-                            informar ( sprite.rect.bottomright, "puntos %d" % (sprite.puntos) )
-                        kill(sprite)            
-                if not isinstance(sprite, Mensaje):
-                    self.kill() # se autodestruye
-                    return
- 
-        self.rect.move_ip ( self.velocidad[0], self.velocidad[1]) 
-        
-        #la bala se autodestruye cuando sale fuera de la pantalla
-        if self.rect.top < 0 or self.rect.bottom > screen.get_height() or \
-            self.rect.left < 0 or self.rect.right > screen.get_width():
-                self.kill()
-                return
-                
-        MiSprite.update(self)
-  
 
 #--- Fin Pared ---------------------------------------------    
 
