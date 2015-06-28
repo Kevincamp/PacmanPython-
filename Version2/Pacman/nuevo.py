@@ -1,6 +1,7 @@
 import pygame
 import sys, copy, random, os, time
-global segundos
+global segundos,contadorGalletas
+contadorGalletas = 0
 # -- Funciones Generales ------------------------------------------------------------------
 
 imagenes = {}
@@ -35,7 +36,7 @@ def ManejarEventos():
     global eventos # explicitamente declaramos que "eventos" es una variable global
     eventos = pygame.event.get()
     for event in eventos: 
-        print event
+        #print event
         if event.type == pygame.QUIT: 
             sys.exit(0) #se termina el programa
         elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -291,7 +292,8 @@ class Pacman ( SpriteMovil ):
 
     def update (self):
         #global eventos # explicitamente declaramos que "eventos" es una variable global
-        global sprites 
+        global sprites
+        global contadorGalletas
         v = 1
         for event in eventos:
             if event.type == pygame.KEYDOWN:
@@ -346,6 +348,7 @@ class Pacman ( SpriteMovil ):
             if sprite != self:
                 if hasattr ( sprite, "comestible" ): #comprobamos si el sprite tiene un atributo llamado "comestible"
                     if sprite.comestible:
+                        contadorGalletas = contadorGalletas + 1
                         sprite.kill() # destruimos el sprite
                         #if hasattr ( sprite, "puntos" ):
                          #   self.puntos += sprite.puntos
@@ -358,7 +361,8 @@ class Pacman ( SpriteMovil ):
 
 def juego():
     global segundos
-     
+    global contadorGalletas
+    contadorGalletas = 0
     Pared_x=0
     Salir = False
     Pared_y=0
@@ -408,7 +412,7 @@ def juego():
         TextSurf,TextRect = text_objects(segundos,largeText)
         TextRect.center = ((400/2), (480))
         screen.blit(TextSurf,TextRect)
-        
+        print contadorGalletas
         ManejarEventos ()
         
         sprites.update ()
@@ -439,29 +443,29 @@ def menu_intro():
         
         largeText = pygame.font.Font('./Fonts/PAC-FONT.TTF',30)
         TextSurf,TextRect = text_objects("PacMan",largeText)
-        TextRect.center = ((400/2), (300/5))
+        TextRect.center = ((300/2), (300/5))
         screen.blit(TextSurf,TextRect)
         
         pacman_intro = cargar_imagen("intro_pacman.png")
-        screen.blit(pacman_intro,(400/6,200/2))
+        screen.blit(pacman_intro,(300/13,200/2))
         
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
-        if (screen.get_width()*0.35) < mouse[0] < (screen.get_width()*0.35 +130) and (screen.get_height()*0.81) < mouse[1] < (screen.get_height()*0.80 + 30):
-            pygame.draw.rect(screen, [192,255,192],(screen.get_width()*0.35,screen.get_height()*0.81,130,30))
+        if (screen.get_width()*0.30) < mouse[0] < (screen.get_width()*0.30 +130) and (screen.get_height()*0.81) < mouse[1] < (screen.get_height()*0.80 + 30):
+            pygame.draw.rect(screen, [192,255,192],(screen.get_width()*0.30,screen.get_height()*0.81,130,30))
             if click[0] == 1:
                juego()
         else:
-            pygame.draw.rect(screen, [0,255,0] , (screen.get_width()*0.35,screen.get_height()*0.81,130,30))
+            pygame.draw.rect(screen, [0,255,0] , (screen.get_width()*0.30,screen.get_height()*0.81,130,30))
             
-        if (screen.get_width()*0.35) < mouse[0] < (screen.get_width()*0.35 +130) and (screen.get_height()*0.91) < mouse[1] < (screen.get_height()*0.91 + 30):
-            pygame.draw.rect(screen, [255,192,192],(screen.get_width()*0.35,screen.get_height()*0.91,130,30))
+        if (screen.get_width()*0.30) < mouse[0] < (screen.get_width()*0.30 +130) and (screen.get_height()*0.91) < mouse[1] < (screen.get_height()*0.91 + 30):
+            pygame.draw.rect(screen, [255,192,192],(screen.get_width()*0.30,screen.get_height()*0.91,130,30))
             if click[0] == 1 :
                 print "EXIT"
                 pygame.quit()
                 quit()
         else:
-            pygame.draw.rect(screen, [255,0,0] , (screen.get_width()*0.35,screen.get_height()*0.91,130,30))
+            pygame.draw.rect(screen, [255,0,0] , (screen.get_width()*0.30,screen.get_height()*0.91,130,30))
         
         smallText = pygame.font.Font('./Fonts/PAC-FONT.TTF',20)
         textSurf_jugar,textRect_jugar = text_objects_2("Jugar",smallText)
@@ -483,7 +487,7 @@ if __name__ == "__main__":
     Salir = False
     
     #Indicamos la dimension de la pantlla de juego
-    window = pygame.display.set_mode([400,500])
+    window = pygame.display.set_mode([300,500])
     pygame.display.set_caption("pacman")  
     
     #creamos los sprites
