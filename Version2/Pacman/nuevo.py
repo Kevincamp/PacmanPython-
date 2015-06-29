@@ -1,7 +1,8 @@
 import pygame
 import sys, copy, random, os, time
-global segundos,contadorGalletas
+global segundos,contadorGalletas, contadorGalletasTotal
 contadorGalletas = 0
+contadorGalletasTotal = 0
 # -- Funciones Generales ------------------------------------------------------------------
 
 imagenes = {}
@@ -30,7 +31,10 @@ def text_objects(text, font):
 def text_objects_2(text, font):
     textSurface = font.render(text, True, [0,0,0])
     return textSurface, textSurface.get_rect()
-    
+
+def text_objects_3(text, font):
+    textSurface = font.render(text, True, [255,255,255])
+    return textSurface, textSurface.get_rect()
 
 def ManejarEventos():
     global eventos # explicitamente declaramos que "eventos" es una variable global
@@ -344,7 +348,11 @@ class Pacman ( SpriteMovil ):
 def juego():
     global segundos
     global contadorGalletas
+    global contadorGalletasTotal
+    
     contadorGalletas = 0
+    contadorGalletasTotal = 0
+    
     Pared_x=0
     Salir = False
     Pared_y=0
@@ -358,9 +366,6 @@ def juego():
     #se redibujen los sprites
     background = screen.copy()
 
-    #creamos los sprites
-    #sprites = pygame.sprite.RenderUpdates()
-    
     #bucle de redibujado de los screens
     reloj = pygame.time.Clock()
     for i in range(15):
@@ -383,6 +388,7 @@ def juego():
                         sprite.puntos = 5
                         sprites.add ( sprite )
                         Pared_x+=50
+                        contadorGalletasTotal +=1
             Pared_x=0
             Pared_y+=50
       
@@ -393,10 +399,20 @@ def juego():
         segundos = pygame.time.get_ticks()/1000
         segundos = str(segundos)
         largeText = pygame.font.Font('./Fonts/BEBAS.TTF',20)
-        TextSurf,TextRect = text_objects(segundos,largeText)
-        TextRect.center = ((400/2), (480))
+        TextSurf,TextRect = text_objects_3("Tiempo: ",largeText)
+        TextRect.center = (805, 20)
         screen.blit(TextSurf,TextRect)
-        print contadorGalletas
+        TextSurf,TextRect = text_objects_3(segundos,largeText)
+        TextRect.center = ((860), (20))
+        screen.blit(TextSurf,TextRect)
+        TextSurf,TextRect = text_objects_3("Galletas: ",largeText)
+        TextRect.center = (805, 50)
+        screen.blit(TextSurf,TextRect)
+        #----------------------------Antes de presentar al contador hay que transformarlo a String-----------------------------
+        #TextSurf,TextRect = text_objects_3(contadorGalletas,largeText)
+        #TextRect.center = ((850), (30))
+        #screen.blit(TextSurf,TextRect)
+        
         ManejarEventos ()
         
         sprites.update ()
@@ -425,44 +441,43 @@ def menu_intro():
                 quit()
         screen.fill([0,0,0])
         
+        pacman_intro = cargar_imagen("intro_pacman.png")
+        screen.blit(pacman_intro,(900/3,20))
+        
         largeText = pygame.font.Font('./Fonts/PAC-FONT.TTF',30)
         TextSurf,TextRect = text_objects("PacMan",largeText)
-        TextRect.center = (300, 320)
+        TextRect.center = (900/2, 320)
         screen.blit(TextSurf,TextRect)
         
         TextSurf,TextRect = text_objects("Artificial Intelligence",largeText)
-        TextRect.center = (300, 400)
-        screen.blit(TextSurf,TextRect)
-        
-        pacman_intro = cargar_imagen("intro_pacman.png")
-        screen.blit(pacman_intro,(165,20))
-        
+        TextRect.center = (900/2, 400)
+        screen.blit(TextSurf,TextRect) 
         
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
-        if (screen.get_width()*0.30) < mouse[0] < (screen.get_width()*0.30 +130) and (screen.get_height()*0.81) < mouse[1] < (screen.get_height()*0.80 + 30):
-            pygame.draw.rect(screen, [192,255,192],(screen.get_width()*0.30,screen.get_height()*0.81,130,30))
+        if (screen.get_width()*0.40) < mouse[0] < (screen.get_width()*0.40 +170) and (screen.get_height()*0.60) < mouse[1] < (screen.get_height()*0.60 + 60):
+            pygame.draw.rect(screen, [192,255,192],(screen.get_width()*0.40,screen.get_height()*0.60,170,60))
             if click[0] == 1:
                 juego()
         else:
-            pygame.draw.rect(screen, [0,255,0] , (screen.get_width()*0.30,screen.get_height()*0.81,130,30))
+            pygame.draw.rect(screen, [0,255,0] , (screen.get_width()*0.4,screen.get_height()*0.60,170,60))
             
-        if (screen.get_width()*0.30) < mouse[0] < (screen.get_width()*0.30 +130) and (screen.get_height()*0.91) < mouse[1] < (screen.get_height()*0.91 + 30):
-            pygame.draw.rect(screen, [255,192,192],(screen.get_width()*0.30,screen.get_height()*0.91,130,30))
+        if (screen.get_width()*0.40) < mouse[0] < (screen.get_width()*0.40 +170) and (screen.get_height()*0.70) < mouse[1] < (screen.get_height()*0.70 + 60):
+            pygame.draw.rect(screen, [255,192,192],(screen.get_width()*0.40,screen.get_height()*0.70,170,60))
             if click[0] == 1 :
                 print "EXIT"
                 pygame.quit()
                 quit()
         else:
-            pygame.draw.rect(screen, [255,0,0] , (screen.get_width()*0.30,screen.get_height()*0.91,130,30))
+            pygame.draw.rect(screen, [255,0,0] , (screen.get_width()*0.40,screen.get_height()*0.70,170,60))
         
-        smallText = pygame.font.Font('./Fonts/PAC-FONT.TTF',20)
+        smallText = pygame.font.Font('./Fonts/BEBAS.TTF',40)
         textSurf_jugar,textRect_jugar = text_objects_2("Jugar",smallText)
-        textRect_jugar.center = (screen.get_width()*0.507,screen.get_height()*0.84)
+        textRect_jugar.center = (screen.get_width()*0.49,screen.get_height()*0.64)
         screen.blit(textSurf_jugar,textRect_jugar)
         
         textSurf_salir,textRect_salir = text_objects_2("Salir",smallText)
-        textRect_salir.center = (screen.get_width()*0.507,screen.get_height()*0.94)
+        textRect_salir.center = (screen.get_width()*0.49,screen.get_height()*0.74)
         screen.blit(textSurf_salir,textRect_salir)
         
         pygame.display.update()
@@ -476,7 +491,7 @@ if __name__ == "__main__":
     Salir = False
     
     #Indicamos la dimension de la pantlla de juego
-    window = pygame.display.set_mode([750,800])
+    window = pygame.display.set_mode([900,800])
     pygame.display.set_caption("pacman")  
     
     #creamos los sprites
