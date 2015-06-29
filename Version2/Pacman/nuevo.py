@@ -108,6 +108,7 @@ class SpriteMovil ( MiSprite ):
 #--- Inicio Laberinto -------------------------------------------
 
 class Laberinto():
+    posicionSalida = []
     mazeWidth = 0
     mazeHeight = 0
     def __init__(self,width,height):
@@ -122,41 +123,8 @@ class Laberinto():
         return laberinto
     
     def generacionAleatoria(self,laberinto, height, width):
-        muroInitSize = random.randint(1,width/2)
-        muroInitList = [0 for _ in range(muroInitSize)]
-        muroPos = [2,4]
-        for x in range (0,muroInitSize):
-            if(x != 0):
-                muroX = random.choice(muroPos)
-                if(muroX+muroInitList[x-1] < width - 1):
-                    muroInitList[x]=muroX
-                    laberinto[1][muroX] = 1
-            else:
-                muroX = random.choice([1,2])
-                muroInitList[x]=muroX
-                laberinto[1][muroX] = 1
         for i in range(2,height-1):
-            for j in range(1,width-1):
-                #izquierdoconMarco
-                if(j == 1):
-                    if(laberinto[i][j] == 0 and laberinto[i-1][j] == 0 and laberinto[i-1][j+1] == 0 and laberinto[i][j+1] == 0):
-                        laberinto[i][j] = 1
-                #derechoconMarco
-                elif(j == width-2):
-                    if(laberinto[i][j]==0 and laberinto[i][j-1] == 0 and laberinto[i-1][j-1] == 0 and laberinto[i-1][j] == 0):
-                        laberinto[i][j] = 1
-                    elif(i==height-2):
-                        if(laberinto[i-1][j]==1 and laberinto[i][j-1]==1):
-                            laberinto[i][j]=1
-                            
-                            
-                #abajoconMarco    
-                elif(i == height-2 and j>1 and j<width-2):
-                    if(laberinto[i][j]==0 and laberinto[i][j-1]==0 and laberinto[i-1][j-1]==0 and laberinto[i-1][j]==0 and laberinto[i-1][j+1]==0 and laberinto[i][j+1]==0):
-                        laberinto[i][j] = 1
-                    elif(laberinto[i][j]==0 and j!=2 and j!=width-2 and laberinto[i-1][j]==0 and laberinto[i][j-1]==0 and laberinto[i-1][j-1]==0):
-                        laberinto[i][j] = 1
-                else:
+            for j in range(1,width-1):   
                     if(laberinto[i][j]==0 and laberinto[i][j-1]==0 and laberinto[i-1][j-1]==0 and laberinto[i-1][j]==0 and laberinto[i-1][j+1]==0 and laberinto[i][j+1]==0):
                         laberinto[i][j] = 1
                         if(i!=height-3):
@@ -164,26 +132,20 @@ class Laberinto():
                         else:
                             self.ponerMuro(laberinto,i,j,"centropenultimo")
                     elif(laberinto[i][j]==0 and laberinto[i][j-1]==0 and laberinto[i-1][j-1]==0 and laberinto[i-1][j]==0):
-                        if(i==height-3 and j==width-3):
-                            laberinto[i][j] = 0
-                        else:
-                            laberinto[i][j] = 1
-                    
+                        laberinto[i][j] = 1
+                    elif(laberinto[i][j] == 0 and laberinto[i][j-1]==1 and laberinto[i-1][j]==1 and i==height-2 and j==width-2):
+                        laberinto[i][j] = 1
         return laberinto
     
     def ponerMuro(self,laberinto,i,j,estado):
         #pickDR{down,right,downright}
         if(estado == "centro"):
-            pickDR = random.randint(1,3)
+            pickDR = random.randint(1,2)
             if(pickDR == 1):
                 laberinto[i+1][j] = 1
             elif(pickDR == 2):
                 if(self.espaciosBlancoMuro(laberinto,i,j+1)):
                     laberinto[i][j+1] = 1
-            elif(pickDR == 3):
-                if(self.espaciosBlancoMuro(laberinto,i,j+1)):
-                    laberinto[i][j-1] = 1
-                    laberinto[i+1][j] = 1
             return 0
         elif(estado=="centropenultimo"):
             pickR = random.randint(0,1)
@@ -211,35 +173,55 @@ class Laberinto():
         murosSalidaLEFT = list()
         murosSalidaRIGHT = list()
         murosSalidaDOWN = list()
+        selectorLista = [1,2,3,4]
         for j in range (0,width):
             if(laberinto[1][j]==0):
                 murosSalidaUP.append(j)
-            elif(laberinto[height-2][j]==0):
-                murosSalidaDOWN.append(j)
         for i in range (0,height):
             if(laberinto[i][1]==0):
                 murosSalidaLEFT.append(i)
             elif(laberinto[i][width-2]==0):
                 murosSalidaRIGHT.append(i)
                 
-        selectorLista = random.randint(1,4)        
-        
-        if(selectorLista == 1):
-            if(len(murosSalidaUP)!=0):
-                muroSalida = random.choice(murosSalidaUP)
-                laberinto[0][muroSalida] = 0
-        elif(selectorLista == 2):
-            if(len(murosSalidaDOWN)!=0):
-                muroSalida = random.choice(murosSalidaDOWN)
-                laberinto[height-1][muroSalida] = 0
-        elif(selectorLista == 3):
-            if(len(murosSalidaLEFT)!=0):
-                muroSalida = random.choice(murosSalidaLEFT)
-                laberinto[muroSalida][0] = 0
-        else:
-            if(len(murosSalidaRIGHT)!=0):
-                muroSalida = random.choice(murosSalidaRIGHT)
-                laberinto[muroSalida][width-1] = 0
+        selector = random.choice(selectorLista)        
+        validator = 0
+        while validator == 0:
+            if(selector == 1):
+                if(len(murosSalidaUP)!=0):
+                    muroSalida = random.choice(murosSalidaUP)
+                    laberinto[0][muroSalida] = 0
+                    self.posicionSalida = [0,muroSalida]
+                    validator = 1
+                else:
+                    selectorLista.remove(selector)
+                    selector = random.choice(selectorLista)
+            elif(selector == 2):
+                if(len(murosSalidaDOWN)!=0):
+                    muroSalida = random.choice(murosSalidaDOWN)
+                    laberinto[height-1][muroSalida] = 0
+                    self.posicionSalida = [height-1,muroSalida]
+                    validator = 1
+                else:
+                    selectorLista.remove(selector)
+                    selector = random.choice(selectorLista)
+            elif(selector == 3):
+                if(len(murosSalidaLEFT)!=0):
+                    muroSalida = random.choice(murosSalidaLEFT)
+                    laberinto[muroSalida][0] = 0
+                    self.posicionSalida = [muroSalida,0]
+                    validator = 1
+                else:
+                    selectorLista.remove(selector)
+                    selector = random.choice(selectorLista)
+            else:
+                if(len(murosSalidaRIGHT)!=0):
+                    muroSalida = random.choice(murosSalidaRIGHT)
+                    laberinto[muroSalida][width-1] = 0
+                    self.posicionSalida = [muroSalida,width-1]
+                    validator = 1
+                else:
+                    selectorLista.remove(selector)
+                    selector = random.choice(selectorLista)
         return 0
 
 #--- Fin Laberinto -------------------------------------------
@@ -247,15 +229,15 @@ class Laberinto():
 #--- Inicio Pared ---------------------------------------------
 
 class Pared ( MiSprite ):
-    def __init__(self, color, pos_inicial, dimension):
+    def __init__(self, fichero_imagen, pos_inicial, dimension):
         MiSprite.__init__(self)
     
         self.image = pygame.Surface(dimension) #creamos una superficie de las dimensiones indicadas
-        self.image.fill(color)
-            
-        self.rect = self.image.get_rect()
-        self.rect.topleft = pos_inicial
-        self.infranqueable = True
+        if not fichero_imagen is None:
+            self.image = cargar_imagen(fichero_imagen)
+            self.rect = self.image.get_rect()
+            self.rect.topleft = pos_inicial
+            self.infranqueable = True
 
     
     def update(self):
@@ -294,7 +276,7 @@ class Pacman ( SpriteMovil ):
         #global eventos # explicitamente declaramos que "eventos" es una variable global
         global sprites
         global contadorGalletas
-        v = 1
+        v = 5
         for event in eventos:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
@@ -309,14 +291,14 @@ class Pacman ( SpriteMovil ):
                 elif event.key == pygame.K_DOWN:
                     self.velocidad[1] = v
                     self.velocidad[0] = 0
-                elif event.key == pygame.K_SPACE:
-                    if self.disparos > 0:
-                        if self.velocidad == [0,0]:
-                            bala = Bala (self, [3, 0])
-                        else:
-                            bala = Bala (self, [self.velocidad[0] * 3, self.velocidad[1] * 3])
-                        sprites.add ( bala )
-                        self.disparos -= 1
+                #elif event.key == pygame.K_SPACE:
+                #    if self.disparos > 0:
+                #        if self.velocidad == [0,0]:
+                #            bala = Bala (self, [3, 0])
+                #        else:
+                #            bala = Bala (self, [self.velocidad[0] * 3, self.velocidad[1] * 3])
+                #        sprites.add ( bala )
+                #        self.disparos -= 1
                     
 
         SpriteMovil.update(self)
@@ -331,7 +313,7 @@ class Pacman ( SpriteMovil ):
         elif self.velocidad[1] < 0:
             self.__fotogramasActuales = self.__imagenArriba        
        
-        if pygame.time.get_ticks() - self.__tiempoCambioFotograma > 100:
+        if pygame.time.get_ticks() - self.__tiempoCambioFotograma > 50:
             self.__fotogramaActual = (self.__fotogramaActual + 1) % self.NUMERO_FOTOGRAMAS 
             self.__tiempoCambioFotograma = pygame.time.get_ticks()
 
@@ -366,11 +348,12 @@ def juego():
     Pared_x=0
     Salir = False
     Pared_y=0
-    maze = Laberinto(15,20)
+    maze = Laberinto(15,15)
     laberinto = maze.getMaze()
+    posicionSalida = maze.posicionSalida
     screen = pygame.display.get_surface()
-    screen.fill ([0,0,0])
-    
+    screen.fill((0,0,0))
+    pygame.display.update()
     #creamos una copia de la pantalla para evitar su repintado completo cuando
     #se redibujen los sprites
     background = screen.copy()
@@ -379,28 +362,29 @@ def juego():
     #sprites = pygame.sprite.RenderUpdates()
     
     #bucle de redibujado de los screens
-    reloj = pygame.time.Clock()  
-    
-    ubicado = 0
-    for i in range(20):
-            for j in range(15):
-                if(i == 18 and ubicado == 0 and laberinto[i][j] == 0):
-                        pacman = Pacman("pacman.gif", [Pared_x+2,Pared_y+2])
-                        sprites.add ( pacman )
-                        ubicado = 1
-                    
+    reloj = pygame.time.Clock()
+    for i in range(15):
+            for j in range(15):  
                 if(laberinto[i][j] == 1):
-                    sprite = Pared ( [150,150,150], [Pared_x,Pared_y], [20,20] )
+                    sprite = Pared ( "wall.png", [Pared_x,Pared_y], [50,50] )
                     sprites.add (sprite)
-                    Pared_x+=20
+                    Pared_x+=50
                 else:
-                    sprite = MiSprite ("bola.png", [Pared_x+2, Pared_y+2])
-                    sprite.comestible = True
-                    sprite.puntos = 5
-                    sprites.add ( sprite )
-                    Pared_x+=20
+                    if(i ==posicionSalida[0] and j==posicionSalida[1]):
+                        sprite = MiSprite ("finish.png", [Pared_x, Pared_y])
+                        pacman = Pacman("pacman.gif", [Pared_x,Pared_y])
+                        sprites.add ( sprite )
+                        sprites.add ( pacman )
+                        Pared_x+=50
+                        
+                    else:
+                        sprite = MiSprite ("bola.png", [Pared_x+10, Pared_y+10])
+                        sprite.comestible = True
+                        sprite.puntos = 5
+                        sprites.add ( sprite )
+                        Pared_x+=50
             Pared_x=0
-            Pared_y+=20
+            Pared_y+=50
       
     sonido_fondo = cargar_sonido ("sonido_fondo.wav").play(-1) #este sonido se repetira indefinidamente al indicar -1 como parametro   
     eventos = pygame.event.get()
@@ -443,18 +427,23 @@ def menu_intro():
         
         largeText = pygame.font.Font('./Fonts/PAC-FONT.TTF',30)
         TextSurf,TextRect = text_objects("PacMan",largeText)
-        TextRect.center = ((300/2), (300/5))
+        TextRect.center = (300, 320)
+        screen.blit(TextSurf,TextRect)
+        
+        TextSurf,TextRect = text_objects("Artificial Intelligence",largeText)
+        TextRect.center = (300, 400)
         screen.blit(TextSurf,TextRect)
         
         pacman_intro = cargar_imagen("intro_pacman.png")
-        screen.blit(pacman_intro,(300/13,200/2))
+        screen.blit(pacman_intro,(165,20))
+        
         
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
         if (screen.get_width()*0.30) < mouse[0] < (screen.get_width()*0.30 +130) and (screen.get_height()*0.81) < mouse[1] < (screen.get_height()*0.80 + 30):
             pygame.draw.rect(screen, [192,255,192],(screen.get_width()*0.30,screen.get_height()*0.81,130,30))
             if click[0] == 1:
-               juego()
+                juego()
         else:
             pygame.draw.rect(screen, [0,255,0] , (screen.get_width()*0.30,screen.get_height()*0.81,130,30))
             
@@ -487,7 +476,7 @@ if __name__ == "__main__":
     Salir = False
     
     #Indicamos la dimension de la pantlla de juego
-    window = pygame.display.set_mode([300,500])
+    window = pygame.display.set_mode([750,800])
     pygame.display.set_caption("pacman")  
     
     #creamos los sprites
