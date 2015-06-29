@@ -230,6 +230,54 @@ class Laberinto():
 
 #--- Fin Laberinto -------------------------------------------
 
+# -- Inicio GAME OVER -----------------------------------------------------------------------------
+
+def game_over():
+    'El juego finaliza cuando se haya comido todas las galletas y cuando se encuentre en la salida'
+    existen_galletas= esta_enla_salida = False
+    if (contadorGalletas == contadorGalletasTotal):
+        existen_galletas = True
+        #parar el tiempo ########################################################################
+    
+    return not ( existen_galletas)
+# -- Fin GAME OVER -----------------------------------------------------------------------------
+
+# -- Inicio Marcador ---------------------------------------------------------
+
+class Tiempo (MiSprite):
+    def __init__(self):
+        MiSprite.__init__(self)
+        self.font = pygame.font.SysFont("None", 30)
+        self.rect = pygame.rect.Rect(0,0,0,0)
+
+    
+    def update(self):
+        self.tiempo = "Tiempo: %d " %(segundos) 
+        self.image = self.font.render(self.tiempo, 1, (255, 255, 255))
+        self.rect = self.image.get_rect()
+        
+        #situamos al marcador en la esquina superior derecha
+        self.rect.topleft = (760,20)
+
+        MiSprite.update (self)
+
+class Comida (MiSprite):
+    def __init__(self):
+        MiSprite.__init__(self)
+        self.font = pygame.font.SysFont("None", 30)
+        self.rect = pygame.rect.Rect(0,0,0,0)
+        
+    def update(self):
+        self.texto = "Galletas: %d " % (contadorGalletas)
+        self.image = self.font.render(self.texto, 1, (255, 255, 255))
+        self.rect = self.image.get_rect()
+        
+        #situamos al marcador en la esquina superior derecha
+        self.rect.topleft = (760,50)
+        
+        MiSprite.update (self)
+# -- Fin Marcador ------------------------------------------------------------
+
 #--- Inicio Pared ---------------------------------------------
 
 class Pared ( MiSprite ):
@@ -391,27 +439,18 @@ def juego():
                         contadorGalletasTotal +=1
             Pared_x=0
             Pared_y+=50
-      
+    
+    
+    
     sonido_fondo = cargar_sonido ("sonido_fondo.wav").play(-1) #este sonido se repetira indefinidamente al indicar -1 como parametro   
     eventos = pygame.event.get()
     
-    while Salir == False:
-        segundos = pygame.time.get_ticks()/1000
-        segundos = str(segundos)
-        largeText = pygame.font.Font('./Fonts/BEBAS.TTF',20)
-        TextSurf,TextRect = text_objects_3("Tiempo: ",largeText)
-        TextRect.center = (805, 20)
-        screen.blit(TextSurf,TextRect)
-        TextSurf,TextRect = text_objects_3(segundos,largeText)
-        TextRect.center = ((860), (20))
-        screen.blit(TextSurf,TextRect)
-        TextSurf,TextRect = text_objects_3("Galletas: ",largeText)
-        TextRect.center = (805, 50)
-        screen.blit(TextSurf,TextRect)
-        #----------------------------Antes de presentar al contador hay que transformarlo a String-----------------------------
-        #TextSurf,TextRect = text_objects_3(contadorGalletas,largeText)
-        #TextRect.center = ((850), (30))
-        #screen.blit(TextSurf,TextRect)
+    while game_over():
+        segundos = int(pygame.time.get_ticks()/1000) - 1
+        tiempo = Tiempo ()
+        sprites.add ( tiempo )
+        comida = Comida ()
+        sprites.add ( comida)
         
         ManejarEventos ()
         
@@ -421,9 +460,29 @@ def juego():
         pygame.display.update (sprites.draw (screen))        
         
         reloj.tick (40) #tiempo de espera entre frames
-    pygame.time.delay(2000) 
-    #--el juego ha finalizado
     
+    pygame.time.delay(2000) 
+    
+    #--el juego ha finalizado
+    sprites.empty()   
+    
+    screen.fill ([0,0,0])
+    largeText = pygame.font.SysFont("None", 60)
+    TextSurf,TextRect = text_objects_3("GAME OVER",largeText)
+    TextRect.center = (900/2,800/2)
+    screen.blit(TextSurf,TextRect)
+    
+    
+    texto = "Tiempo: %d - Galletas: %d " % (segundos, contadorGalletas)
+    image = self.font.render(self.texto, 1, (255, 255, 255))
+    rect = self.image.get_rect()
+    rect.topleft = (805,20)
+    
+    TextSurf,TextRect = text_objects_3("Galletas: ",smallText)
+    TextRect.center = (420, 500)
+    screen.blit(TextSurf,TextRect)
+    
+    pygame.display.update(sprites.draw(screen))
     while True:
         eventos = pygame.event.get()
         ManejarEventos()
