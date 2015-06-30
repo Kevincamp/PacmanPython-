@@ -431,7 +431,7 @@ def juego():
                         Pared_x+=50
                         
                     else:
-                        sprite = MiSprite ("bola.png", [Pared_x+10, Pared_y+10])
+                        sprite = MiSprite ("bola.png", [Pared_x+15, Pared_y+15])
                         sprite.comestible = True
                         sprite.puntos = 5
                         sprites.add ( sprite )
@@ -467,7 +467,7 @@ def juego():
     screen.fill ([0,0,0])
     largeText = pygame.font.SysFont("None", 60)
     TextSurf,TextRect = text_objects_3("GAME OVER",largeText)
-    TextRect.center = (900/2,800/2)
+    TextRect.center = (900/2,750/2)
     screen.blit(TextSurf,TextRect)
     
     largeText = pygame.font.SysFont("None", 40)
@@ -475,7 +475,7 @@ def juego():
     TextSurf,TextRect = text_objects_3(texto,largeText)
     TextRect.center = (450,460)
     screen.blit(TextSurf,TextRect)
-    
+    pygame.display.update()
     pygame.display.update(sprites.draw(screen))
     while True:
         eventos = pygame.event.get()
@@ -544,7 +544,7 @@ if __name__ == "__main__":
     Salir = False
     
     #Indicamos la dimension de la pantlla de juego
-    window = pygame.display.set_mode([900,800])
+    window = pygame.display.set_mode([900,750])
     pygame.display.set_caption("pacman")  
     
     #creamos los sprites
