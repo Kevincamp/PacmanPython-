@@ -232,10 +232,19 @@ class Laberinto():
 
 # -- Inicio GAME OVER -----------------------------------------------------------------------------
 
-def game_over():
+def esMeta(pacman):
+    print pacman.rect.left
+    print pacman.rect.top
+    print finish[0]
+    print finish[1]
+    if (pacman.rect.left >= finish[0] and pacman.rect.left <= finish[0]+15 and pacman.rect.top <= finish[1]+15 ):
+        return 1
+    return 0
+
+def game_over(pacman):
     'El juego finaliza cuando se haya comido todas las galletas y cuando se encuentre en la salida'
     existen_galletas= esta_enla_salida = False
-    if (contadorGalletas == contadorGalletasTotal):
+    if (contadorGalletas == contadorGalletasTotal and esMeta(pacman)==1):
         existen_galletas = True
         #parar el tiempo ########################################################################
     
@@ -252,6 +261,7 @@ class Tiempo (MiSprite):
 
     
     def update(self):
+
         self.tiempo = "Tiempo: %d " %(segundos) 
         self.image = self.font.render(self.tiempo, 1, (255, 255, 255))
         self.rect = self.image.get_rect()
@@ -343,14 +353,6 @@ class Pacman ( SpriteMovil ):
                 elif event.key == pygame.K_DOWN:
                     self.velocidad[1] = v
                     self.velocidad[0] = 0
-                #elif event.key == pygame.K_SPACE:
-                #    if self.disparos > 0:
-                #        if self.velocidad == [0,0]:
-                #            bala = Bala (self, [3, 0])
-                #        else:
-                #            bala = Bala (self, [self.velocidad[0] * 3, self.velocidad[1] * 3])
-                #        sprites.add ( bala )
-                #        self.disparos -= 1
                     
 
         SpriteMovil.update(self)
@@ -368,7 +370,6 @@ class Pacman ( SpriteMovil ):
         if pygame.time.get_ticks() - self.__tiempoCambioFotograma > 50:
             self.__fotogramaActual = (self.__fotogramaActual + 1) % self.NUMERO_FOTOGRAMAS 
             self.__tiempoCambioFotograma = pygame.time.get_ticks()
-
         self.image = self.__fotogramasActuales[self.__fotogramaActual]
         
          
@@ -394,12 +395,14 @@ class Pacman ( SpriteMovil ):
 # -- Inicio de Juego ---------------------------------------------------------------------------------
 
 def juego():
-    global segundos
+    global finish
     global contadorGalletas
     global contadorGalletasTotal
-    
+    global segundos
+
     contadorGalletas = 0
     contadorGalletasTotal = 0
+    finish = []
     
     Pared_x=0
     Salir = False
@@ -420,12 +423,15 @@ def juego():
             for j in range(15):  
                 if(laberinto[i][j] == 1):
                     sprite = Pared ( "wall.png", [Pared_x,Pared_y], [50,50] )
+                    
                     sprites.add (sprite)
                     Pared_x+=50
                 else:
                     if(i ==posicionSalida[0] and j==posicionSalida[1]):
                         sprite = MiSprite ("finish.png", [Pared_x, Pared_y])
                         pacman = Pacman("pacman.gif", [Pared_x,Pared_y])
+                        finish.append(Pared_x)
+                        finish.append(Pared_y)
                         sprites.add ( sprite )
                         sprites.add ( pacman )
                         Pared_x+=50
@@ -444,14 +450,12 @@ def juego():
     
     sonido_fondo = cargar_sonido ("sonido_fondo.wav").play(-1) #este sonido se repetira indefinidamente al indicar -1 como parametro   
     eventos = pygame.event.get()
-    
-    while game_over():
-        segundos = int(pygame.time.get_ticks()/1000) - 1
-        tiempo = Tiempo ()
-        sprites.add ( tiempo )
-        comida = Comida ()
-        sprites.add ( comida)
-        
+    tiempo = Tiempo ()
+    sprites.add ( tiempo )  
+    comida = Comida ()
+    sprites.add ( comida)  
+    while game_over(pacman):
+        segundos = int(pygame.time.get_ticks()/1000) - 1    
         ManejarEventos ()
         
         sprites.update ()
@@ -558,7 +562,7 @@ if __name__ == "__main__":
     
     #Inicializamos la pantalla con fondo negro
     screen = pygame.display.get_surface()
-    screen.fill ([0,0,0])
+    #screen.fill ([0,0,0])
        
     eventos = pygame.event.get()
     while Salir == False:
