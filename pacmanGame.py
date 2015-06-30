@@ -241,7 +241,6 @@ def game_over(pacman):
     existen_galletas= esta_enla_salida = False
     if (contadorGalletas == contadorGalletasTotal and esMeta(pacman)==1):
         existen_galletas = True
-        #parar el tiempo ########################################################################
     
     return not ( existen_galletas)
 # -- Fin GAME OVER -----------------------------------------------------------------------------
@@ -471,21 +470,11 @@ def juego():
     TextRect.center = (900/2,800/2)
     screen.blit(TextSurf,TextRect)
     
-    largeText = pygame.font.SysFont("None", 60)
+    largeText = pygame.font.SysFont("None", 40)
     texto = "Tiempo: %d - Galletas: %d " % (segundos, contadorGalletas)
     TextSurf,TextRect = text_objects_3(texto,largeText)
     TextRect.center = (450,460)
     screen.blit(TextSurf,TextRect)
-    
-    
-    #texto = "Tiempo: %d - Galletas: %d " % (segundos, contadorGalletas)
-    #image = font.render(texto, 1, (255, 255, 255))
-    #rect = image.get_rect()
-    #rect.topleft = (805,20)
-    
-    #TextSurf,TextRect = text_objects_3("Galletas: ",smallText)
-    #TextRect.center = (420, 500)
-    #screen.blit(TextSurf,TextRect)
     
     pygame.display.update(sprites.draw(screen))
     while True:
