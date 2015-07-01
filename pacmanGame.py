@@ -633,7 +633,7 @@ def juego():
     
     #--el juego ha finalizado
     sprites.empty()   
-    
+    sonido_fondo.stop()
     screen.fill ([0,0,0])
     largeText = pygame.font.SysFont("None", 60)
     TextSurf,TextRect = text_objects_3("GAME OVER",largeText)
@@ -652,6 +652,198 @@ def juego():
         ManejarEventos()
 
 # -- Fin de Juego ------------------------------------------------------------------------------------
+
+# -- Inicio de Seleccion de definidos -------------------------------------------------------------
+
+def menu_seleccion_definidos(intro):
+    while intro:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+        
+        screen.fill([0,0,0])
+        
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+        
+        #Imagenes de Laberintos fijas
+        juego1 = cargar_imagen("laberinto2.jpg")
+        screen.blit(juego1,(75,20))
+        juego2 = cargar_imagen("laberinto2.jpg")
+        screen.blit(juego2,(375,20))
+        juego3 = cargar_imagen("laberinto3.jpg")
+        screen.blit(juego3,(675,20))
+        juego4 = cargar_imagen("laberinto4.jpg")
+        screen.blit(juego4,(75,195))
+        juego5 = cargar_imagen("laberinto5.jpg")
+        screen.blit(juego5,(375,195))
+        juego6 = cargar_imagen("laberinto6.jpg")
+        screen.blit(juego6,(675,195))
+        juego7 = cargar_imagen("laberinto7.jpg")
+        screen.blit(juego7,(75,370))
+        juego8 = cargar_imagen("laberinto8.jpg")
+        screen.blit(juego8,(375,370))
+        juego9 = cargar_imagen("laberinto9.jpg")
+        screen.blit(juego9,(675,370))
+        juego10 = cargar_imagen("laberinto10.jpg")
+        screen.blit(juego10,(75,545))
+        
+        
+        #Efecto de sobreposicion del mouse sobre el laberinto
+        #Laberinto1
+        if 75 < mouse[0] < 75+150 and 20 < mouse[1] < 20+148:
+            #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
+            pygame.draw.rect(screen, [255,214,192],(75-5,20-5,160,158))
+            juego = cargar_imagen("laberinto2.jpg")
+            screen.blit(juego1,(75,20))
+            if click[0] == 1:
+                print "Laberinto #1"
+        
+        #Laberinto 2
+        if 375 < mouse[0] < 375+150 and 20 < mouse[1] < 20+148:
+            #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
+            pygame.draw.rect(screen, [255,214,192],(375-5,20-5,160,158))
+            juego = cargar_imagen("laberinto2.jpg")
+            screen.blit(juego,(375,20))
+            if click[0] == 1:
+                print "Laberinto #2"
+                
+        #Laberinto3
+        if 675 < mouse[0] < 675+150 and 20 < mouse[1] < 20+148:
+            #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
+            pygame.draw.rect(screen, [255,214,192],(675-5,20-5,160,158))
+            juego = cargar_imagen("laberinto3.jpg")
+            screen.blit(juego,(675,20))
+            if click[0] == 1:
+                print "Laberinto #3"
+                
+        #Laberinto4
+        if 75 < mouse[0] < 75+150 and 195 < mouse[1] < 195+148:
+            #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
+            pygame.draw.rect(screen, [255,214,192],(75-5,195-5,160,158))
+            juego = cargar_imagen("laberinto4.jpg")
+            screen.blit(juego,(75,195))
+            if click[0] == 1:
+                print "Laberinto #4"
+        
+        #Laberinto5        
+        if 375 < mouse[0] < 375+150 and 195 < mouse[1] < 195+148:
+            #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
+            pygame.draw.rect(screen, [255,214,192],(375-5,195-5,160,158))
+            juego = cargar_imagen("laberinto5.jpg")
+            screen.blit(juego,(375,195))
+            if click[0] == 1:
+                print "Laberinto #5"
+                
+        #Laberinto6
+        if 675 < mouse[0] < 675+150 and 195 < mouse[1] < 195+148:
+            #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
+            pygame.draw.rect(screen, [255,214,192],(675-5,195-5,160,158))
+            juego = cargar_imagen("laberinto6.jpg")
+            screen.blit(juego,(675,195))
+            if click[0] == 1:
+                print "Laberinto #6"
+                
+        #Laberinto7
+        if 75 < mouse[0] < 75+150 and 370 < mouse[1] < 370+148:
+            #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
+            pygame.draw.rect(screen, [255,214,192],(75-5,370-5,160,158))
+            juego = cargar_imagen("laberinto7.jpg")
+            screen.blit(juego,(75,370))
+            if click[0] == 1:
+                print "Laberinto #7"
+                
+        #Laberinto8
+        if 375 < mouse[0] < 375+150 and 370 < mouse[1] < 370+148:
+            #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
+            pygame.draw.rect(screen, [255,214,192],(375-5,370-5,160,158))
+            juego = cargar_imagen("laberinto8.jpg")
+            screen.blit(juego,(375,370))
+            if click[0] == 1:
+                print "Laberinto #8"
+                
+        #Laberinto9
+        if 675 < mouse[0] < 675+150 and 370 < mouse[1] < 370+148:
+            #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
+            pygame.draw.rect(screen, [255,214,192],(675-5,370-5,160,158))
+            juego = cargar_imagen("laberinto9.jpg")
+            screen.blit(juego,(675,370))
+            if click[0] == 1:
+                print "Laberinto #9" 
+                
+        #Laberinto10
+        if 75 < mouse[0] < 75+150 and 545 < mouse[1] < 545+148:
+            #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
+            pygame.draw.rect(screen, [255,214,192],(75-5,545-5,160,158))
+            juego = cargar_imagen("laberinto10.jpg")
+            screen.blit(juego,(75,545))
+            if click[0] == 1:
+                print "Laberinto #10"
+            
+        if (375) < mouse[0] < (375 +170) and (600) < mouse[1] < (600 + 60):
+            pygame.draw.rect(screen, [255,192,192],(375,600,170,60))
+            if click[0] == 1:
+                menu_intro()
+        else:
+            pygame.draw.rect(screen, [255,0,0] , (375,600,170,60))
+        
+        #letra - va luego
+        smallText = pygame.font.Font('./Fonts/BEBAS.TTF',40)
+        textSurf_jugar,textRect_jugar = text_objects_3("Regresar",smallText)
+        textRect_jugar.center = (460,625)
+        screen.blit(textSurf_jugar,textRect_jugar)    
+        
+        pygame.display.update()
+
+
+# -- fin de Seleccion de definidos --------------------------------------------------------------------
+
+# -- Inicio de Seleccion de Juego --------------------------------------------------------------------
+
+def menu_seleccion(intro):
+    while intro:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+        
+        screen.fill([0,0,0])
+        
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+        
+        #Boton de Aleatorio
+        if (screen.get_width()*0.35) < mouse[0] < (screen.get_width()*0.35 +250) and (screen.get_height()*0.30) < mouse[1] < (screen.get_height()*0.30 + 60):
+            pygame.draw.rect(screen, [255,214,192],(screen.get_width()*0.35,screen.get_height()*0.30,250,60))
+            if click[0] == 1:
+                juego()
+        else:
+            pygame.draw.rect(screen, [255,214,0] , (screen.get_width()*0.35,screen.get_height()*0.30,250,60))
+            
+        #Boton de definidos
+        if (screen.get_width()*0.35) < mouse[0] < (screen.get_width()*0.35 +250) and (screen.get_height()*0.70) < mouse[1] < (screen.get_height()*0.70 + 60):
+            pygame.draw.rect(screen, [244,125,192],(screen.get_width()*0.35,screen.get_height()*0.70,250,60))
+            if click[0] == 1:
+                menu_seleccion_definidos(intro)
+                print "seleccion definidos"
+        else:
+            pygame.draw.rect(screen, [244,125,65] , (screen.get_width()*0.35,screen.get_height()*0.70,250,60))
+        
+        #Palabras: Definidos y Aleatorio
+        mediumText = pygame.font.Font('./Fonts/BEBAS.TTF',40)
+        textSurf_jugar,textRect_jugar = text_objects_2("Aleatorio",mediumText)
+        textRect_jugar.center = (screen.get_width()*0.49,screen.get_height()*0.335)
+        screen.blit(textSurf_jugar,textRect_jugar)
+        
+        textSurf_jugar,textRect_jugar = text_objects_2("Definido",mediumText)
+        textRect_jugar.center = (screen.get_width()*0.49,screen.get_height()*0.735)
+        screen.blit(textSurf_jugar,textRect_jugar)
+        
+        pygame.display.update()
+
+
+# -- Fin de Seleccion de Juego --------------------------------------------------------------------
 
 # -- Inicio de Menu -----------------------------------------------------------------------------------
 
@@ -681,7 +873,7 @@ def menu_intro():
         if (screen.get_width()*0.40) < mouse[0] < (screen.get_width()*0.40 +170) and (screen.get_height()*0.60) < mouse[1] < (screen.get_height()*0.60 + 60):
             pygame.draw.rect(screen, [192,255,192],(screen.get_width()*0.40,screen.get_height()*0.60,170,60))
             if click[0] == 1:
-                juego()
+                menu_seleccion(intro)
         else:
             pygame.draw.rect(screen, [0,255,0] , (screen.get_width()*0.4,screen.get_height()*0.60,170,60))
             
