@@ -666,7 +666,6 @@ def juego(numeroLaberinto):
                 inicio = pygame.time.get_ticks()/1000
                 banderaTiempo = 1
             segundos = pygame.time.get_ticks()/1000 - inicio
-            print segundos
         ManejarEventos ()
         
         sprites.update ()
@@ -681,24 +680,57 @@ def juego(numeroLaberinto):
     #--el juego ha finalizado
     sprites.empty()   
     sonido_fondo.stop()
-    screen.fill ([0,0,0])
-    largeText = pygame.font.SysFont("None", 60)
-    TextSurf,TextRect = text_objects_3("GAME OVER",largeText)
-    TextRect.center = (900/2,750/2)
-    screen.blit(TextSurf,TextRect)
-    
-    largeText = pygame.font.SysFont("None", 40)
-    texto = "Tiempo: %d - Galletas: %d " % (segundos, contadorGalletas)
-    TextSurf,TextRect = text_objects_3(texto,largeText)
-    TextRect.center = (450,460)
-    screen.blit(TextSurf,TextRect)
-    pygame.display.update()
-    pygame.display.update(sprites.draw(screen))
+    pantallaGameOver()
+     
     while True:
         eventos = pygame.event.get()
         ManejarEventos()
 
 # -- Fin de Juego ------------------------------------------------------------------------------------
+
+# -- Inicio de Pantalla ** GAME OVER ** ---------------------------------------------------
+
+def pantallaGameOver():
+    global contadorGalletas
+    global segundos
+    seAcabo = True
+    while seAcabo:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+        screen.fill([0,0,0])
+        pygame.display.update(sprites.draw(screen))
+    
+        screen.fill ([0,0,0])
+        largeText = pygame.font.SysFont("None", 120)
+        TextSurf,TextRect = text_objects_3("GAME OVER",largeText)
+        TextRect.center = (440,250)
+        screen.blit(TextSurf,TextRect)
+    
+        largeText = pygame.font.SysFont("None", 80)
+        texto = "Tiempo: %d - Galletas: %d " % (segundos, contadorGalletas)
+        TextSurf,TextRect = text_objects_3(texto,largeText)
+        TextRect.center = (450,400)
+        screen.blit(TextSurf,TextRect)
+    
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+    
+        if (screen.get_width()*0.35) < mouse[0] < (screen.get_width()*0.35 +250) and (screen.get_height()*0.70) < mouse[1] < (screen.get_height()*0.70 + 60):
+            pygame.draw.rect(screen, [192,255,192],(screen.get_width()*0.35,screen.get_height()*0.70,250,60))
+            if click[0] == 1:
+                pygame.mouse.set_pos((screen.get_width()*0.5),(screen.get_height()*0.5))
+                menu_intro()
+        else:
+            pygame.draw.rect(screen, [0,255,0] , (screen.get_width()*0.35,screen.get_height()*0.70,250,60))
+        mediumText = pygame.font.Font('./Fonts/BEBAS.TTF',40)
+        textSurf_jugar,textRect_jugar = text_objects_2("Volver",mediumText)
+        textRect_jugar.center = (screen.get_width()*0.49,screen.get_height()*0.735)
+        screen.blit(textSurf_jugar,textRect_jugar)
+     
+        pygame.display.update()
+# -- Fin de Pantalla de ** GAME OVER ** ---------------------------------------------------
 
 # -- Inicio de Seleccion de definidos -------------------------------------------------------------
 
@@ -715,7 +747,7 @@ def menu_seleccion_definidos(intro):
         click = pygame.mouse.get_pressed()
         
         #Imagenes de Laberintos fijas
-        juego1 = cargar_imagen("laberinto2.jpg")
+        juego1 = cargar_imagen("laberinto1.jpg")
         screen.blit(juego1,(75,20))
         juego2 = cargar_imagen("laberinto2.jpg")
         screen.blit(juego2,(375,20))
