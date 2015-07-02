@@ -232,7 +232,7 @@ class Laberinto():
 # -- Inicio GAME OVER -----------------------------------------------------------------------------
 
 def esMeta(pacman):
-    if (pacman.rect.left >= finish[0] and pacman.rect.left <= finish[0]+15 and pacman.rect.top <= finish[1]+15 ):
+    if (pacman.rect.left >= finish[0] and pacman.rect.left <= finish[0]+25 and pacman.rect.top <= finish[1]+25 ):
         return 1
     return 0
 
@@ -311,7 +311,7 @@ class Pacman ( SpriteMovil ):
         self.vidas = 3
         self.puntos = 0
         self.disparos = 2
-        
+        self.mover = 0
         self.__imagenArriba = {}
         self.__imagenAbajo = {}
         self.__imagenDerecha = {}
@@ -336,63 +336,69 @@ class Pacman ( SpriteMovil ):
         for event in eventos:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
+                    self.mover = 1
                     self.velocidad[0] = -v
                     self.velocidad[1] = 0
                 elif event.key == pygame.K_RIGHT:
+                    self.mover = 1
                     self.velocidad[0] = v
                     self.velocidad[1] = 0
                 elif event.key == pygame.K_UP:
+                    self.mover = 1
                     self.velocidad[1] = -v
                     self.velocidad[0] = 0
                 elif event.key == pygame.K_DOWN:
+                    self.mover = 1
                     self.velocidad[1] = v
                     self.velocidad[0] = 0
                     
-
-        SpriteMovil.update(self)
-        
-        #se cambia la imagen de pacman segun la direccion
-        if self.velocidad[0] > 0:
-            self.__fotogramasActuales = self.__imagenDerecha
-        elif self.velocidad[0] < 0:
-            self.__fotogramasActuales = self.__imagenIzquierda
-        elif self.velocidad[1] > 0:
-            self.__fotogramasActuales = self.__imagenAbajo
-        elif self.velocidad[1] < 0:
-            self.__fotogramasActuales = self.__imagenArriba        
-       
-        if pygame.time.get_ticks() - self.__tiempoCambioFotograma > 50:
-            self.__fotogramaActual = (self.__fotogramaActual + 1) % self.NUMERO_FOTOGRAMAS 
-            self.__tiempoCambioFotograma = pygame.time.get_ticks()
-        self.image = self.__fotogramasActuales[self.__fotogramaActual]
-        
-         
-        #se obtiene todos los sprites con los que colisiona. El ultimo parametro indica que no queremos destruir automaticamente los sprites con los que colisiona 
-        MiSprite.update(self) 
-        
-        #global sprites
-        sprites_choque = pygame.sprite.spritecollide(self, sprites, False)
-        
-        for sprite in sprites_choque:
-            if sprite != self:
-                if hasattr ( sprite, "comestible" ): #comprobamos si el sprite tiene un atributo llamado "comestible"
-                    if sprite.comestible:
-                        contadorGalletas = contadorGalletas + 1
-                        sprite.kill() # destruimos el sprite
-                        #if hasattr ( sprite, "puntos" ):
-                         #   self.puntos += sprite.puntos
-                          #  informar ( self.rect.bottomright, "puntos %d" % (sprite.puntos) )
+        if self.mover == 1:
+            SpriteMovil.update(self)
+            
+            #se cambia la imagen de pacman segun la direccion
+            if self.velocidad[0] > 0:
+                self.__fotogramasActuales = self.__imagenDerecha
+            elif self.velocidad[0] < 0:
+                self.__fotogramasActuales = self.__imagenIzquierda
+            elif self.velocidad[1] > 0:
+                self.__fotogramasActuales = self.__imagenAbajo
+            elif self.velocidad[1] < 0:
+                self.__fotogramasActuales = self.__imagenArriba        
+           
+            if pygame.time.get_ticks() - self.__tiempoCambioFotograma > 50:
+                self.__fotogramaActual = (self.__fotogramaActual + 1) % self.NUMERO_FOTOGRAMAS 
+                self.__tiempoCambioFotograma = pygame.time.get_ticks()
+            self.image = self.__fotogramasActuales[self.__fotogramaActual]
+            
+             
+            #se obtiene todos los sprites con los que colisiona. El ultimo parametro indica que no queremos destruir automaticamente los sprites con los que colisiona 
+            MiSprite.update(self) 
+            
+            #global sprites
+            sprites_choque = pygame.sprite.spritecollide(self, sprites, False)
+            
+            for sprite in sprites_choque:
+                if sprite != self:
+                    if hasattr ( sprite, "comestible" ): #comprobamos si el sprite tiene un atributo llamado "comestible"
+                        if sprite.comestible:
+                            contadorGalletas = contadorGalletas + 1
+                            sprite.kill() # destruimos el sprite
+                            #if hasattr ( sprite, "puntos" ):
+                             #   self.puntos += sprite.puntos
+                              #  informar ( self.rect.bottomright, "puntos %d" % (sprite.puntos) )
         
 
 #--- Fin Pacman -----------------------------------------------     
 
 # -- Inicio de Juego ---------------------------------------------------------------------------------
 
-def juego():
+def juego(numeroLaberinto):
     global finish
     global contadorGalletas
+    global mover
     global contadorGalletasTotal
     global segundos
+    t = time.time()
     laberinto1 =    [[1,1,1,1,1,1,1,1,1,1,0,1,1,1,1],
                     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
                     [1,0,1,1,0,1,0,1,0,1,1,0,1,0,1],
@@ -571,9 +577,41 @@ def juego():
     Pared_x=0
     Salir = False
     Pared_y=0
-    maze = Laberinto(15,15)
-    laberinto = maze.getMaze()
-    posicionSalida = maze.posicionSalida
+    if numeroLaberinto == 0:
+        maze = Laberinto(15,15)
+        laberinto = maze.getMaze()
+        posicionSalida = maze.posicionSalida
+    if numeroLaberinto == 1:
+        laberinto = laberinto1
+        posicionSalida = posSalidaLab1
+    if numeroLaberinto == 2:
+        laberinto = laberinto2
+        posicionSalida = posSalidaLab2
+    if numeroLaberinto == 3:
+        laberinto = laberinto3
+        posicionSalida = posSalidaLab3
+    if numeroLaberinto == 4:
+        laberinto = laberinto4
+        posicionSalida = posSalidaLab4
+    if numeroLaberinto == 5:
+        laberinto = laberinto5
+        posicionSalida = posSalidaLab5
+    if numeroLaberinto == 6:
+        laberinto = laberinto6
+        posicionSalida = posSalidaLab6
+    if numeroLaberinto == 7:
+        laberinto = laberinto7
+        posicionSalida = posSalidaLab7
+    if numeroLaberinto == 8:
+        laberinto = laberinto8
+        posicionSalida = posSalidaLab8
+    if numeroLaberinto == 9:
+        laberinto = laberinto9
+        posicionSalida = posSalidaLab9
+    if numeroLaberinto == 10:
+        laberinto = laberinto10
+        posicionSalida = posSalidaLab10
+
     screen = pygame.display.get_surface()
     screen.fill((0,0,0))
     pygame.display.update()
@@ -582,7 +620,6 @@ def juego():
     background = screen.copy()
 
     #bucle de redibujado de los screens
-    reloj = pygame.time.Clock()
     for i in range(15):
             for j in range(15):  
                 if(laberinto[i][j] == 1):
@@ -614,20 +651,30 @@ def juego():
     
     sonido_fondo = cargar_sonido ("sonido_fondo.wav").play(-1) #este sonido se repetira indefinidamente al indicar -1 como parametro   
     eventos = pygame.event.get()
-    tiempo = Tiempo ()
-    sprites.add ( tiempo )  
-    comida = Comida ()
-    sprites.add ( comida)  
+    bandera = 0
+    banderaTiempo = 0
     while game_over(pacman):
-        segundos = int(pygame.time.get_ticks()/1000) - 1    
+        reloj = pygame.time.Clock()
+        if pacman.mover == 1 and bandera == 0:
+            tiempo = Tiempo ()
+            sprites.add ( tiempo )  
+            comida = Comida ()
+            sprites.add ( comida)
+            bandera = 1
+        if bandera == 1:
+            if banderaTiempo == 0:
+                inicio = pygame.time.get_ticks()/1000
+                banderaTiempo = 1
+            segundos = pygame.time.get_ticks()/1000 - inicio
+            print segundos
         ManejarEventos ()
         
         sprites.update ()
         sprites.clear (screen, background) 
         
         pygame.display.update (sprites.draw (screen))        
-        
-        reloj.tick (40) #tiempo de espera entre frames
+        if bandera == 1:
+            reloj.tick (40) #tiempo de espera entre frames
     
     pygame.time.delay(2000) 
     
@@ -698,7 +745,7 @@ def menu_seleccion_definidos(intro):
             juego = cargar_imagen("laberinto2.jpg")
             screen.blit(juego1,(75,20))
             if click[0] == 1:
-                print "Laberinto #1"
+                return 1
         
         #Laberinto 2
         if 375 < mouse[0] < 375+150 and 20 < mouse[1] < 20+148:
@@ -707,7 +754,7 @@ def menu_seleccion_definidos(intro):
             juego = cargar_imagen("laberinto2.jpg")
             screen.blit(juego,(375,20))
             if click[0] == 1:
-                print "Laberinto #2"
+                return 2
                 
         #Laberinto3
         if 675 < mouse[0] < 675+150 and 20 < mouse[1] < 20+148:
@@ -716,7 +763,7 @@ def menu_seleccion_definidos(intro):
             juego = cargar_imagen("laberinto3.jpg")
             screen.blit(juego,(675,20))
             if click[0] == 1:
-                print "Laberinto #3"
+                return 3
                 
         #Laberinto4
         if 75 < mouse[0] < 75+150 and 195 < mouse[1] < 195+148:
@@ -725,7 +772,7 @@ def menu_seleccion_definidos(intro):
             juego = cargar_imagen("laberinto4.jpg")
             screen.blit(juego,(75,195))
             if click[0] == 1:
-                print "Laberinto #4"
+                return 4
         
         #Laberinto5        
         if 375 < mouse[0] < 375+150 and 195 < mouse[1] < 195+148:
@@ -734,7 +781,7 @@ def menu_seleccion_definidos(intro):
             juego = cargar_imagen("laberinto5.jpg")
             screen.blit(juego,(375,195))
             if click[0] == 1:
-                print "Laberinto #5"
+                return 5
                 
         #Laberinto6
         if 675 < mouse[0] < 675+150 and 195 < mouse[1] < 195+148:
@@ -743,7 +790,7 @@ def menu_seleccion_definidos(intro):
             juego = cargar_imagen("laberinto6.jpg")
             screen.blit(juego,(675,195))
             if click[0] == 1:
-                print "Laberinto #6"
+                return 6
                 
         #Laberinto7
         if 75 < mouse[0] < 75+150 and 370 < mouse[1] < 370+148:
@@ -752,7 +799,7 @@ def menu_seleccion_definidos(intro):
             juego = cargar_imagen("laberinto7.jpg")
             screen.blit(juego,(75,370))
             if click[0] == 1:
-                print "Laberinto #7"
+                return 7
                 
         #Laberinto8
         if 375 < mouse[0] < 375+150 and 370 < mouse[1] < 370+148:
@@ -761,7 +808,7 @@ def menu_seleccion_definidos(intro):
             juego = cargar_imagen("laberinto8.jpg")
             screen.blit(juego,(375,370))
             if click[0] == 1:
-                print "Laberinto #8"
+                return 8
                 
         #Laberinto9
         if 675 < mouse[0] < 675+150 and 370 < mouse[1] < 370+148:
@@ -770,7 +817,7 @@ def menu_seleccion_definidos(intro):
             juego = cargar_imagen("laberinto9.jpg")
             screen.blit(juego,(675,370))
             if click[0] == 1:
-                print "Laberinto #9" 
+                return 9
                 
         #Laberinto10
         if 75 < mouse[0] < 75+150 and 545 < mouse[1] < 545+148:
@@ -779,7 +826,7 @@ def menu_seleccion_definidos(intro):
             juego = cargar_imagen("laberinto10.jpg")
             screen.blit(juego,(75,545))
             if click[0] == 1:
-                print "Laberinto #10"
+                return 10
             
         if (375) < mouse[0] < (375 +170) and (600) < mouse[1] < (600 + 60):
             pygame.draw.rect(screen, [255,192,192],(375,600,170,60))
@@ -817,7 +864,7 @@ def menu_seleccion(intro):
         if (screen.get_width()*0.35) < mouse[0] < (screen.get_width()*0.35 +250) and (screen.get_height()*0.30) < mouse[1] < (screen.get_height()*0.30 + 60):
             pygame.draw.rect(screen, [255,214,192],(screen.get_width()*0.35,screen.get_height()*0.30,250,60))
             if click[0] == 1:
-                juego()
+                juego(0)
         else:
             pygame.draw.rect(screen, [255,214,0] , (screen.get_width()*0.35,screen.get_height()*0.30,250,60))
             
@@ -825,8 +872,8 @@ def menu_seleccion(intro):
         if (screen.get_width()*0.35) < mouse[0] < (screen.get_width()*0.35 +250) and (screen.get_height()*0.70) < mouse[1] < (screen.get_height()*0.70 + 60):
             pygame.draw.rect(screen, [244,125,192],(screen.get_width()*0.35,screen.get_height()*0.70,250,60))
             if click[0] == 1:
-                menu_seleccion_definidos(intro)
-                print "seleccion definidos"
+                valor = menu_seleccion_definidos(intro)
+                juego(valor)
         else:
             pygame.draw.rect(screen, [244,125,65] , (screen.get_width()*0.35,screen.get_height()*0.70,250,60))
         
