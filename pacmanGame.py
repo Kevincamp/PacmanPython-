@@ -250,7 +250,7 @@ def game_over(pacman):
 class Tiempo (MiSprite):
     def __init__(self):
         MiSprite.__init__(self)
-        self.font = pygame.font.SysFont("None", 30)
+        self.font = pygame.font.SysFont("Arial", 30)
         self.rect = pygame.rect.Rect(0,0,0,0)
 
     
@@ -268,7 +268,7 @@ class Tiempo (MiSprite):
 class Comida (MiSprite):
     def __init__(self):
         MiSprite.__init__(self)
-        self.font = pygame.font.SysFont("None", 30)
+        self.font = pygame.font.SysFont("Arial", 30)
         self.rect = pygame.rect.Rect(0,0,0,0)
         
     def update(self):
@@ -703,12 +703,12 @@ def pantallaGameOver():
         pygame.display.update(sprites.draw(screen))
     
         screen.fill ([0,0,0])
-        largeText = pygame.font.SysFont("None", 120)
+        largeText = pygame.font.SysFont("Arial", 120)
         TextSurf,TextRect = text_objects_3("GAME OVER",largeText)
         TextRect.center = (440,250)
         screen.blit(TextSurf,TextRect)
     
-        largeText = pygame.font.SysFont("None", 80)
+        largeText = pygame.font.SysFont("Arial", 80)
         texto = "Tiempo: %d - Galletas: %d " % (segundos, contadorGalletas)
         TextSurf,TextRect = text_objects_3(texto,largeText)
         TextRect.center = (450,400)
@@ -724,7 +724,7 @@ def pantallaGameOver():
                 menu_intro()
         else:
             pygame.draw.rect(screen, [0,255,0] , (screen.get_width()*0.35,screen.get_height()*0.70,250,60))
-        mediumText = pygame.font.Font('./Fonts/BEBAS.TTF',40)
+        mediumText = pygame.font.SysFont("Arial",40)
         textSurf_jugar,textRect_jugar = text_objects_2("Volver",mediumText)
         textRect_jugar.center = (screen.get_width()*0.49,screen.get_height()*0.735)
         screen.blit(textSurf_jugar,textRect_jugar)
@@ -868,7 +868,7 @@ def menu_seleccion_definidos(intro):
             pygame.draw.rect(screen, [255,0,0] , (375,600,170,60))
         
         #letra - va luego
-        smallText = pygame.font.Font('./Fonts/BEBAS.TTF',40)
+        smallText = pygame.font.SysFont("Arial",40)
         textSurf_jugar,textRect_jugar = text_objects_3("Regresar",smallText)
         textRect_jugar.center = (460,625)
         screen.blit(textSurf_jugar,textRect_jugar)    
@@ -910,7 +910,7 @@ def menu_seleccion(intro):
             pygame.draw.rect(screen, [244,125,65] , (screen.get_width()*0.35,screen.get_height()*0.70,250,60))
         
         #Palabras: Definidos y Aleatorio
-        mediumText = pygame.font.Font('./Fonts/BEBAS.TTF',40)
+        mediumText = pygame.font.SysFont("Arial",40)
         textSurf_jugar,textRect_jugar = text_objects_2("Aleatorio",mediumText)
         textRect_jugar.center = (screen.get_width()*0.49,screen.get_height()*0.335)
         screen.blit(textSurf_jugar,textRect_jugar)
@@ -938,7 +938,7 @@ def menu_intro():
         pacman_intro = cargar_imagen("intro_pacman.png")
         screen.blit(pacman_intro,(900/3,20))
         
-        largeText = pygame.font.Font('./Fonts/PAC-FONT.TTF',30)
+        largeText = pygame.font.SysFont("Arial",30)
         TextSurf,TextRect = text_objects("PacMan",largeText)
         TextRect.center = (900/2, 320)
         screen.blit(TextSurf,TextRect)
@@ -965,7 +965,7 @@ def menu_intro():
         else:
             pygame.draw.rect(screen, [255,0,0] , (screen.get_width()*0.40,screen.get_height()*0.70,170,60))
         
-        smallText = pygame.font.Font('./Fonts/BEBAS.TTF',40)
+        smallText = pygame.font.SysFont("Arial",40)
         textSurf_jugar,textRect_jugar = text_objects_2("Jugar",smallText)
         textRect_jugar.center = (screen.get_width()*0.49,screen.get_height()*0.64)
         screen.blit(textSurf_jugar,textRect_jugar)

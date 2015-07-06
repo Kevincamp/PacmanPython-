@@ -68,7 +68,7 @@ class BuildExe:
         self.icon_file = None
  
         #Extra files/dirs copied to game
-        self.extra_datas = ["imagenes","sonidos","Fonts"]
+        self.extra_datas = ["imagenes","sonidos"]
  
         #Extra/excludes python modules
         self.extra_modules = []
@@ -137,6 +137,7 @@ class BuildExe:
                 extra_datas.append(('.', [data]))
         
         setup(
+            
             cmdclass = {'py2exe': pygame2exe},
             version = self.project_version,
             description = self.project_description,
