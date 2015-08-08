@@ -1,8 +1,13 @@
 import pygame
+import abc
+from collections import deque
 import sys, copy, random, os, time
 global segundos,contadorGalletas, contadorGalletasTotal
 contadorGalletas = 0
 contadorGalletasTotal = 0
+MAX = 15
+
+
 # -- Funciones Generales ------------------------------------------------------------------
 
 imagenes = {}
@@ -46,6 +51,24 @@ def ManejarEventos():
             print event.pos
 
 # -- Fin de funciones Generales -------------------------------------------------------------
+
+#--- Inicio de Clase de Estado --------------------------------------------
+class Estado(object):
+    def __init__(self,posx,posy,dist):
+        self.posx = posx 
+        self.posy = posy
+        self.dist = dist 
+     
+#--- Fin de Clase de Estado --------------------------------------------
+    
+#--- Inicio de Funcion BFS --------------------------------------------
+def BFS(x,y,h,w):
+    print "x es posicion inicial x"
+    print "y es posicion inicial y"
+    print "h es alto del laberito"
+    print "w es ancho del laberito"
+    
+#--- Fin de Funcion BFS --------------------------------------------    
     
 #--- Inicio MiSprite -----------------------------------------------            
 
@@ -399,6 +422,18 @@ def juego(numeroLaberinto):
     global contadorGalletasTotal
     global segundos
     t = time.time()
+    
+    visitado = []
+    for i in range(15):
+        visitado.append([])
+        for j in range(15):
+            visitado[i].append(False)
+    
+    #inicial = Estado(0,0,0)
+    #queue = deque([inicial])
+    #print queue
+    
+    
     laberinto1 =    [[1,1,1,1,1,1,1,1,1,1,0,1,1,1,1],
                     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
                     [1,0,1,1,0,1,0,1,0,1,1,0,1,0,1],
@@ -631,6 +666,19 @@ def juego(numeroLaberinto):
                     if(i ==posicionSalida[0] and j==posicionSalida[1]):
                         sprite = MiSprite ("finish.png", [Pared_x, Pared_y])
                         pacman = Pacman("pacman.gif", [Pared_x,Pared_y])
+                        #Mando estado inicial de pacman.
+                        inicial = Estado(Pared_x,Pared_y,0)
+                        queue = deque([])
+                        queue.append(inicial)
+                        #for elem in queue:
+                         #   print elem.upper()
+                        #if(queue.maxlen == 0):
+                        #    print "cola vacia"
+                        #else:
+                        #    print "cola con objetos"
+                        #while (queue.maxlen > 0):
+                         #   actual = queue.pop()
+                          #  if actual == 
                         finish.append(Pared_x)
                         finish.append(Pared_y)
                         sprites.add ( sprite )
@@ -878,6 +926,54 @@ def menu_seleccion_definidos(intro):
 
 # -- fin de Seleccion de definidos --------------------------------------------------------------------
 
+# -- Inicio de Seleccion de Algoritmo --------------------------------------------------------------------
+
+def menu_seleccion_algoritmo(intro):
+    while intro:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+        
+        screen.fill([0,0,0])
+        
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+        
+        #Boton de DFS
+        if (screen.get_width()*0.15) < mouse[0] < (screen.get_width()*0.15 +250) and (screen.get_height()*0.45) < mouse[1] < (screen.get_height()*0.45 + 60):
+            pygame.draw.rect(screen, [215,194,7],(screen.get_width()*0.15,screen.get_height()*0.45,250,60))
+            if click[0] == 1:
+                valor = menu_seleccion_definidos(intro)
+                juego(valor)
+        else:
+            pygame.draw.rect(screen, [160,143,10] , (screen.get_width()*0.15,screen.get_height()*0.45,250,60))
+            
+        #Boton de BFS
+        if (screen.get_width()*0.55) < mouse[0] < (screen.get_width()*0.55 +250) and (screen.get_height()*0.45) < mouse[1] < (screen.get_height()*0.45 + 60):
+            pygame.draw.rect(screen, [31,233,200],(screen.get_width()*0.55,screen.get_height()*0.45,250,60))
+            if click[0] == 1:
+                valor = menu_seleccion_definidos(intro)
+                juego(valor)
+                #juego(valor) - (screen.get_width()*0.15)+330
+        else:
+            pygame.draw.rect(screen, [27,205,175] , (screen.get_width()*0.55 ,screen.get_height()*0.45,250,60))
+        
+        #Palabras: BFS y DFS
+        mediumText = pygame.font.SysFont("Arial",50)
+        textSurf_jugar,textRect_jugar = text_objects_2("DFS",mediumText)
+        textRect_jugar.center = (screen.get_width()*0.28,screen.get_height()*0.48)
+        screen.blit(textSurf_jugar,textRect_jugar)
+        
+        textSurf_jugar,textRect_jugar = text_objects_2("BFS",mediumText)
+        textRect_jugar.center = (screen.get_width()*0.68,screen.get_height()*0.48)
+        screen.blit(textSurf_jugar,textRect_jugar)
+        
+        pygame.display.update()
+
+
+# -- Fin de Seleccion de Algoritmo --------------------------------------------------------------------
+
 # -- Inicio de Seleccion de Juego --------------------------------------------------------------------
 
 def menu_seleccion(intro):
@@ -904,8 +1000,9 @@ def menu_seleccion(intro):
         if (screen.get_width()*0.35) < mouse[0] < (screen.get_width()*0.35 +250) and (screen.get_height()*0.70) < mouse[1] < (screen.get_height()*0.70 + 60):
             pygame.draw.rect(screen, [244,125,192],(screen.get_width()*0.35,screen.get_height()*0.70,250,60))
             if click[0] == 1:
-                valor = menu_seleccion_definidos(intro)
-                juego(valor)
+                menu_seleccion_algoritmo(intro)
+                #valor = menu_seleccion_definidos(intro)
+                #juego(valor)
         else:
             pygame.draw.rect(screen, [244,125,65] , (screen.get_width()*0.35,screen.get_height()*0.70,250,60))
         
