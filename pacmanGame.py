@@ -653,13 +653,28 @@ def juego(numeroLaberinto):
     #creamos una copia de la pantalla para evitar su repintado completo cuando
     #se redibujen los sprites
     background = screen.copy()
-
+    aleatoriaExitosa=0
+    while aleatoriaExitosa==0:
+        randomx= random.randint(1,15)
+        randomy = random.randint(1,15)
+        if posicionSalida[0]==0:
+            if randomx > 6:
+                if laberinto[randomx][randomy] !=1:
+                    aleatoriaExitosa=1
+            else:
+                aleatoriaExitosa=0
+        elif posicionSalida[1]==0:
+            if randomy > 6:
+                if laberinto[randomx][randomy] !=1:
+                    aleatoriaExitosa=1
+            else:
+                aleatoriaExitosa=0
     #bucle de redibujado de los screens
     for i in range(15):
             for j in range(15):  
                 if(laberinto[i][j] == 1):
                     sprite = Pared ( "wall.png", [Pared_x,Pared_y], [50,50] )
-                    
+                           
                     sprites.add (sprite)
                     Pared_x+=50
                 else:
@@ -686,12 +701,13 @@ def juego(numeroLaberinto):
                         Pared_x+=50
                         
                     else:
-                        sprite = MiSprite ("bola.png", [Pared_x+15, Pared_y+15])
-                        sprite.comestible = True
-                        sprite.puntos = 5
-                        sprites.add ( sprite )
                         Pared_x+=50
-                        contadorGalletasTotal +=1
+                        if(i==randomx and j==randomy):
+                            sprite = MiSprite ("bola.png", [Pared_x+15, Pared_y+15])
+                            sprite.comestible = True
+                            sprite.puntos = 5
+                            sprites.add ( sprite )
+                            contadorGalletasTotal +=1
             Pared_x=0
             Pared_y+=50
     
