@@ -60,7 +60,25 @@ class Estado(object):
         self.dist = dist 
      
 #--- Fin de Clase de Estado --------------------------------------------
-    
+class Casilla():
+    def __init__(self, tipo):
+        self.visitado = 0
+        self.direccion = ''
+        self.tipo = tipo
+        self.x = 0
+        self.y = 0
+        self.Pared_x = 0
+        self.Pared_y = 0
+    def set_visitado(self):
+        self.visitado = 1
+    def set_direccion(self, direccion):
+        self.direccion = direccion
+    def set_x_y(self,x,y):
+        self.x = x
+        self.y = y
+    def set_pared(self,pared_x,pared_y):
+        self.Pared_x = pared_x
+        self.Pared_y = pared_y
 #--- Inicio de Funcion BFS --------------------------------------------
 def BFS(x,y,h,w):
     print "x es posicion inicial x"
@@ -436,18 +454,18 @@ def juego(numeroLaberinto):
     
     laberinto1 =    [[1,1,1,1,1,1,1,1,1,1,0,1,1,1,1],
                     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,1,0,1,0,1,0,1,1,0,1,0,1],
-                    [1,0,0,0,0,1,0,1,0,0,0,0,1,0,1],
-                    [1,0,1,1,0,0,0,0,0,1,0,1,0,0,1],
-                    [1,0,0,0,0,1,0,1,0,1,0,0,0,1,1],
-                    [1,0,1,1,0,1,0,0,0,0,0,1,0,0,1],
-                    [1,0,0,0,0,0,0,1,1,0,1,1,0,1,1],
-                    [1,0,1,0,1,0,1,0,0,0,0,0,0,0,1],
-                    [1,0,1,0,1,0,0,0,1,0,1,1,0,1,1],
+                    [1,0,1,1,1,1,1,1,1,1,1,0,1,0,1],
+                    [1,0,0,0,0,0,0,1,0,0,0,0,1,0,1],
+                    [1,0,1,1,0,1,0,1,0,1,1,1,1,0,1],
+                    [1,0,0,0,0,1,0,1,0,1,0,0,0,0,1],
+                    [1,0,1,1,1,1,0,0,0,0,0,1,0,1,1],
+                    [1,0,0,0,1,1,0,1,1,1,1,1,0,1,1],
+                    [1,0,1,0,1,0,0,0,0,0,0,0,0,1,1],
+                    [1,0,1,0,1,0,1,0,1,0,1,1,0,1,1],
                     [1,0,0,0,0,0,1,0,1,0,0,0,0,0,1],
-                    [1,0,1,1,0,1,0,0,0,0,1,0,1,0,1],
-                    [1,0,0,0,0,0,0,1,1,0,1,0,0,0,1],
-                    [1,0,1,0,1,0,1,0,0,0,0,0,1,0,1],
+                    [1,0,1,1,1,1,1,0,1,0,1,1,1,0,1],
+                    [1,0,0,0,1,0,0,0,1,0,1,0,0,0,1],
+                    [1,1,1,0,0,0,1,1,1,0,0,0,1,1,1],
                     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
     laberinto2 =    [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -653,32 +671,37 @@ def juego(numeroLaberinto):
     #creamos una copia de la pantalla para evitar su repintado completo cuando
     #se redibujen los sprites
     background = screen.copy()
-    aleatoriaExitosa=0
-    while aleatoriaExitosa==0:
-        randomx= random.randint(1,15)
-        randomy = random.randint(1,15)
-        if posicionSalida[0]==0:
-            if randomx > 6:
-                if laberinto[randomx][randomy] !=1:
-                    aleatoriaExitosa=1
-            else:
-                aleatoriaExitosa=0
-        elif posicionSalida[1]==0:
-            if randomy > 6:
-                if laberinto[randomx][randomy] !=1:
-                    aleatoriaExitosa=1
-            else:
-                aleatoriaExitosa=0
+    # aleatoriaExitosa=0
+    # while aleatoriaExitosa==0:
+    #     randomx= random.randint(1,15)
+    #     randomy = random.randint(1,15)
+    #     if posicionSalida[0]==0:
+    #         if randomx > 6:
+    #             if laberinto[randomx][randomy] !=1:
+    #                 aleatoriaExitosa=1
+    #         else:
+    #             aleatoriaExitosa=0
+    #     elif posicionSalida[1]==0:
+    #         if randomy > 6:
+    #             if laberinto[randomx][randomy] !=1:
+    #                 aleatoriaExitosa=1
+    #         else:
+    #             aleatoriaExitosa=0
     #bucle de redibujado de los screens
     for i in range(15):
             for j in range(15):  
                 if(laberinto[i][j] == 1):
+                    laberinto[i][j] = Casilla('muro')
+                    laberinto[i][j].set_x_y(i,j)
+                    laberinto[i][j].set_pared(Pared_x,Pared_y)
                     sprite = Pared ( "wall.png", [Pared_x,Pared_y], [50,50] )
-                           
                     sprites.add (sprite)
                     Pared_x+=50
                 else:
                     if(i ==posicionSalida[0] and j==posicionSalida[1]):
+                        laberinto[i][j] = Casilla('salida')
+                        laberinto[i][j].set_x_y(i,j)
+                        laberinto[i][j].set_pared(Pared_x,Pared_y)
                         sprite = MiSprite ("finish.png", [Pared_x, Pared_y])
                         pacman = Pacman("pacman.gif", [Pared_x,Pared_y])
                         #Mando estado inicial de pacman.
@@ -699,15 +722,20 @@ def juego(numeroLaberinto):
                         sprites.add ( sprite )
                         sprites.add ( pacman )
                         Pared_x+=50
-                        
                     else:
+                        laberinto[i][j] = Casilla('galleta')
+                        laberinto[i][j].set_x_y(i,j)
+                        laberinto[i][j].set_pared(Pared_x,Pared_y)
                         Pared_x+=50
-                        if(i==randomx and j==randomy):
+                        # if(i==randomx and j==randomy):
+                        if numeroLaberinto == 1 and i == 13 and j == 3:
+                            laberinto[13][3]= Casilla('meta')
                             sprite = MiSprite ("bola.png", [Pared_x+15, Pared_y+15])
                             sprite.comestible = True
                             sprite.puntos = 5
                             sprites.add ( sprite )
                             contadorGalletasTotal +=1
+
             Pared_x=0
             Pared_y+=50
     
@@ -717,7 +745,64 @@ def juego(numeroLaberinto):
     eventos = pygame.event.get()
     bandera = 0
     banderaTiempo = 0
+    #Algoritmo DFS inicializacion
+    x = posicionSalida[0]
+    y = posicionSalida[1]
+    dfs_stack = list()
+    dfs_stack.append(laberinto[x][y])
+    laberinto[x][y].set_visitado()
+    #Fin DFS inicializacion
     while game_over(pacman):
+        #Algoritmo DFS sentido Arriba - derecha - abajo - izquierda
+        print(laberinto[x][y].tipo)
+        for casilla in dfs_stack:
+            print(casilla.direccion),
+        print('\n'+str(x)+' '+str(y))
+        time.sleep(0.25)
+        if laberinto[x-1][y].visitado == 0 and (laberinto[x-1][y].tipo == 'galleta' or laberinto[x-1][y].tipo == 'meta'):
+            dfs_stack.append(laberinto[x-1][y])
+            laberinto[x-1][y].set_visitado()
+            laberinto[x-1][y].set_direccion('arriba')
+            sprite = Pared ( "trail.png", [laberinto[x-1][y].Pared_x,laberinto[x-1][y].Pared_y], [50,50] )
+            sprites.add (sprite)
+            if laberinto[x-1][y].tipo == 'meta':
+                break
+            x = x-1
+        elif laberinto[x][y+1].visitado == 0 and (laberinto[x][y+1].tipo == 'galleta' or laberinto[x][y+1].tipo == 'meta'):
+            dfs_stack.append(laberinto[x][y+1])
+            laberinto[x][y+1].set_visitado()
+            laberinto[x][y+1].set_direccion('derecha')
+            sprite = Pared ( "trail.png", [laberinto[x][y+1].Pared_x,laberinto[x][y+1].Pared_y], [50,50] )
+            sprites.add (sprite)
+            if laberinto[x][y+1].tipo == 'meta':
+                break
+            y = y+1
+        elif laberinto[x+1][y].visitado == 0 and (laberinto[x+1][y].tipo == 'galleta' or laberinto[x+1][y].tipo == 'meta'):
+            dfs_stack.append(laberinto[x+1][y])
+            laberinto[x+1][y].set_visitado()
+            laberinto[x+1][y].set_direccion('abajo')
+            sprite = Pared ( "trail.png", [laberinto[x+1][y].Pared_x,laberinto[x+1][y].Pared_y], [50,50] )
+            sprites.add (sprite)
+            if laberinto[x+1][y].tipo == 'meta':
+                break
+            x = x+1
+        elif laberinto[x][y-1].visitado == 0 and (laberinto[x][y-1].tipo == 'galleta' or laberinto[x][y-1].tipo == 'meta'):
+            dfs_stack.append(laberinto[x][y-1])
+            laberinto[x][y-1].set_visitado()
+            laberinto[x][y-1].set_direccion('izquierda')
+            sprite = Pared ( "trail.png", [laberinto[x][y-1].Pared_x,laberinto[x][y-1].Pared_y], [50,50] )
+            sprites.add (sprite)
+            if laberinto[x][y-1].tipo == 'meta':
+                break
+            y = y-1
+        else:
+            dfs_stack.pop()
+            x = dfs_stack[-1].x
+            y = dfs_stack[-1].y
+            sprite = Pared ( "backtrack.png", [dfs_stack[-1].Pared_x,dfs_stack[-1].Pared_y], [50,50] )
+            sprites.add (sprite)
+        #Fin Algoritmo DFS
+
         reloj = pygame.time.Clock()
         if pacman.mover == 1 and bandera == 0:
             tiempo = Tiempo ()
