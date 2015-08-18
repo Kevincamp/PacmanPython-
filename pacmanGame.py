@@ -345,6 +345,23 @@ class Pared ( MiSprite ):
 
 #--- Fin Pared ---------------------------------------------  
 
+#-- Inicio track -------------------------------------------
+
+class Track ( MiSprite ):
+    def __init__(self, fichero_imagen, pos_inicial, dimension):
+        MiSprite.__init__(self)
+
+        self.image = pygame.Surface(dimension) #creamos una superficie de las dimensiones indicadas
+        if not fichero_imagen is None:
+            self.image = cargar_imagen(fichero_imagen)
+            self.rect = self.image.get_rect()
+            self.rect.topleft = pos_inicial
+            self.infranqueable = False
+
+
+    def update(self):
+        MiSprite.update(self)
+
 #--- Inicio Pacman -----------------------------------------------            
 
 class Pacman ( SpriteMovil ):
@@ -524,39 +541,39 @@ def juego(numeroLaberinto):
                     [1,0,0,0,0,0,1,0,1,0,0,0,0,0,1],
                     [1,0,1,1,1,1,1,0,1,0,1,1,1,0,1],
                     [1,0,0,0,1,0,0,0,1,0,1,0,0,0,1],
-                    [1,1,1,0,0,0,1,1,1,0,0,0,1,1,1],
+                    [1,1,1,0,2,0,1,1,1,0,0,0,1,1,1],
                     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
     laberinto2 =    [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
                     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,1,0,1,0,1,1,0,1,0,1,0,1],
+                    [1,0,1,1,1,1,0,1,1,0,1,0,1,0,1],
                     [1,0,0,0,0,1,0,0,0,0,1,0,1,0,1],
-                    [1,0,1,1,0,0,0,1,1,0,0,0,0,0,1],
+                    [1,0,1,1,0,1,0,1,1,0,1,0,0,0,1],
                     [1,0,0,0,0,1,0,0,0,0,1,1,0,1,1],
-                    [0,0,1,0,1,1,0,1,1,0,0,0,0,0,1],
+                    [0,0,1,0,1,1,0,1,1,0,0,0,0,1,1],
                     [1,0,1,0,0,0,0,0,0,0,1,1,0,1,1],
-                    [1,0,0,0,1,0,1,1,0,1,0,0,0,0,1],
+                    [1,0,1,0,1,1,1,1,1,0,0,0,0,1,1],
                     [1,0,1,0,1,0,0,0,0,0,0,1,0,1,1],
-                    [1,0,0,0,0,0,1,0,1,1,0,1,0,0,1],
-                    [1,0,1,0,1,0,1,0,0,0,0,0,0,1,1],
-                    [1,0,1,0,1,0,0,0,1,0,1,0,1,0,1],
-                    [1,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
+                    [1,0,1,0,0,0,1,0,1,1,1,1,0,1,1],
+                    [1,0,0,0,1,0,1,0,0,0,0,0,0,1,1],
+                    [1,0,1,1,1,0,1,0,1,1,1,1,0,1,1],
+                    [1,0,0,0,0,0,1,0,0,0,0,0,0,2,1],
                     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
     laberinto3 =    [[1,1,1,1,1,1,1,1,1,1,1,1,0,1,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,0,1,1,0,1,1,0,1,0,1,0,1],
-                    [1,0,1,0,0,0,0,0,0,0,1,0,0,0,1],
+                    [1,2,1,0,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,0,1,0,1,1,1,1,1,0,1,0,1,1,1],
+                    [1,0,1,0,0,0,1,0,0,0,1,0,0,0,1],
                     [1,0,0,0,1,0,1,0,1,0,0,0,1,0,1],
-                    [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1],
+                    [1,0,1,0,1,0,1,0,1,0,1,1,1,0,1],
+                    [1,0,1,0,1,0,0,0,1,0,1,0,0,0,1],
+                    [1,0,1,0,1,1,0,1,1,0,1,0,1,0,1],
+                    [1,0,1,0,0,0,0,0,0,0,1,0,1,0,1],
+                    [1,0,0,0,1,1,1,1,1,0,0,0,1,0,1],
+                    [1,0,1,0,0,0,0,0,0,0,1,0,1,0,1],
+                    [1,0,1,0,1,1,0,1,1,1,1,0,1,0,1],
                     [1,0,1,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,0,0,1,1,0,1,1,0,1,0,1,0,1],
-                    [1,0,1,0,0,0,0,0,0,0,1,0,1,0,1],
-                    [1,0,0,0,1,1,0,1,1,0,0,0,0,0,1],
-                    [1,0,1,0,0,0,0,0,0,0,1,0,1,0,1],
-                    [1,0,0,0,1,1,0,1,0,1,1,0,1,0,1],
-                    [1,0,1,0,0,0,0,1,0,0,0,0,0,0,1],
-                    [1,0,0,0,1,0,1,0,0,1,0,1,0,1,1],
+                    [1,0,0,0,1,1,1,1,1,1,1,1,1,1,1],
                     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
     laberinto4 =    [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -740,6 +757,16 @@ def juego(numeroLaberinto):
                     sprite = Pared ( "wall.png", [Pared_x,Pared_y], [50,50] )
                     sprites.add (sprite)
                     Pared_x+=50
+                elif (laberinto[i][j] == 2):
+                    laberinto[i][j]= Casilla('meta')
+                    laberinto[i][j].set_x_y(i,j)
+                    laberinto[i][j].set_pared(Pared_x,Pared_y)
+                    sprite = MiSprite ("bola.png", [Pared_x+15, Pared_y+15])
+                    sprite.comestible = True
+                    sprite.puntos = 5
+                    sprites.add ( sprite )
+                    contadorGalletasTotal +=1
+                    Pared_x+=50
                 else:
                     if(i ==posicionSalida[0] and j==posicionSalida[1]):
                         laberinto[i][j] = Casilla('salida')
@@ -761,14 +788,6 @@ def juego(numeroLaberinto):
                         laberinto[i][j].set_x_y(i,j)
                         laberinto[i][j].set_pared(Pared_x,Pared_y)
                         Pared_x+=50
-                        if i == 13 and j == 3:
-                            laberinto[13][3]= Casilla('meta')
-                            sprite = MiSprite ("bola.png", [Pared_x+15, Pared_y+15])
-                            sprite.comestible = True
-                            sprite.puntos = 5
-                            sprites.add ( sprite )
-                            contadorGalletasTotal +=1
-
             Pared_x=0
             Pared_y+=50
     
@@ -809,7 +828,7 @@ def juego(numeroLaberinto):
             dfs_stack.append(laberinto[x-1][y])
             laberinto[x-1][y].set_visitado()
             laberinto[x-1][y].set_direccion('arriba')
-            sprite = Pared ( "trail.png", [laberinto[x-1][y].Pared_x,laberinto[x-1][y].Pared_y], [50,50] )
+            sprite = Track ( "up.jpg", [laberinto[x-1][y].Pared_x,laberinto[x-1][y].Pared_y], [50,50] )
             sprites.add (sprite)
             if laberinto[x-1][y].tipo == 'meta':
                 break
@@ -818,7 +837,7 @@ def juego(numeroLaberinto):
             dfs_stack.append(laberinto[x][y+1])
             laberinto[x][y+1].set_visitado()
             laberinto[x][y+1].set_direccion('derecha')
-            sprite = Pared ( "trail.png", [laberinto[x][y+1].Pared_x,laberinto[x][y+1].Pared_y], [50,50] )
+            sprite = Track ( "right.jpg", [laberinto[x][y+1].Pared_x,laberinto[x][y+1].Pared_y], [50,50] )
             sprites.add (sprite)
             if laberinto[x][y+1].tipo == 'meta':
                 break
@@ -827,7 +846,7 @@ def juego(numeroLaberinto):
             dfs_stack.append(laberinto[x+1][y])
             laberinto[x+1][y].set_visitado()
             laberinto[x+1][y].set_direccion('abajo')
-            sprite = Pared ( "trail.png", [laberinto[x+1][y].Pared_x,laberinto[x+1][y].Pared_y], [50,50] )
+            sprite = Track ( "down.jpg", [laberinto[x+1][y].Pared_x,laberinto[x+1][y].Pared_y], [50,50] )
             sprites.add (sprite)
             if laberinto[x+1][y].tipo == 'meta':
                 break
@@ -836,26 +855,38 @@ def juego(numeroLaberinto):
             dfs_stack.append(laberinto[x][y-1])
             laberinto[x][y-1].set_visitado()
             laberinto[x][y-1].set_direccion('izquierda')
-            sprite = Pared ( "trail.png", [laberinto[x][y-1].Pared_x,laberinto[x][y-1].Pared_y], [50,50] )
+            sprite = Track ( "left.jpg", [laberinto[x][y-1].Pared_x,laberinto[x][y-1].Pared_y], [50,50] )
             sprites.add (sprite)
             if laberinto[x][y-1].tipo == 'meta':
                 break
             y = y-1
         else:
             dfs_stack.pop()
-            x = dfs_stack[-1].x
-            y = dfs_stack[-1].y
-            sprite = Pared ( "backtrack.png", [dfs_stack[-1].Pared_x,dfs_stack[-1].Pared_y], [50,50] )
-            sprites.add (sprite)
+            last_casilla = dfs_stack[-1]
+            x = last_casilla.x
+            y = last_casilla.y
+            if last_casilla.direccion == 'arriba':
+                sprite = Track ( "bup.jpg", [last_casilla.Pared_x,last_casilla.Pared_y], [50,50] )
+                sprites.add (sprite)
+            elif last_casilla.direccion == 'derecha':
+                sprite = Track ( "bright.jpg", [last_casilla.Pared_x,last_casilla.Pared_y], [50,50] )
+                sprites.add (sprite)
+            elif last_casilla.direccion == 'abajo':
+                sprite = Track ( "bdown.jpg", [last_casilla.Pared_x,last_casilla.Pared_y], [50,50] )
+                sprites.add (sprite)
+            elif last_casilla.direccion == 'izquierda':
+                sprite = Track ( "bleft.jpg", [last_casilla.Pared_x,last_casilla.Pared_y], [50,50] )
+                sprites.add (sprite)
+
         #Fin Algoritmo DFS
 
         reloj = pygame.time.Clock()
         ManejarEventos ()
         
         sprites.update ()
-        sprites.clear (screen, background) 
+        sprites.clear (screen, background)
         
-        pygame.display.update (sprites.draw (screen))        
+        pygame.display.update (sprites.draw (screen))
         if bandera == 1:
             reloj.tick (40) #tiempo de espera entre frames
     
