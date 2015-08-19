@@ -63,6 +63,9 @@ class Estado(object):
         self.dist = dist 
      
 #--- Fin de Clase de Estado --------------------------------------------
+
+#--- Fin de Clase de Casilla --------------------------------------------
+
 class Casilla():
     def __init__(self, tipo):
         self.visitado = 0
@@ -82,6 +85,9 @@ class Casilla():
     def set_pared(self,pared_x,pared_y):
         self.Pared_x = pared_x
         self.Pared_y = pared_y
+
+#--- Fin de Clase de Casilla --------------------------------------------
+
 #--- Inicio de Funcion BFS --------------------------------------------
 def BFS(x,y,h,w):
     print "x es posicion inicial x"
@@ -343,16 +349,33 @@ class Pared ( MiSprite ):
     def update(self):
         MiSprite.update(self)
 
-#--- Fin Pared ---------------------------------------------  
+#--- Fin Pared ---------------------------------------------
 
-#-- Inicio track -------------------------------------------
+#--- Inicio de Clase de Block --------------------------------------------
+
+class Block ( MiSprite ):
+    def __init__(self, color, pos_inicial):
+        MiSprite.__init__(self)
+        self.image = pygame.Surface([50, 50])
+        self.image.fill(color)
+        self.rect = self.image.get_rect()
+        self.rect.topleft = pos_inicial
+        self.infranqueable = False
+
+
+    def update(self):
+        MiSprite.update(self)
+
+#--- Fin de Clase de Block --------------------------------------------
+
+#-- Inicio track img-------------------------------------------
 
 class Track ( MiSprite ):
     def __init__(self, fichero_imagen, pos_inicial, dimension):
         MiSprite.__init__(self)
 
         self.image = pygame.Surface(dimension) #creamos una superficie de las dimensiones indicadas
-        if not fichero_imagen is None:
+        if fichero_imagen is not None:
             self.image = cargar_imagen(fichero_imagen)
             self.rect = self.image.get_rect()
             self.rect.topleft = pos_inicial
@@ -533,14 +556,14 @@ def juego(numeroLaberinto):
                     [1,0,1,1,1,1,1,1,1,1,1,0,1,0,1],
                     [1,0,0,0,0,0,0,1,0,0,0,0,1,0,1],
                     [1,0,1,1,0,1,0,1,0,1,1,1,1,0,1],
-                    [1,0,0,0,0,1,0,1,0,1,0,0,0,0,1],
-                    [1,0,1,1,1,1,0,0,0,0,0,1,0,1,1],
-                    [1,0,0,0,1,1,0,1,1,1,1,1,0,1,1],
+                    [1,0,1,1,0,1,0,1,0,1,0,0,0,0,1],
+                    [1,0,1,1,0,1,0,0,0,0,0,1,0,1,1],
+                    [1,0,0,0,0,1,0,1,1,1,1,1,0,1,1],
                     [1,0,1,0,1,0,0,0,0,0,0,0,0,1,1],
                     [1,0,1,0,1,0,1,0,1,0,1,1,0,1,1],
                     [1,0,0,0,0,0,1,0,1,0,0,0,0,0,1],
-                    [1,0,1,1,1,1,1,0,1,0,1,1,1,0,1],
-                    [1,0,0,0,1,0,0,0,1,0,1,0,0,0,1],
+                    [1,0,1,1,1,0,1,0,1,0,1,1,1,0,1],
+                    [1,0,0,0,1,0,0,0,0,0,1,0,0,0,1],
                     [1,1,1,0,2,0,1,1,1,0,0,0,1,1,1],
                     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
@@ -550,11 +573,11 @@ def juego(numeroLaberinto):
                     [1,0,0,0,0,1,0,0,0,0,1,0,1,0,1],
                     [1,0,1,1,0,1,0,1,1,0,1,0,0,0,1],
                     [1,0,0,0,0,1,0,0,0,0,1,1,0,1,1],
-                    [0,0,1,0,1,1,0,1,1,0,0,0,0,1,1],
-                    [1,0,1,0,0,0,0,0,0,0,1,1,0,1,1],
+                    [0,0,1,0,1,1,0,1,1,0,1,0,0,1,1],
+                    [1,0,1,0,0,0,0,0,0,0,1,1,0,0,1],
                     [1,0,1,0,1,1,1,1,1,0,0,0,0,1,1],
-                    [1,0,1,0,1,0,0,0,0,0,0,1,0,1,1],
-                    [1,0,1,0,0,0,1,0,1,1,1,1,0,1,1],
+                    [1,0,1,0,1,0,0,0,0,0,1,0,1,1,1],
+                    [1,0,1,0,0,0,1,0,1,1,1,0,1,1,1],
                     [1,0,0,0,1,0,1,0,0,0,0,0,0,1,1],
                     [1,0,1,1,1,0,1,0,1,1,1,1,0,1,1],
                     [1,0,0,0,0,0,1,0,0,0,0,0,0,2,1],
@@ -571,122 +594,122 @@ def juego(numeroLaberinto):
                     [1,0,1,0,0,0,0,0,0,0,1,0,1,0,1],
                     [1,0,0,0,1,1,1,1,1,0,0,0,1,0,1],
                     [1,0,1,0,0,0,0,0,0,0,1,0,1,0,1],
-                    [1,0,1,0,1,1,0,1,1,1,1,0,1,0,1],
+                    [1,0,1,0,1,1,0,1,1,0,1,0,1,0,1],
                     [1,0,1,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,0,0,1,1,1,1,1,1,1,1,1,1,1],
+                    [1,0,0,0,1,1,1,0,1,1,1,0,1,1,1],
                     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
     laberinto4 =    [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                    [1,0,0,0,0,0,0,0,0,1,0,1,1,0,1],
+                    [1,0,1,1,0,1,1,1,0,1,0,1,1,0,1],
+                    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,0,1,1,0,1,0,1,1,1,0,1,1,0,1],
+                    [1,0,0,0,0,1,0,0,0,1,0,0,0,0,1],
+                    [1,1,0,1,1,1,1,1,0,1,0,1,1,1,1],
                     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,0,1,0,1,0,1,0,1,1,0,1,1],
-                    [0,0,1,0,1,0,1,0,1,0,0,0,0,0,1],
-                    [1,0,0,0,0,0,0,0,0,0,1,0,1,0,1],
-                    [1,0,1,1,0,1,1,0,1,0,1,0,1,0,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,1,0,1,1,0,1,1,0,1,0,1,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,1,0,0,1],
-                    [1,0,1,0,1,0,1,0,1,1,0,0,0,1,1],
-                    [1,0,1,0,1,0,1,0,0,0,0,1,0,0,1],
-                    [1,0,0,0,0,0,0,0,1,1,0,1,0,1,1],
-                    [1,0,1,0,1,0,1,0,0,0,0,0,0,0,1],
-                    [1,0,0,0,0,0,0,0,1,0,1,1,0,1,1],
+                    [1,1,0,1,0,1,1,1,0,1,0,1,1,0,1],
+                    [1,0,0,1,0,0,0,1,0,1,0,0,0,0,1],
+                    [1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
+                    [1,0,0,0,2,1,0,0,0,0,0,1,1,0,1],
+                    [1,0,1,1,1,1,1,1,0,1,0,1,1,0,1],
+                    [1,0,0,0,0,0,0,0,0,1,0,0,0,0,1],
                     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
     laberinto5 =    [[1,1,1,1,1,1,1,1,1,1,1,0,1,1,1],
                     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,0,1,1,0,1,1,0,1,0,1,0,1],
-                    [1,0,1,0,0,0,0,0,0,0,1,0,1,0,1],
-                    [1,0,0,0,1,1,0,1,0,1,0,0,0,0,1],
-                    [1,0,1,0,0,0,0,1,0,0,0,1,1,0,1],
-                    [1,0,1,0,1,0,1,0,0,1,0,0,0,0,1],
-                    [1,0,0,0,1,0,0,0,1,1,0,1,0,1,1],
-                    [1,0,1,0,0,0,1,0,0,0,0,1,0,0,1],
-                    [1,0,0,0,1,0,0,0,1,0,1,0,0,1,1],
-                    [1,0,1,0,0,0,1,0,1,0,0,0,1,0,1],
-                    [1,0,0,0,1,0,1,0,0,0,1,0,0,0,1],
-                    [1,0,1,0,1,0,0,0,1,0,1,0,1,0,1],
-                    [1,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
+                    [1,0,1,1,1,0,1,1,1,0,1,1,1,0,1],
+                    [1,0,1,0,0,0,0,0,1,0,1,0,1,0,1],
+                    [1,0,1,1,1,1,1,1,1,0,1,0,1,1,1],
+                    [1,0,1,0,0,0,0,0,0,0,0,0,1,0,1],
+                    [1,0,1,1,1,1,1,1,1,1,1,0,1,0,1],
+                    [1,0,0,0,0,0,0,0,0,0,1,0,0,0,1],
+                    [1,0,1,1,1,1,1,0,1,1,1,0,1,1,1],
+                    [1,0,1,0,1,0,1,0,1,0,0,0,1,2,1],
+                    [1,0,1,0,1,0,1,0,1,1,0,1,1,0,1],
+                    [1,0,1,0,1,0,0,0,0,1,0,0,1,0,1],
+                    [1,0,1,0,1,1,1,1,1,1,1,1,1,0,1],
+                    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
                     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
     laberinto6 =    [[1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],
                     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1],
-                    [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1],
+                    [1,1,0,1,1,1,0,1,1,1,1,0,1,1,1],
+                    [1,1,0,1,0,0,0,1,1,1,1,0,0,0,1],
+                    [1,1,0,1,0,1,0,1,1,1,1,0,1,0,1],
+                    [1,0,0,0,0,1,0,0,0,0,0,0,1,0,1],
+                    [1,1,0,1,1,1,1,1,0,1,0,1,1,1,1],
+                    [1,1,0,0,0,0,0,0,0,1,0,0,0,0,1],
+                    [1,1,0,1,1,1,0,1,1,1,1,1,0,1,1],
+                    [1,2,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                    [1,0,1,1,0,1,1,1,0,1,0,1,1,1,1],
+                    [1,0,1,1,0,1,0,0,0,1,0,0,0,0,1],
+                    [1,0,1,1,0,1,0,1,1,1,1,1,1,0,1],
                     [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,0,1,0,1,0,1,1,0,1,1,0,1],
-                    [1,0,1,0,1,0,1,0,0,0,0,0,0,0,1],
-                    [1,0,0,0,0,0,0,0,1,0,1,1,0,1,1],
-                    [1,0,1,1,0,1,1,0,1,0,0,0,0,0,1],
-                    [1,0,0,0,0,0,0,0,0,0,1,0,1,0,1],
-                    [1,0,1,0,1,1,0,1,1,0,1,0,0,0,1],
-                    [1,0,1,0,0,0,0,0,0,0,0,0,1,0,1],
-                    [1,0,0,0,1,1,0,1,0,1,1,0,1,0,1],
-                    [1,0,1,0,0,0,0,0,0,0,0,0,0,0,1],
                     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
-    laberinto7 =    [[1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,1,0,1,0,1,0,1,1,0,1,0,1],
-                    [1,0,0,0,0,1,0,1,0,0,0,0,0,0,1],
-                    [1,0,1,0,1,0,0,0,0,1,1,0,1,0,1],
-                    [1,0,1,0,0,0,1,1,0,0,0,0,1,0,1],
-                    [1,0,0,0,1,0,0,0,0,1,0,1,0,0,1],
-                    [1,0,1,0,0,0,1,0,1,1,0,0,0,1,1],
-                    [1,0,1,0,1,0,1,0,0,0,0,1,0,0,1],
-                    [1,0,0,0,1,0,0,0,1,1,0,1,0,1,1],
-                    [1,0,1,0,0,0,1,0,0,0,0,0,0,0,1],
-                    [1,0,1,0,1,0,1,0,1,0,1,1,0,1,1],
-                    [1,0,0,0,0,0,0,0,1,0,0,0,0,0,1],
-                    [1,0,1,1,0,1,1,0,0,0,1,1,0,1,1],
-                    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
-
-    laberinto8 =    [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,1,0,1,1,0,1,1,0,1,0,1,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,1,0,0,1],
-                    [1,0,1,1,0,1,0,1,0,1,0,0,0,1,1],
-                    [1,0,0,0,0,1,0,1,0,1,0,1,0,0,1],
-                    [1,0,1,0,1,0,0,0,0,0,0,0,0,1,1],
-                    [0,0,1,0,0,0,1,0,1,1,0,1,0,0,1],
-                    [1,0,0,0,1,0,1,0,0,0,0,1,0,1,1],
-                    [1,0,1,0,0,0,0,0,1,0,1,0,0,0,1],
-                    [1,0,0,0,1,0,1,0,1,0,0,0,1,0,1],
-                    [1,0,1,0,1,0,0,0,0,0,1,0,1,0,1],
-                    [1,0,0,0,0,0,1,1,0,1,1,0,0,0,1],
-                    [1,0,1,0,1,0,0,0,0,0,0,0,1,0,1],
-                    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
-
-    laberinto9 =    [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,1,0,1,1,0,1,0,1,0,1,0,1],
-                    [1,0,0,0,0,0,0,0,1,0,1,0,0,0,1],
-                    [1,0,1,1,0,1,0,1,0,0,0,0,1,0,1],
-                    [1,0,0,0,0,1,0,0,0,1,1,0,0,0,1],
-                    [1,0,1,0,1,0,0,1,0,0,0,0,1,0,1],
-                    [1,0,1,0,0,0,1,0,0,1,1,0,0,0,1],
-                    [1,0,0,0,1,0,0,0,1,0,0,0,1,0,1],
-                    [1,0,1,0,1,0,1,0,0,0,1,0,1,0,1],
-                    [1,0,0,0,0,0,1,0,1,0,0,0,0,0,1],
-                    [1,0,1,0,1,0,0,0,1,0,1,1,0,1,1],
-                    [1,0,1,0,0,0,1,0,0,0,0,0,0,0,1],
-                    [0,0,0,0,1,0,0,0,1,0,1,1,0,1,1],
-                    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
-
-    laberinto10 =   [[1,1,0,1,1,1,1,1,1,1,1,1,1,1,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,0,1,1,0,1,0,1,1,0,1,0,1],
-                    [1,0,1,0,0,0,0,1,0,0,0,0,1,0,1],
-                    [1,0,0,0,1,1,0,0,0,1,0,1,0,0,1],
-                    [1,0,1,0,0,0,0,1,0,1,0,0,0,1,1],
-                    [1,0,0,0,1,1,0,1,0,0,0,1,0,0,1],
-                    [1,0,1,0,0,0,0,0,0,1,0,1,0,1,1],
-                    [1,0,0,0,1,0,1,1,0,1,0,0,0,0,1],
-                    [1,0,1,0,1,0,0,0,0,0,0,1,0,1,1],
-                    [1,0,0,0,0,0,1,1,0,1,0,1,0,0,1],
-                    [1,0,1,0,1,0,0,0,0,0,0,0,0,1,1],
-                    [1,0,1,0,1,0,1,1,0,1,1,0,1,0,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
+    # laberinto7 =    [[1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],
+    #                 [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    #                 [1,0,1,1,0,1,0,1,0,1,1,0,1,0,1],
+    #                 [1,0,0,0,0,1,0,1,0,0,0,0,0,0,1],
+    #                 [1,0,1,0,1,0,0,0,0,1,1,0,1,0,1],
+    #                 [1,0,1,0,0,0,1,1,0,0,0,0,1,0,1],
+    #                 [1,0,0,0,1,0,0,0,0,1,0,1,0,0,1],
+    #                 [1,0,1,0,0,0,1,0,1,1,0,0,0,1,1],
+    #                 [1,0,1,0,1,0,1,0,0,0,0,1,0,0,1],
+    #                 [1,0,0,0,1,0,0,0,1,1,0,1,0,1,1],
+    #                 [1,0,1,0,0,0,1,0,0,0,0,0,0,0,1],
+    #                 [1,0,1,0,1,0,1,0,1,0,1,1,0,1,1],
+    #                 [1,0,0,0,0,0,0,0,1,0,0,0,0,0,1],
+    #                 [1,0,1,1,0,1,1,0,0,0,1,1,0,1,1],
+    #                 [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
+    #
+    # laberinto8 =    [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    #                 [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    #                 [1,0,1,1,0,1,1,0,1,1,0,1,0,1,1],
+    #                 [1,0,0,0,0,0,0,0,0,0,0,1,0,0,1],
+    #                 [1,0,1,1,0,1,0,1,0,1,0,0,0,1,1],
+    #                 [1,0,0,0,0,1,0,1,0,1,0,1,0,0,1],
+    #                 [1,0,1,0,1,0,0,0,0,0,0,0,0,1,1],
+    #                 [0,0,1,0,0,0,1,0,1,1,0,1,0,0,1],
+    #                 [1,0,0,0,1,0,1,0,0,0,0,1,0,1,1],
+    #                 [1,0,1,0,0,0,0,0,1,0,1,0,0,0,1],
+    #                 [1,0,0,0,1,0,1,0,1,0,0,0,1,0,1],
+    #                 [1,0,1,0,1,0,0,0,0,0,1,0,1,0,1],
+    #                 [1,0,0,0,0,0,1,1,0,1,1,0,0,0,1],
+    #                 [1,0,1,0,1,0,0,0,0,0,0,0,1,0,1],
+    #                 [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
+    #
+    # laberinto9 =    [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    #                 [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    #                 [1,0,1,1,0,1,1,0,1,0,1,0,1,0,1],
+    #                 [1,0,0,0,0,0,0,0,1,0,1,0,0,0,1],
+    #                 [1,0,1,1,0,1,0,1,0,0,0,0,1,0,1],
+    #                 [1,0,0,0,0,1,0,0,0,1,1,0,0,0,1],
+    #                 [1,0,1,0,1,0,0,1,0,0,0,0,1,0,1],
+    #                 [1,0,1,0,0,0,1,0,0,1,1,0,0,0,1],
+    #                 [1,0,0,0,1,0,0,0,1,0,0,0,1,0,1],
+    #                 [1,0,1,0,1,0,1,0,0,0,1,0,1,0,1],
+    #                 [1,0,0,0,0,0,1,0,1,0,0,0,0,0,1],
+    #                 [1,0,1,0,1,0,0,0,1,0,1,1,0,1,1],
+    #                 [1,0,1,0,0,0,1,0,0,0,0,0,0,0,1],
+    #                 [0,0,0,0,1,0,0,0,1,0,1,1,0,1,1],
+    #                 [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
+    #
+    # laberinto10 =   [[1,1,0,1,1,1,1,1,1,1,1,1,1,1,1],
+    #                 [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    #                 [1,0,1,0,1,1,0,1,0,1,1,0,1,0,1],
+    #                 [1,0,1,0,0,0,0,1,0,0,0,0,1,0,1],
+    #                 [1,0,0,0,1,1,0,0,0,1,0,1,0,0,1],
+    #                 [1,0,1,0,0,0,0,1,0,1,0,0,0,1,1],
+    #                 [1,0,0,0,1,1,0,1,0,0,0,1,0,0,1],
+    #                 [1,0,1,0,0,0,0,0,0,1,0,1,0,1,1],
+    #                 [1,0,0,0,1,0,1,1,0,1,0,0,0,0,1],
+    #                 [1,0,1,0,1,0,0,0,0,0,0,1,0,1,1],
+    #                 [1,0,0,0,0,0,1,1,0,1,0,1,0,0,1],
+    #                 [1,0,1,0,1,0,0,0,0,0,0,0,0,1,1],
+    #                 [1,0,1,0,1,0,1,1,0,1,1,0,1,0,1],
+    #                 [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+    #                 [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 
     posSalidaLab1 = [0,10]
     posSalidaLab2 = [6,0]
@@ -694,10 +717,10 @@ def juego(numeroLaberinto):
     posSalidaLab4 = [3,0]
     posSalidaLab5 = [0,11]
     posSalidaLab6 = [0,3]
-    posSalidaLab7 = [0,3]
-    posSalidaLab8 = [7,0]
-    posSalidaLab9 = [13,0]
-    posSalidaLab10 = [0,2]   
+    # posSalidaLab7 = [0,3]
+    # posSalidaLab8 = [7,0]
+    # posSalidaLab9 = [13,0]
+    # posSalidaLab10 = [0,2]
     contadorGalletas = 0
 
     contadorGalletasTotal = 0
@@ -728,18 +751,18 @@ def juego(numeroLaberinto):
     if numeroLaberinto == 6:
         laberinto = laberinto6
         posicionSalida = posSalidaLab6
-    if numeroLaberinto == 7:
-        laberinto = laberinto7
-        posicionSalida = posSalidaLab7
-    if numeroLaberinto == 8:
-        laberinto = laberinto8
-        posicionSalida = posSalidaLab8
-    if numeroLaberinto == 9:
-        laberinto = laberinto9
-        posicionSalida = posSalidaLab9
-    if numeroLaberinto == 10:
-        laberinto = laberinto10
-        posicionSalida = posSalidaLab10
+    # if numeroLaberinto == 7:
+    #     laberinto = laberinto7
+    #     posicionSalida = posSalidaLab7
+    # if numeroLaberinto == 8:
+    #     laberinto = laberinto8
+    #     posicionSalida = posSalidaLab8
+    # if numeroLaberinto == 9:
+    #     laberinto = laberinto9
+    #     posicionSalida = posSalidaLab9
+    # if numeroLaberinto == 10:
+    #     laberinto = laberinto10
+    #     posicionSalida = posSalidaLab10
 
     screen = pygame.display.get_surface()
     screen.fill((0,0,0))
@@ -781,7 +804,7 @@ def juego(numeroLaberinto):
                         finish.append(Pared_x)
                         finish.append(Pared_y)
                         sprites.add ( sprite )
-                        sprites.add ( pacman )
+                        #sprites.add ( pacman )
                         Pared_x+=50
                     else:
                         laberinto[i][j] = Casilla('galleta')
@@ -797,17 +820,18 @@ def juego(numeroLaberinto):
     eventos = pygame.event.get()
     bandera = 0
     banderaTiempo = 0
-    #Algoritmo DFS inicializacion
+
+    #Algoritmo DFS inicializacion----------------------------------------
     x = posicionSalida[0]
     y = posicionSalida[1]
     dfs_stack = list()
     dfs_stack.append(laberinto[x][y])
     laberinto[x][y].set_visitado()
-    #Fin DFS inicializacion
+    sprite_trail = pygame.sprite.RenderUpdates()
+    #Fin DFS inicializacion----------------------------------------
+
     while game_over(pacman):
-        #Algoritmo DFS sentido Arriba - derecha - abajo - izquierda
-        print(laberinto[x][y].tipo)
-        
+
         #Nuevo codigo para contador de segundos 
         #if pacman.mover == 1 and bandera == 0:
         if bandera == 0:
@@ -819,66 +843,78 @@ def juego(numeroLaberinto):
                 inicio = pygame.time.get_ticks()/1000
                 banderaTiempo = 1
             segundos = pygame.time.get_ticks()/1000 - inicio
-            
-        for casilla in dfs_stack:
-            print(casilla.direccion),
-        print('\n'+str(x)+' '+str(y))
-        time.sleep(0.25)
+
+        #Algoritmo DFS sentido Arriba - derecha - abajo - izquierda ---------------------------------------
+        #for casilla in dfs_stack:
+        #    print(casilla.direccion),
+        #print('\n'+str(x)+' '+str(y))
+        pygame.time.delay(250)
         if laberinto[x-1][y].visitado == 0 and (laberinto[x-1][y].tipo == 'galleta' or laberinto[x-1][y].tipo == 'meta'):
-            dfs_stack.append(laberinto[x-1][y])
-            laberinto[x-1][y].set_visitado()
-            laberinto[x-1][y].set_direccion('arriba')
-            sprite = Track ( "up.jpg", [laberinto[x-1][y].Pared_x,laberinto[x-1][y].Pared_y], [50,50] )
+            laberinto[x][y].set_direccion('arriba')
+            sprite = Track ( "up.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
+            sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
             sprites.add (sprite)
             if laberinto[x-1][y].tipo == 'meta':
                 break
+            else:
+                laberinto[x-1][y].set_visitado()
+                dfs_stack.append(laberinto[x-1][y])
             x = x-1
         elif laberinto[x][y+1].visitado == 0 and (laberinto[x][y+1].tipo == 'galleta' or laberinto[x][y+1].tipo == 'meta'):
-            dfs_stack.append(laberinto[x][y+1])
-            laberinto[x][y+1].set_visitado()
-            laberinto[x][y+1].set_direccion('derecha')
-            sprite = Track ( "right.jpg", [laberinto[x][y+1].Pared_x,laberinto[x][y+1].Pared_y], [50,50] )
+            laberinto[x][y].set_direccion('derecha')
+            sprite = Track ( "right.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
+            sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
             sprites.add (sprite)
             if laberinto[x][y+1].tipo == 'meta':
                 break
+            else:
+                laberinto[x][y+1].set_visitado()
+                dfs_stack.append(laberinto[x][y+1])
             y = y+1
         elif laberinto[x+1][y].visitado == 0 and (laberinto[x+1][y].tipo == 'galleta' or laberinto[x+1][y].tipo == 'meta'):
-            dfs_stack.append(laberinto[x+1][y])
-            laberinto[x+1][y].set_visitado()
-            laberinto[x+1][y].set_direccion('abajo')
-            sprite = Track ( "down.jpg", [laberinto[x+1][y].Pared_x,laberinto[x+1][y].Pared_y], [50,50] )
+            laberinto[x][y].set_direccion('abajo')
+            sprite = Track ( "down.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
+            sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
             sprites.add (sprite)
             if laberinto[x+1][y].tipo == 'meta':
                 break
+            else:
+                laberinto[x+1][y].set_visitado()
+                dfs_stack.append(laberinto[x+1][y])
             x = x+1
         elif laberinto[x][y-1].visitado == 0 and (laberinto[x][y-1].tipo == 'galleta' or laberinto[x][y-1].tipo == 'meta'):
-            dfs_stack.append(laberinto[x][y-1])
-            laberinto[x][y-1].set_visitado()
-            laberinto[x][y-1].set_direccion('izquierda')
-            sprite = Track ( "left.jpg", [laberinto[x][y-1].Pared_x,laberinto[x][y-1].Pared_y], [50,50] )
+            laberinto[x][y].set_direccion('izquierda')
+            sprite = Track ( "left.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
+            sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
             sprites.add (sprite)
             if laberinto[x][y-1].tipo == 'meta':
                 break
+            else:
+                laberinto[x][y-1].set_visitado()
+                dfs_stack.append(laberinto[x][y-1])
             y = y-1
         else:
-            dfs_stack.pop()
+            wrong_casilla = dfs_stack.pop()
+            if wrong_casilla.direccion == 'arriba':
+                sprite = Track ( "rup.jpg", [wrong_casilla.Pared_x,wrong_casilla.Pared_y], [50,50] )
+                sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
+                sprites.add (sprite)
+            elif wrong_casilla.direccion == 'derecha':
+                sprite = Track ( "rright.jpg", [wrong_casilla.Pared_x,wrong_casilla.Pared_y], [50,50] )
+                sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
+                sprites.add (sprite)
+            elif wrong_casilla.direccion == 'abajo':
+                sprite = Track ( "rdown.jpg", [wrong_casilla.Pared_x,wrong_casilla.Pared_y], [50,50] )
+                sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
+                sprites.add (sprite)
+            elif wrong_casilla.direccion == 'izquierda':
+                sprite = Track ( "rleft.jpg", [wrong_casilla.Pared_x,wrong_casilla.Pared_y], [50,50] )
+                sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
+                sprites.add (sprite)
             last_casilla = dfs_stack[-1]
             x = last_casilla.x
             y = last_casilla.y
-            if last_casilla.direccion == 'arriba':
-                sprite = Track ( "bup.jpg", [last_casilla.Pared_x,last_casilla.Pared_y], [50,50] )
-                sprites.add (sprite)
-            elif last_casilla.direccion == 'derecha':
-                sprite = Track ( "bright.jpg", [last_casilla.Pared_x,last_casilla.Pared_y], [50,50] )
-                sprites.add (sprite)
-            elif last_casilla.direccion == 'abajo':
-                sprite = Track ( "bdown.jpg", [last_casilla.Pared_x,last_casilla.Pared_y], [50,50] )
-                sprites.add (sprite)
-            elif last_casilla.direccion == 'izquierda':
-                sprite = Track ( "bleft.jpg", [last_casilla.Pared_x,last_casilla.Pared_y], [50,50] )
-                sprites.add (sprite)
-
-        #Fin Algoritmo DFS
+        #Fin Algoritmo DFS ---------------------------------------
 
         reloj = pygame.time.Clock()
         ManejarEventos ()
@@ -889,9 +925,28 @@ def juego(numeroLaberinto):
         pygame.display.update (sprites.draw (screen))
         if bandera == 1:
             reloj.tick (40) #tiempo de espera entre frames
-    
-    pygame.time.delay(2000) 
-    
+    #Algoritmo DFS animacion
+    flag_blink = 0
+    for i in range (0,10):
+        if not flag_blink:
+            list_sprites = list()
+            for casilla in dfs_stack:
+                sprite = Block([0,0,0],[casilla.Pared_x,casilla.Pared_y])
+                sprite_temp = pygame.sprite.spritecollideany(sprite,sprites)
+                list_sprites.append(sprite_temp)
+                sprites.remove(sprite_temp)
+                sprites.add (sprite)
+            flag_blink = 1
+        else:
+            for tmp_sprite in list_sprites:
+                sprites.remove(pygame.sprite.spritecollideany(tmp_sprite,sprites))
+                sprites.add (tmp_sprite)
+            flag_blink = 0
+        sprites.update ()
+        sprites.clear (screen, background)
+        pygame.display.update (sprites.draw (screen))
+        pygame.time.delay(500)
+    pygame.time.delay(10000)
     #--el juego ha finalizado
     sprites.empty()   
     sonido_fondo.stop()
@@ -1369,117 +1424,117 @@ def menu_seleccion_definidos(intro):
         
         #Imagenes de Laberintos fijas
         juego1 = cargar_imagen("laberinto1.jpg")
-        screen.blit(juego1,(75,20))
+        screen.blit(juego1,(40,20))
         juego2 = cargar_imagen("laberinto2.jpg")
-        screen.blit(juego2,(375,20))
+        screen.blit(juego2,(340,20))
         juego3 = cargar_imagen("laberinto3.jpg")
-        screen.blit(juego3,(675,20))
+        screen.blit(juego3,(640,20))
         juego4 = cargar_imagen("laberinto4.jpg")
-        screen.blit(juego4,(75,195))
+        screen.blit(juego4,(40,300))
         juego5 = cargar_imagen("laberinto5.jpg")
-        screen.blit(juego5,(375,195))
+        screen.blit(juego5,(340,300))
         juego6 = cargar_imagen("laberinto6.jpg")
-        screen.blit(juego6,(675,195))
-        juego7 = cargar_imagen("laberinto7.jpg")
-        screen.blit(juego7,(75,370))
-        juego8 = cargar_imagen("laberinto8.jpg")
-        screen.blit(juego8,(375,370))
-        juego9 = cargar_imagen("laberinto9.jpg")
-        screen.blit(juego9,(675,370))
-        juego10 = cargar_imagen("laberinto10.jpg")
-        screen.blit(juego10,(75,545))
+        screen.blit(juego6,(640,300))
+        # juego7 = cargar_imagen("laberinto7.jpg")
+        # screen.blit(juego7,(75,370))
+        # juego8 = cargar_imagen("laberinto8.jpg")
+        # screen.blit(juego8,(375,370))
+        # juego9 = cargar_imagen("laberinto9.jpg")
+        # screen.blit(juego9,(675,370))
+        # juego10 = cargar_imagen("laberinto10.jpg")
+        # screen.blit(juego10,(75,545))
         
         
         #Efecto de sobreposicion del mouse sobre el laberinto
         #Laberinto1
-        if 75 < mouse[0] < 75+150 and 20 < mouse[1] < 20+148:
+        if 40 < mouse[0] < 40+220 and 20 < mouse[1] < 20+220:
             #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
-            pygame.draw.rect(screen, [255,214,192],(75-5,20-5,160,158))
+            pygame.draw.rect(screen, [255,214,192],(40-5,20-5,230,230))
             juego = cargar_imagen("laberinto2.jpg")
-            screen.blit(juego1,(75,20))
+            screen.blit(juego1,(40,20))
             if click[0] == 1:
                 return 1
         
         #Laberinto 2
-        if 375 < mouse[0] < 375+150 and 20 < mouse[1] < 20+148:
+        if 340 < mouse[0] < 340+220 and 20 < mouse[1] < 20+220:
             #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
-            pygame.draw.rect(screen, [255,214,192],(375-5,20-5,160,158))
+            pygame.draw.rect(screen, [255,214,192],(340-5,20-5,230,230))
             juego = cargar_imagen("laberinto2.jpg")
-            screen.blit(juego,(375,20))
+            screen.blit(juego,(340,20))
             if click[0] == 1:
                 return 2
                 
         #Laberinto3
-        if 675 < mouse[0] < 675+150 and 20 < mouse[1] < 20+148:
+        if 640 < mouse[0] < 640+220 and 20 < mouse[1] < 20+220:
             #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
-            pygame.draw.rect(screen, [255,214,192],(675-5,20-5,160,158))
+            pygame.draw.rect(screen, [255,214,192],(640-5,20-5,230,230))
             juego = cargar_imagen("laberinto3.jpg")
-            screen.blit(juego,(675,20))
+            screen.blit(juego,(640,20))
             if click[0] == 1:
                 return 3
                 
         #Laberinto4
-        if 75 < mouse[0] < 75+150 and 195 < mouse[1] < 195+148:
+        if 40 < mouse[0] < 40+220 and 300 < mouse[1] < 300+220:
             #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
-            pygame.draw.rect(screen, [255,214,192],(75-5,195-5,160,158))
+            pygame.draw.rect(screen, [255,214,192],(40-5,300-5,230,230))
             juego = cargar_imagen("laberinto4.jpg")
-            screen.blit(juego,(75,195))
+            screen.blit(juego,(40,300))
             if click[0] == 1:
                 return 4
         
         #Laberinto5        
-        if 375 < mouse[0] < 375+150 and 195 < mouse[1] < 195+148:
+        if 340 < mouse[0] < 340+220 and 300 < mouse[1] < 300+220:
             #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
-            pygame.draw.rect(screen, [255,214,192],(375-5,195-5,160,158))
+            pygame.draw.rect(screen, [255,214,192],(340-5,300-5,230,230))
             juego = cargar_imagen("laberinto5.jpg")
-            screen.blit(juego,(375,195))
+            screen.blit(juego,(340,300))
             if click[0] == 1:
                 return 5
                 
         #Laberinto6
-        if 675 < mouse[0] < 675+150 and 195 < mouse[1] < 195+148:
+        if 640 < mouse[0] < 640+220 and 300 < mouse[1] < 300+220:
             #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
-            pygame.draw.rect(screen, [255,214,192],(675-5,195-5,160,158))
+            pygame.draw.rect(screen, [255,214,192],(640-5,300-5,230,230))
             juego = cargar_imagen("laberinto6.jpg")
-            screen.blit(juego,(675,195))
+            screen.blit(juego,(640,300))
             if click[0] == 1:
                 return 6
                 
-        #Laberinto7
-        if 75 < mouse[0] < 75+150 and 370 < mouse[1] < 370+148:
-            #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
-            pygame.draw.rect(screen, [255,214,192],(75-5,370-5,160,158))
-            juego = cargar_imagen("laberinto7.jpg")
-            screen.blit(juego,(75,370))
-            if click[0] == 1:
-                return 7
-                
-        #Laberinto8
-        if 375 < mouse[0] < 375+150 and 370 < mouse[1] < 370+148:
-            #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
-            pygame.draw.rect(screen, [255,214,192],(375-5,370-5,160,158))
-            juego = cargar_imagen("laberinto8.jpg")
-            screen.blit(juego,(375,370))
-            if click[0] == 1:
-                return 8
-                
-        #Laberinto9
-        if 675 < mouse[0] < 675+150 and 370 < mouse[1] < 370+148:
-            #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
-            pygame.draw.rect(screen, [255,214,192],(675-5,370-5,160,158))
-            juego = cargar_imagen("laberinto9.jpg")
-            screen.blit(juego,(675,370))
-            if click[0] == 1:
-                return 9
-                
-        #Laberinto10
-        if 75 < mouse[0] < 75+150 and 545 < mouse[1] < 545+148:
-            #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
-            pygame.draw.rect(screen, [255,214,192],(75-5,545-5,160,158))
-            juego = cargar_imagen("laberinto10.jpg")
-            screen.blit(juego,(75,545))
-            if click[0] == 1:
-                return 10
+        # #Laberinto7
+        # if 75 < mouse[0] < 75+150 and 370 < mouse[1] < 370+148:
+        #     #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
+        #     pygame.draw.rect(screen, [255,214,192],(75-5,370-5,160,158))
+        #     juego = cargar_imagen("laberinto7.jpg")
+        #     screen.blit(juego,(75,370))
+        #     if click[0] == 1:
+        #         return 7
+        #
+        # #Laberinto8
+        # if 375 < mouse[0] < 375+150 and 370 < mouse[1] < 370+148:
+        #     #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
+        #     pygame.draw.rect(screen, [255,214,192],(375-5,370-5,160,158))
+        #     juego = cargar_imagen("laberinto8.jpg")
+        #     screen.blit(juego,(375,370))
+        #     if click[0] == 1:
+        #         return 8
+        #
+        # #Laberinto9
+        # if 675 < mouse[0] < 675+150 and 370 < mouse[1] < 370+148:
+        #     #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
+        #     pygame.draw.rect(screen, [255,214,192],(675-5,370-5,160,158))
+        #     juego = cargar_imagen("laberinto9.jpg")
+        #     screen.blit(juego,(675,370))
+        #     if click[0] == 1:
+        #         return 9
+        #
+        # #Laberinto10
+        # if 75 < mouse[0] < 75+150 and 545 < mouse[1] < 545+148:
+        #     #Para crear el rectangulo (x-5,y-5,ancho+10,alto+10)
+        #     pygame.draw.rect(screen, [255,214,192],(75-5,545-5,160,158))
+        #     juego = cargar_imagen("laberinto10.jpg")
+        #     screen.blit(juego,(75,545))
+        #     if click[0] == 1:
+        #         return 10
             
         if (375) < mouse[0] < (375 +170) and (600) < mouse[1] < (600 + 60):
             pygame.draw.rect(screen, [255,192,192],(375,600,170,60))
@@ -1661,11 +1716,11 @@ if __name__ == "__main__":
     
     #creamos los sprites
     sprites = pygame.sprite.RenderUpdates()
-    
+
     #Inicializamos la pantalla con fondo negro
     screen = pygame.display.get_surface()
     #screen.fill ([0,0,0])
-       
+
     eventos = pygame.event.get()
     while Salir == False:
         menu_intro() 
