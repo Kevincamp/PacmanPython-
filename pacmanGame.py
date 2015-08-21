@@ -822,10 +822,13 @@ def juego(numeroLaberinto):
     #Fin DFS inicializacion----------------------------------------
     
     #Algoritmo BFS inicializacion----------------------------------------
-    bfs_stack = deque()
-    bfs_stack.append(laberinto[x][y])
-    laberinto[x][y].set_visitado()
-    sprite_trail = pygame.sprite.RenderUpdates()
+    i = 0
+    bfs_stack = deque([laberinto[x][y]])
+    #bfs_stack.append(laberinto[x][y])
+    #print (bfs_stack[i])
+    #i=i++
+    #laberinto[x][y].set_visitado()
+    #sprite_trail = pygame.sprite.RenderUpdates()
     #Fin BFS inicializacion----------------------------------------
 
     while game_over(pacman):
@@ -915,76 +918,46 @@ def juego(numeroLaberinto):
                 x = last_casilla.x
                 y = last_casilla.y
             #********************************************************Fin Algoritmo DFS ---------------------------------------
+        
         elif banderaModoJuego == 1 :
             #********************************************************Inicio Algoritmo BFS ---------------------------------------
-            if laberinto[x-1][y].visitado == 0 and (laberinto[x-1][y].tipo == 'galleta' or laberinto[x-1][y].tipo == 'meta'):
-                laberinto[x][y].set_direccion('arriba')
-                sprite = Track ( "up.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
-                sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
-                sprites.add (sprite)
-                if laberinto[x-1][y].tipo == 'meta':
+            if bfs_stack:
+                proxCasilla = bfs_stack.popleft()
+                x = proxCasilla.x
+                y = proxCasilla.y
+                if proxCasilla.tipo == 'meta':
                     break
                 else:
-                    laberinto[x-1][y].set_visitado()
-                    bfs_stack.append(laberinto[x-1][y])
-                x = x-1
-            elif laberinto[x][y+1].visitado == 0 and (laberinto[x][y+1].tipo == 'galleta' or laberinto[x][y+1].tipo == 'meta'):
-                laberinto[x][y].set_direccion('derecha')
-                sprite = Track ( "right.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
-                sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
-                sprites.add (sprite)
-                if laberinto[x][y+1].tipo == 'meta':
-                    break
-                else:
-                    laberinto[x][y+1].set_visitado()
-                    bfs_stack.append(laberinto[x][y+1])
-                y = y+1
-            elif laberinto[x+1][y].visitado == 0 and (laberinto[x+1][y].tipo == 'galleta' or laberinto[x+1][y].tipo == 'meta'):
-                laberinto[x][y].set_direccion('abajo')
-                sprite = Track ( "down.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
-                sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
-                sprites.add (sprite)
-                if laberinto[x+1][y].tipo == 'meta':
-                    break
-                else:
-                    laberinto[x+1][y].set_visitado()
-                    bfs_stack.append(laberinto[x+1][y])
-                x = x+1
-            elif laberinto[x][y-1].visitado == 0 and (laberinto[x][y-1].tipo == 'galleta' or laberinto[x][y-1].tipo == 'meta'):
-                laberinto[x][y].set_direccion('izquierda')
-                sprite = Track ( "left.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
-                sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
-                sprites.add (sprite)
-                if laberinto[x][y-1].tipo == 'meta':
-                    break
-                else:
-                    laberinto[x][y-1].set_visitado()
-                    bfs_stack.append(laberinto[x][y-1])
-                y = y-1
-            else:
-                wrong_casilla = bfs_stack.popleft()
-                if wrong_casilla.direccion == 'arriba':
-                    sprite = Track ( "rup.jpg", [wrong_casilla.Pared_x,wrong_casilla.Pared_y], [50,50] )
-                    sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
-                    sprites.add (sprite)
-                elif wrong_casilla.direccion == 'derecha':
-                    sprite = Track ( "rright.jpg", [wrong_casilla.Pared_x,wrong_casilla.Pared_y], [50,50] )
-                    sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
-                    sprites.add (sprite)
-                elif wrong_casilla.direccion == 'abajo':
-                    sprite = Track ( "rdown.jpg", [wrong_casilla.Pared_x,wrong_casilla.Pared_y], [50,50] )
-                    sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
-                    sprites.add (sprite)
-                elif wrong_casilla.direccion == 'izquierda':
-                    sprite = Track ( "rleft.jpg", [wrong_casilla.Pared_x,wrong_casilla.Pared_y], [50,50] )
-                    sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
-                    sprites.add (sprite)
-                last_casilla = bfs_stack
-                #----- ESTA PARTE NO SE COMO HACER -------
-                #x = last_casilla.x
-                #y = last_casilla.y
+                    if laberinto[x-1][y].visitado == 0 and (laberinto[x-1][y].tipo == 'galleta' or laberinto[x-1][y].tipo == 'meta'):
+                        laberinto[x][y].set_direccion('arriba')
+                        sprite = Track ( "up.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
+                        sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
+                        sprites.add (sprite)
+                        laberinto[x-1][y].set_visitado()
+                        dfs_stack.append(laberinto[x-1][y])
+                    elif laberinto[x][y+1].visitado == 0 and (laberinto[x][y+1].tipo == 'galleta' or laberinto[x][y+1].tipo == 'meta'):
+                        laberinto[x][y].set_direccion('derecha')
+                        sprite = Track ( "right.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
+                        sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
+                        sprites.add (sprite)
+                        laberinto[x][y+1].set_visitado()
+                        dfs_stack.append(laberinto[x][y+1])
+                    elif laberinto[x-1][y].visitado == 0 and (laberinto[x-1][y].tipo == 'galleta' or laberinto[x-1][y].tipo == 'meta'):
+                        laberinto[x][y].set_direccion('abajo')
+                        sprite = Track ( "down.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
+                        sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
+                        sprites.add (sprite)
+                        laberinto[x-1][y].set_visitado()
+                        dfs_stack.append(laberinto[x-1][y])
+                    elif laberinto[x][y-1].visitado == 0 and (laberinto[x][y-1].tipo == 'galleta' or laberinto[x][y-1].tipo == 'meta'):
+                        laberinto[x][y].set_direccion('izquierda')
+                        sprite = Track ( "left.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
+                        sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
+                        sprites.add (sprite)
+                        laberinto[x][y+1].set_visitado()
+                        dfs_stack.append(laberinto[x][y-1])
+            
             #********************************************************Fin Algoritmo BFS ---------------------------------------
-            print "BFS"
         reloj = pygame.time.Clock()
         ManejarEventos ()
         
