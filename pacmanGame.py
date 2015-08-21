@@ -812,29 +812,21 @@ def juego(numeroLaberinto):
     bandera = 0
     banderaTiempo = 0
 
-    #Algoritmo DFS inicializacion----------------------------------------
     x = posicionSalida[0]
     y = posicionSalida[1]
+    
+    #Algoritmo DFS inicializacion----------------------------------------
     dfs_stack = list()
     dfs_stack.append(laberinto[x][y])
+    #Fin DFS inicializacion----------------------------------------------
+    #Algoritmo BFS inicializacion----------------------------------------
+    bfs_stack = deque([laberinto[x][y]])
+    #Fin BFS inicializacion----------------------------------------------
+    
     laberinto[x][y].set_visitado()
     sprite_trail = pygame.sprite.RenderUpdates()
-    #Fin DFS inicializacion----------------------------------------
     
-    #Algoritmo BFS inicializacion----------------------------------------
-    i = 0
-    bfs_stack = deque([laberinto[x][y]])
-    #bfs_stack.append(laberinto[x][y])
-    #print (bfs_stack[i])
-    #i=i++
-    #laberinto[x][y].set_visitado()
-    #sprite_trail = pygame.sprite.RenderUpdates()
-    #Fin BFS inicializacion----------------------------------------
-
     while game_over(pacman):
-
-        #Nuevo codigo para contador de segundos 
-        #if pacman.mover == 1 and bandera == 0:
         if bandera == 0:
             tiempo = Tiempo ()
             sprites.add ( tiempo )
@@ -921,42 +913,56 @@ def juego(numeroLaberinto):
         
         elif banderaModoJuego == 1 :
             #********************************************************Inicio Algoritmo BFS ---------------------------------------
-            if bfs_stack:
-                proxCasilla = bfs_stack.popleft()
+            if bfs_stack: #Pregunto si la cola NO esta vacia
+                proxCasilla = bfs_stack.popleft() # Saco el primero de la cola
                 x = proxCasilla.x
                 y = proxCasilla.y
+                print 'posicion x: '+ str(x) + 'Posicion en y:'+str(y)
                 if proxCasilla.tipo == 'meta':
+                    print 'meta'
                     break
                 else:
+                    print 'noMeta'
                     if laberinto[x-1][y].visitado == 0 and (laberinto[x-1][y].tipo == 'galleta' or laberinto[x-1][y].tipo == 'meta'):
                         laberinto[x][y].set_direccion('arriba')
                         sprite = Track ( "up.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
                         sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
                         sprites.add (sprite)
                         laberinto[x-1][y].set_visitado()
-                        dfs_stack.append(laberinto[x-1][y])
-                    elif laberinto[x][y+1].visitado == 0 and (laberinto[x][y+1].tipo == 'galleta' or laberinto[x][y+1].tipo == 'meta'):
+                        bfs_stack.append(laberinto[x-1][y])
+                        print 'se metio a arriba'
+                    if laberinto[x][y+1].visitado == 0 and (laberinto[x][y+1].tipo == 'galleta' or  laberinto[x][y+1].tipo =='meta'):
                         laberinto[x][y].set_direccion('derecha')
                         sprite = Track ( "right.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
                         sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
                         sprites.add (sprite)
                         laberinto[x][y+1].set_visitado()
-                        dfs_stack.append(laberinto[x][y+1])
-                    elif laberinto[x-1][y].visitado == 0 and (laberinto[x-1][y].tipo == 'galleta' or laberinto[x-1][y].tipo == 'meta'):
+                        bfs_stack.append(laberinto[x][y+1])
+                        print 'se metio a derecha'
+                    if laberinto[x-1][y].visitado == 0 and (laberinto[x-1][y].tipo == 'galleta' or laberinto[x-1][y].tipo=='meta'):
                         laberinto[x][y].set_direccion('abajo')
                         sprite = Track ( "down.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
                         sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
                         sprites.add (sprite)
                         laberinto[x-1][y].set_visitado()
-                        dfs_stack.append(laberinto[x-1][y])
-                    elif laberinto[x][y-1].visitado == 0 and (laberinto[x][y-1].tipo == 'galleta' or laberinto[x][y-1].tipo == 'meta'):
+                        bfs_stack.append(laberinto[x-1][y])
+                        print 'se metio a abajo'
+                    if laberinto[x][y-1].visitado == 0 and (laberinto[x][y-1].tipo == 'galleta' or laberinto[x][y-1].tipo=='meta'):
                         laberinto[x][y].set_direccion('izquierda')
                         sprite = Track ( "left.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
                         sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
                         sprites.add (sprite)
-                        laberinto[x][y+1].set_visitado()
-                        dfs_stack.append(laberinto[x][y-1])
-            
+                        laberinto[x][y-1].set_visitado()
+                        bfs_stack.append(laberinto[x][y-1])
+                        print 'se metio a izq'
+                    #else:
+                        #proxCasilla = bfs_stack.popleft() # Saco el primero de la cola
+                        #x = proxCasilla.x
+                        #y = proxCasilla.y
+                        print 'else'
+                for casilla in bfs_stack:
+                    print(casilla.direccion),
+                #print('\n'+str(x)+' '+str(y))
             #********************************************************Fin Algoritmo BFS ---------------------------------------
         reloj = pygame.time.Clock()
         ManejarEventos ()
@@ -968,26 +974,50 @@ def juego(numeroLaberinto):
         if bandera == 1:
             reloj.tick (40) #tiempo de espera entre frames
     #Algoritmo DFS animacion
+    
     flag_blink = 0
-    for i in range (0,10):
-        if not flag_blink:
-            list_sprites = list()
-            for casilla in dfs_stack:
-                sprite = Block([0,0,0],[casilla.Pared_x,casilla.Pared_y])
-                sprite_temp = pygame.sprite.spritecollideany(sprite,sprites)
-                list_sprites.append(sprite_temp)
-                sprites.remove(sprite_temp)
-                sprites.add (sprite)
-            flag_blink = 1
-        else:
-            for tmp_sprite in list_sprites:
-                sprites.remove(pygame.sprite.spritecollideany(tmp_sprite,sprites))
-                sprites.add (tmp_sprite)
-            flag_blink = 0
-        sprites.update ()
-        sprites.clear (screen, background)
-        pygame.display.update (sprites.draw (screen))
-        pygame.time.delay(500)
+    #Algoritmo DFS animacion
+    if banderaModoJuego == 0:
+        for i in range (0,10):
+            if not flag_blink:
+                list_sprites = list()
+                for casilla in dfs_stack:
+                    sprite = Block([0,0,0],[casilla.Pared_x,casilla.Pared_y])
+                    sprite_temp = pygame.sprite.spritecollideany(sprite,sprites)
+                    list_sprites.append(sprite_temp)
+                    sprites.remove(sprite_temp)
+                    sprites.add (sprite)
+                flag_blink = 1
+            else:
+                for tmp_sprite in list_sprites:
+                    sprites.remove(pygame.sprite.spritecollideany(tmp_sprite,sprites))
+                    sprites.add (tmp_sprite)
+                flag_blink = 0
+            sprites.update ()
+            sprites.clear (screen, background)
+            pygame.display.update (sprites.draw (screen))
+            pygame.time.delay(500)
+    #Algoritmo BFS animacion
+    elif banderaModoJuego == 1:
+        for i in range (0,10):
+            if not flag_blink:
+                list_sprites = list()
+                for casilla in bfs_stack:
+                    sprite = Block([0,0,0],[casilla.Pared_x,casilla.Pared_y])
+                    sprite_temp = pygame.sprite.spritecollideany(sprite,sprites)
+                    list_sprites.append(sprite_temp)
+                    sprites.remove(sprite_temp)
+                    sprites.add (sprite)
+                flag_blink = 1
+            else:
+                for tmp_sprite in list_sprites:
+                    sprites.remove(pygame.sprite.spritecollideany(tmp_sprite,sprites))
+                    sprites.add (tmp_sprite)
+                flag_blink = 0
+            sprites.update ()
+            sprites.clear (screen, background)
+            pygame.display.update (sprites.draw (screen))
+            pygame.time.delay(500)
     pygame.time.delay(10000)
     #--el juego ha finalizado
     sprites.empty()   
