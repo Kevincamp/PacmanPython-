@@ -986,26 +986,26 @@ def juego(numeroLaberinto):
             pygame.display.update (sprites.draw (screen))
             pygame.time.delay(500)
     #Algoritmo BFS animacion
-    elif banderaModoJuego == 1:
-        for i in range (0,10):
-            if not flag_blink:
-                list_sprites = list()
-                for casilla in bfs_stack:
-                    sprite = Block([0,0,0],[casilla.Pared_x,casilla.Pared_y])
-                    sprite_temp = pygame.sprite.spritecollideany(sprite,sprites)
-                    list_sprites.append(sprite_temp)
-                    sprites.remove(sprite_temp)
-                    sprites.add (sprite)
-                flag_blink = 1
-            else:
-                for tmp_sprite in list_sprites:
-                    sprites.remove(pygame.sprite.spritecollideany(tmp_sprite,sprites))
-                    sprites.add (tmp_sprite)
-                flag_blink = 0
-            sprites.update ()
-            sprites.clear (screen, background)
-            pygame.display.update (sprites.draw (screen))
-            pygame.time.delay(500)
+    #elif banderaModoJuego == 1:
+    #    for i in range (0,10):
+    #        if not flag_blink:
+    #            list_sprites = list()
+    #            for casilla in bfs_stack:
+    #                sprite = Block([0,0,0],[casilla.Pared_x,casilla.Pared_y])
+    #                sprite_temp = pygame.sprite.spritecollideany(sprite,sprites)
+    #                list_sprites.append(sprite_temp)
+    #                sprites.remove(sprite_temp)
+    #                sprites.add (sprite)
+    #            flag_blink = 1
+    #        else:
+    #            for tmp_sprite in list_sprites:
+    #                sprites.remove(pygame.sprite.spritecollideany(tmp_sprite,sprites))
+    #                sprites.add (tmp_sprite)
+    #            flag_blink = 0
+    #        sprites.update ()
+    #        sprites.clear (screen, background)
+    #        pygame.display.update (sprites.draw (screen))
+    #        pygame.time.delay(500)
     pygame.time.delay(10000)
     #--el juego ha finalizado
     sprites.empty()   
