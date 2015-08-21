@@ -463,64 +463,81 @@ class Pacman ( SpriteMovil ):
         
 
 
-    def update (self):
+    def update (self, direccion):
         #global eventos # explicitamente declaramos que "eventos" es una variable global
         global sprites
         global contadorGalletas
-        v = 5
-        for event in eventos:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    self.mover = 1
-                    self.velocidad[0] = -v
-                    self.velocidad[1] = 0
-                elif event.key == pygame.K_RIGHT:
-                    self.mover = 1
-                    self.velocidad[0] = v
-                    self.velocidad[1] = 0
-                elif event.key == pygame.K_UP:
-                    self.mover = 1
-                    self.velocidad[1] = -v
-                    self.velocidad[0] = 0
-                elif event.key == pygame.K_DOWN:
-                    self.mover = 1
-                    self.velocidad[1] = v
-                    self.velocidad[0] = 0
-                    
-        if self.mover == 1:
-            SpriteMovil.update(self)
-            
-            #se cambia la imagen de pacman segun la direccion
-            if self.velocidad[0] > 0:
-                self.__fotogramasActuales = self.__imagenDerecha
-            elif self.velocidad[0] < 0:
-                self.__fotogramasActuales = self.__imagenIzquierda
-            elif self.velocidad[1] > 0:
-                self.__fotogramasActuales = self.__imagenAbajo
-            elif self.velocidad[1] < 0:
-                self.__fotogramasActuales = self.__imagenArriba        
-           
-            if pygame.time.get_ticks() - self.__tiempoCambioFotograma > 50:
-                self.__fotogramaActual = (self.__fotogramaActual + 1) % self.NUMERO_FOTOGRAMAS 
-                self.__tiempoCambioFotograma = pygame.time.get_ticks()
-            self.image = self.__fotogramasActuales[self.__fotogramaActual]
-            
-             
-            #se obtiene todos los sprites con los que colisiona. El ultimo parametro indica que no queremos destruir automaticamente los sprites con los que colisiona 
-            MiSprite.update(self) 
-            
-            #global sprites
-            sprites_choque = pygame.sprite.spritecollide(self, sprites, False)
-            
-            for sprite in sprites_choque:
-                if sprite != self:
-                    if hasattr ( sprite, "comestible" ): #comprobamos si el sprite tiene un atributo llamado "comestible"
-                        if sprite.comestible:
-                            contadorGalletas = contadorGalletas + 1
-                            sprite.kill() # destruimos el sprite
-                            #if hasattr ( sprite, "puntos" ):
-                             #   self.puntos += sprite.puntos
-                              #  informar ( self.rect.bottomright, "puntos %d" % (sprite.puntos) )
+        v = 1
+        # for event in eventos:
+        #     if event.type == pygame.KEYDOWN:
+        #         if event.key == pygame.K_LEFT:
+        #             self.mover = 1
+        #             self.velocidad[0] = -v
+        #             self.velocidad[1] = 0
+        #         elif event.key == pygame.K_RIGHT:
+        #             self.mover = 1
+        #             self.velocidad[0] = v
+        #             self.velocidad[1] = 0
+        #         elif event.key == pygame.K_UP:
+        #             self.mover = 1
+        #             self.velocidad[1] = -v
+        #             self.velocidad[0] = 0
+        #         elif event.key == pygame.K_DOWN:
+        #             self.mover = 1
+        #             self.velocidad[1] = v
+        #             self.velocidad[0] = 0
+        for i in range(0,50):
+            if direccion == 'izquierda':
+                self.mover = 1
+                self.velocidad[0] = -v
+                self.velocidad[1] = 0
+            elif direccion == 'derecha':
+                self.mover = 1
+                self.velocidad[0] = v
+                self.velocidad[1] = 0
+            elif direccion == 'arriba':
+                self.mover = 1
+                self.velocidad[1] = -v
+                self.velocidad[0] = 0
+            elif direccion == 'abajo':
+                self.mover = 1
+                self.velocidad[1] = v
+                self.velocidad[0] = 0
+
+            if self.mover == 1:
+                SpriteMovil.update(self)
+
+                #se cambia la imagen de pacman segun la direccion
+                if self.velocidad[0] > 0:
+                    self.__fotogramasActuales = self.__imagenDerecha
+                elif self.velocidad[0] < 0:
+                    self.__fotogramasActuales = self.__imagenIzquierda
+                elif self.velocidad[1] > 0:
+                    self.__fotogramasActuales = self.__imagenAbajo
+                elif self.velocidad[1] < 0:
+                    self.__fotogramasActuales = self.__imagenArriba
+
+                if pygame.time.get_ticks() - self.__tiempoCambioFotograma > 50:
+                    self.__fotogramaActual = (self.__fotogramaActual + 1) % self.NUMERO_FOTOGRAMAS
+                    self.__tiempoCambioFotograma = pygame.time.get_ticks()
+                self.image = self.__fotogramasActuales[self.__fotogramaActual]
+
+
+                #se obtiene todos los sprites con los que colisiona. El ultimo parametro indica que no queremos destruir automaticamente los sprites con los que colisiona
+                MiSprite.update(self)
+
+                #global sprites
+                sprites_choque = pygame.sprite.spritecollide(self, sprites, False)
+
+                for sprite in sprites_choque:
+                    if sprite != self:
+                        if hasattr ( sprite, "comestible" ): #comprobamos si el sprite tiene un atributo llamado "comestible"
+                            if sprite.comestible:
+                                contadorGalletas = contadorGalletas + 1
+                                sprite.kill() # destruimos el sprite
+                                #if hasattr ( sprite, "puntos" ):
+                                 #   self.puntos += sprite.puntos
+                                  #  informar ( self.rect.bottomright, "puntos %d" % (sprite.puntos) )
         
 
 #--- Fin Pacman -----------------------------------------------     
@@ -817,6 +834,7 @@ def juego(numeroLaberinto):
     
     #Algoritmo DFS inicializacion----------------------------------------
     dfs_stack = list()
+    pop_list = list()
     dfs_stack.append(laberinto[x][y])
     #Fin DFS inicializacion----------------------------------------------
     #Algoritmo BFS inicializacion----------------------------------------
@@ -890,6 +908,7 @@ def juego(numeroLaberinto):
                 y = y-1
             else:
                 wrong_casilla = dfs_stack.pop()
+                pop_list.append(wrong_casilla)
                 if wrong_casilla.direccion == 'arriba':
                     sprite = Track ( "rup.jpg", [wrong_casilla.Pared_x,wrong_casilla.Pared_y], [50,50] )
                     sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
@@ -904,6 +923,10 @@ def juego(numeroLaberinto):
                     sprites.add (sprite)
                 elif wrong_casilla.direccion == 'izquierda':
                     sprite = Track ( "rleft.jpg", [wrong_casilla.Pared_x,wrong_casilla.Pared_y], [50,50] )
+                    sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
+                    sprites.add (sprite)
+                else:
+                    sprite = Track ( "x.jpg", [wrong_casilla.Pared_x,wrong_casilla.Pared_y], [50,50] )
                     sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
                     sprites.add (sprite)
                 last_casilla = dfs_stack[-1]
@@ -985,6 +1008,32 @@ def juego(numeroLaberinto):
             sprites.clear (screen, background)
             pygame.display.update (sprites.draw (screen))
             pygame.time.delay(500)
+            key_flag = 0
+        while(True):
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        key_flag = 1
+            if key_flag == 1:
+                break
+        for casilla in dfs_stack:
+            sprite = Block([0,0,0],[casilla.Pared_x,casilla.Pared_y])
+            sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
+        for casilla in pop_list:
+            sprite = Block([0,0,0],[casilla.Pared_x,casilla.Pared_y])
+            sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
+        sprites.add ( pacman )
+        sprites.clear (screen, background)
+        pygame.display.update (sprites.draw (screen))
+        for i in range(0,len(dfs_stack)):
+            if i != 0:
+                sprite = Block([0,0,100],[dfs_stack[i-1].Pared_x,dfs_stack[i-1].Pared_y])
+                sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
+                sprites.add(sprite)
+            pacman.update(dfs_stack[i].direccion)
+            sprites.clear (screen, background)
+            pygame.display.update (sprites.draw (screen))
+            pygame.time.delay(200)
     #Algoritmo BFS animacion
     #elif banderaModoJuego == 1:
     #    for i in range (0,10):
@@ -1006,7 +1055,14 @@ def juego(numeroLaberinto):
     #        sprites.clear (screen, background)
     #        pygame.display.update (sprites.draw (screen))
     #        pygame.time.delay(500)
-    pygame.time.delay(10000)
+    key_flag = 0
+    while(True):
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    key_flag = 1
+        if key_flag == 1:
+            break
     #--el juego ha finalizado
     sprites.empty()   
     sonido_fondo.stop()
@@ -1017,413 +1073,6 @@ def juego(numeroLaberinto):
         ManejarEventos()
 
 # -- Fin de Juego ------------------------------------------------------------------------------------
-
-# -- Inicio de Respaldo de Juego ---------------------------------------------------------------------------------
-
-def juego2(numeroLaberinto):
-    global finish
-    global contadorGalletas
-    global mover
-    global contadorGalletasTotal
-    global segundos
-    t = time.time()
-    
-    visitado = []
-    for i in range(15):
-        visitado.append([])
-        for j in range(15):
-            visitado[i].append(False)
-    
-    laberinto1 =    [[1,1,1,1,1,1,1,1,1,1,0,1,1,1,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,1,1,1,1,1,1,1,1,0,1,0,1],
-                    [1,0,0,0,0,0,0,1,0,0,0,0,1,0,1],
-                    [1,0,1,1,0,1,0,1,0,1,1,1,1,0,1],
-                    [1,0,0,0,0,1,0,1,0,1,0,0,0,0,1],
-                    [1,0,1,1,1,1,0,0,0,0,0,1,0,1,1],
-                    [1,0,0,0,1,1,0,1,1,1,1,1,0,1,1],
-                    [1,0,1,0,1,0,0,0,0,0,0,0,0,1,1],
-                    [1,0,1,0,1,0,1,0,1,0,1,1,0,1,1],
-                    [1,0,0,0,0,0,1,0,1,0,0,0,0,0,1],
-                    [1,0,1,1,1,1,1,0,1,0,1,1,1,0,1],
-                    [1,0,0,0,1,0,0,0,1,0,1,0,0,0,1],
-                    [1,1,1,0,0,0,1,1,1,0,0,0,1,1,1],
-                    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
-
-    laberinto2 =    [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,1,0,1,0,1,1,0,1,0,1,0,1],
-                    [1,0,0,0,0,1,0,0,0,0,1,0,1,0,1],
-                    [1,0,1,1,0,0,0,1,1,0,0,0,0,0,1],
-                    [1,0,0,0,0,1,0,0,0,0,1,1,0,1,1],
-                    [0,0,1,0,1,1,0,1,1,0,0,0,0,0,1],
-                    [1,0,1,0,0,0,0,0,0,0,1,1,0,1,1],
-                    [1,0,0,0,1,0,1,1,0,1,0,0,0,0,1],
-                    [1,0,1,0,1,0,0,0,0,0,0,1,0,1,1],
-                    [1,0,0,0,0,0,1,0,1,1,0,1,0,0,1],
-                    [1,0,1,0,1,0,1,0,0,0,0,0,0,1,1],
-                    [1,0,1,0,1,0,0,0,1,0,1,0,1,0,1],
-                    [1,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
-                    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
-
-    laberinto3 =    [[1,1,1,1,1,1,1,1,1,1,1,1,0,1,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,0,1,1,0,1,1,0,1,0,1,0,1],
-                    [1,0,1,0,0,0,0,0,0,0,1,0,0,0,1],
-                    [1,0,0,0,1,0,1,0,1,0,0,0,1,0,1],
-                    [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1],
-                    [1,0,1,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,0,0,1,1,0,1,1,0,1,0,1,0,1],
-                    [1,0,1,0,0,0,0,0,0,0,1,0,1,0,1],
-                    [1,0,0,0,1,1,0,1,1,0,0,0,0,0,1],
-                    [1,0,1,0,0,0,0,0,0,0,1,0,1,0,1],
-                    [1,0,0,0,1,1,0,1,0,1,1,0,1,0,1],
-                    [1,0,1,0,0,0,0,1,0,0,0,0,0,0,1],
-                    [1,0,0,0,1,0,1,0,0,1,0,1,0,1,1],
-                    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
-
-    laberinto4 =    [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,0,1,0,1,0,1,0,1,1,0,1,1],
-                    [0,0,1,0,1,0,1,0,1,0,0,0,0,0,1],
-                    [1,0,0,0,0,0,0,0,0,0,1,0,1,0,1],
-                    [1,0,1,1,0,1,1,0,1,0,1,0,1,0,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,1,0,1,1,0,1,1,0,1,0,1,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,1,0,0,1],
-                    [1,0,1,0,1,0,1,0,1,1,0,0,0,1,1],
-                    [1,0,1,0,1,0,1,0,0,0,0,1,0,0,1],
-                    [1,0,0,0,0,0,0,0,1,1,0,1,0,1,1],
-                    [1,0,1,0,1,0,1,0,0,0,0,0,0,0,1],
-                    [1,0,0,0,0,0,0,0,1,0,1,1,0,1,1],
-                    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
-
-    laberinto5 =    [[1,1,1,1,1,1,1,1,1,1,1,0,1,1,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,0,1,1,0,1,1,0,1,0,1,0,1],
-                    [1,0,1,0,0,0,0,0,0,0,1,0,1,0,1],
-                    [1,0,0,0,1,1,0,1,0,1,0,0,0,0,1],
-                    [1,0,1,0,0,0,0,1,0,0,0,1,1,0,1],
-                    [1,0,1,0,1,0,1,0,0,1,0,0,0,0,1],
-                    [1,0,0,0,1,0,0,0,1,1,0,1,0,1,1],
-                    [1,0,1,0,0,0,1,0,0,0,0,1,0,0,1],
-                    [1,0,0,0,1,0,0,0,1,0,1,0,0,1,1],
-                    [1,0,1,0,0,0,1,0,1,0,0,0,1,0,1],
-                    [1,0,0,0,1,0,1,0,0,0,1,0,0,0,1],
-                    [1,0,1,0,1,0,0,0,1,0,1,0,1,0,1],
-                    [1,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
-                    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
-
-    laberinto6 =    [[1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1],
-                    [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,0,1,0,1,0,1,1,0,1,1,0,1],
-                    [1,0,1,0,1,0,1,0,0,0,0,0,0,0,1],
-                    [1,0,0,0,0,0,0,0,1,0,1,1,0,1,1],
-                    [1,0,1,1,0,1,1,0,1,0,0,0,0,0,1],
-                    [1,0,0,0,0,0,0,0,0,0,1,0,1,0,1],
-                    [1,0,1,0,1,1,0,1,1,0,1,0,0,0,1],
-                    [1,0,1,0,0,0,0,0,0,0,0,0,1,0,1],
-                    [1,0,0,0,1,1,0,1,0,1,1,0,1,0,1],
-                    [1,0,1,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
-
-    laberinto7 =    [[1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,1,0,1,0,1,0,1,1,0,1,0,1],
-                    [1,0,0,0,0,1,0,1,0,0,0,0,0,0,1],
-                    [1,0,1,0,1,0,0,0,0,1,1,0,1,0,1],
-                    [1,0,1,0,0,0,1,1,0,0,0,0,1,0,1],
-                    [1,0,0,0,1,0,0,0,0,1,0,1,0,0,1],
-                    [1,0,1,0,0,0,1,0,1,1,0,0,0,1,1],
-                    [1,0,1,0,1,0,1,0,0,0,0,1,0,0,1],
-                    [1,0,0,0,1,0,0,0,1,1,0,1,0,1,1],
-                    [1,0,1,0,0,0,1,0,0,0,0,0,0,0,1],
-                    [1,0,1,0,1,0,1,0,1,0,1,1,0,1,1],
-                    [1,0,0,0,0,0,0,0,1,0,0,0,0,0,1],
-                    [1,0,1,1,0,1,1,0,0,0,1,1,0,1,1],
-                    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
-
-    laberinto8 =    [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,1,0,1,1,0,1,1,0,1,0,1,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,1,0,0,1],
-                    [1,0,1,1,0,1,0,1,0,1,0,0,0,1,1],
-                    [1,0,0,0,0,1,0,1,0,1,0,1,0,0,1],
-                    [1,0,1,0,1,0,0,0,0,0,0,0,0,1,1],
-                    [0,0,1,0,0,0,1,0,1,1,0,1,0,0,1],
-                    [1,0,0,0,1,0,1,0,0,0,0,1,0,1,1],
-                    [1,0,1,0,0,0,0,0,1,0,1,0,0,0,1],
-                    [1,0,0,0,1,0,1,0,1,0,0,0,1,0,1],
-                    [1,0,1,0,1,0,0,0,0,0,1,0,1,0,1],
-                    [1,0,0,0,0,0,1,1,0,1,1,0,0,0,1],
-                    [1,0,1,0,1,0,0,0,0,0,0,0,1,0,1],
-                    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
-
-    laberinto9 =    [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,1,0,1,1,0,1,0,1,0,1,0,1],
-                    [1,0,0,0,0,0,0,0,1,0,1,0,0,0,1],
-                    [1,0,1,1,0,1,0,1,0,0,0,0,1,0,1],
-                    [1,0,0,0,0,1,0,0,0,1,1,0,0,0,1],
-                    [1,0,1,0,1,0,0,1,0,0,0,0,1,0,1],
-                    [1,0,1,0,0,0,1,0,0,1,1,0,0,0,1],
-                    [1,0,0,0,1,0,0,0,1,0,0,0,1,0,1],
-                    [1,0,1,0,1,0,1,0,0,0,1,0,1,0,1],
-                    [1,0,0,0,0,0,1,0,1,0,0,0,0,0,1],
-                    [1,0,1,0,1,0,0,0,1,0,1,1,0,1,1],
-                    [1,0,1,0,0,0,1,0,0,0,0,0,0,0,1],
-                    [0,0,0,0,1,0,0,0,1,0,1,1,0,1,1],
-                    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
-
-    laberinto10 =   [[1,1,0,1,1,1,1,1,1,1,1,1,1,1,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,0,1,0,1,1,0,1,0,1,1,0,1,0,1],
-                    [1,0,1,0,0,0,0,1,0,0,0,0,1,0,1],
-                    [1,0,0,0,1,1,0,0,0,1,0,1,0,0,1],
-                    [1,0,1,0,0,0,0,1,0,1,0,0,0,1,1],
-                    [1,0,0,0,1,1,0,1,0,0,0,1,0,0,1],
-                    [1,0,1,0,0,0,0,0,0,1,0,1,0,1,1],
-                    [1,0,0,0,1,0,1,1,0,1,0,0,0,0,1],
-                    [1,0,1,0,1,0,0,0,0,0,0,1,0,1,1],
-                    [1,0,0,0,0,0,1,1,0,1,0,1,0,0,1],
-                    [1,0,1,0,1,0,0,0,0,0,0,0,0,1,1],
-                    [1,0,1,0,1,0,1,1,0,1,1,0,1,0,1],
-                    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-                    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
-
-    posSalidaLab1 = [0,10]
-    posSalidaLab2 = [6,0]
-    posSalidaLab3 = [0,12]
-    posSalidaLab4 = [3,0]
-    posSalidaLab5 = [0,11]
-    posSalidaLab6 = [0,3]
-    posSalidaLab7 = [0,3]
-    posSalidaLab8 = [7,0]
-    posSalidaLab9 = [13,0]
-    posSalidaLab10 = [0,2]   
-    contadorGalletas = 0
-
-    contadorGalletasTotal = 0
-    finish = []
-    
-    Pared_x=0
-    Salir = False
-    Pared_y=0
-    if numeroLaberinto == 0:
-        maze = Laberinto(15,15)
-        laberinto = maze.getMaze()
-        posicionSalida = maze.posicionSalida
-    if numeroLaberinto == 1:
-        laberinto = laberinto1
-        posicionSalida = posSalidaLab1
-    if numeroLaberinto == 2:
-        laberinto = laberinto2
-        posicionSalida = posSalidaLab2
-    if numeroLaberinto == 3:
-        laberinto = laberinto3
-        posicionSalida = posSalidaLab3
-    if numeroLaberinto == 4:
-        laberinto = laberinto4
-        posicionSalida = posSalidaLab4
-    if numeroLaberinto == 5:
-        laberinto = laberinto5
-        posicionSalida = posSalidaLab5
-    if numeroLaberinto == 6:
-        laberinto = laberinto6
-        posicionSalida = posSalidaLab6
-    if numeroLaberinto == 7:
-        laberinto = laberinto7
-        posicionSalida = posSalidaLab7
-    if numeroLaberinto == 8:
-        laberinto = laberinto8
-        posicionSalida = posSalidaLab8
-    if numeroLaberinto == 9:
-        laberinto = laberinto9
-        posicionSalida = posSalidaLab9
-    if numeroLaberinto == 10:
-        laberinto = laberinto10
-        posicionSalida = posSalidaLab10
-
-    screen = pygame.display.get_surface()
-    screen.fill((0,0,0))
-    pygame.display.update()
-    #creamos una copia de la pantalla para evitar su repintado completo cuando
-    #se redibujen los sprites
-    background = screen.copy()
-    # aleatoriaExitosa=0
-    # while aleatoriaExitosa==0:
-    #     randomx= random.randint(1,15)
-    #     randomy = random.randint(1,15)
-    #     if posicionSalida[0]==0:
-    #         if randomx > 6:
-    #             if laberinto[randomx][randomy] !=1:
-    #                 aleatoriaExitosa=1
-    #         else:
-    #             aleatoriaExitosa=0
-    #     elif posicionSalida[1]==0:
-    #         if randomy > 6:
-    #             if laberinto[randomx][randomy] !=1:
-    #                 aleatoriaExitosa=1
-    #         else:
-    #             aleatoriaExitosa=0
-    #bucle de redibujado de los screens
-    for i in range(15):
-            for j in range(15):  
-                if(laberinto[i][j] == 1):
-                    laberinto[i][j] = Casilla('muro')
-                    laberinto[i][j].set_x_y(i,j)
-                    laberinto[i][j].set_pared(Pared_x,Pared_y)
-                    sprite = Pared ( "wall.png", [Pared_x,Pared_y], [50,50] )
-                    sprites.add (sprite)
-                    Pared_x+=50
-                else:
-                    if(i ==posicionSalida[0] and j==posicionSalida[1]):
-                        laberinto[i][j] = Casilla('salida')
-                        laberinto[i][j].set_x_y(i,j)
-                        laberinto[i][j].set_pared(Pared_x,Pared_y)
-                        sprite = MiSprite ("finish.png", [Pared_x, Pared_y])
-                        pacman = Pacman("pacman.gif", [Pared_x,Pared_y])
-                        #Mando estado inicial de pacman.
-                        inicial = Estado(Pared_x,Pared_y,0)
-                        queue = deque([])
-                        queue.append(inicial)
-                        finish.append(Pared_x)
-                        finish.append(Pared_y)
-                        sprites.add ( sprite )
-                        sprites.add ( pacman )
-                        Pared_x+=50
-                    else:
-                        laberinto[i][j] = Casilla('galleta')
-                        laberinto[i][j].set_x_y(i,j)
-                        laberinto[i][j].set_pared(Pared_x,Pared_y)
-                        Pared_x+=50
-                        if i == 13 and j == 3:
-                            laberinto[13][3]= Casilla('meta')
-                            sprite = MiSprite ("bola.png", [Pared_x+15, Pared_y+15])
-                            sprite.comestible = True
-                            sprite.puntos = 5
-                            sprites.add ( sprite )
-                            contadorGalletasTotal +=1
-
-            Pared_x=0
-            Pared_y+=50
-    
-    
-    
-    sonido_fondo = cargar_sonido ("sonido_fondo.wav").play(-1) #este sonido se repetira indefinidamente al indicar -1 como parametro   
-    eventos = pygame.event.get()
-    bandera = 0
-    banderaTiempo = 0
-    #Algoritmo DFS inicializacion
-    x = posicionSalida[0]
-    y = posicionSalida[1]
-    dfs_stack = list()
-    dfs_stack.append(laberinto[x][y])
-    laberinto[x][y].set_visitado()
-    #Fin DFS inicializacion
-    while game_over(pacman):
-        #Algoritmo DFS sentido Arriba - derecha - abajo - izquierda
-        print(laberinto[x][y].tipo)
-        
-        #Nuevo codigo para contador de segundos 
-        if bandera == 0:
-            tiempo = Tiempo ()
-            sprites.add ( tiempo )  
-            comida = Comida ()
-            sprites.add ( comida)
-            bandera = 1
-        if bandera == 1:
-            if banderaTiempo == 0:
-                inicio = pygame.time.get_ticks()/1000
-                banderaTiempo = 1
-            segundos = pygame.time.get_ticks()/1000 - inicio
-            
-        for casilla in dfs_stack:
-            print(casilla.direccion),
-        print('\n'+str(x)+' '+str(y))
-        time.sleep(0.25)
-        if laberinto[x-1][y].visitado == 0 and (laberinto[x-1][y].tipo == 'galleta' or laberinto[x-1][y].tipo == 'meta'):
-            dfs_stack.append(laberinto[x-1][y])
-            laberinto[x-1][y].set_visitado()
-            laberinto[x-1][y].set_direccion('arriba')
-            sprite = Pared ( "trail.png", [laberinto[x-1][y].Pared_x,laberinto[x-1][y].Pared_y], [50,50] )
-            sprites.add (sprite)
-            if laberinto[x-1][y].tipo == 'meta':
-                break
-            x = x-1
-        elif laberinto[x][y+1].visitado == 0 and (laberinto[x][y+1].tipo == 'galleta' or laberinto[x][y+1].tipo == 'meta'):
-            dfs_stack.append(laberinto[x][y+1])
-            laberinto[x][y+1].set_visitado()
-            laberinto[x][y+1].set_direccion('derecha')
-            sprite = Pared ( "trail.png", [laberinto[x][y+1].Pared_x,laberinto[x][y+1].Pared_y], [50,50] )
-            sprites.add (sprite)
-            if laberinto[x][y+1].tipo == 'meta':
-                break
-            y = y+1
-        elif laberinto[x+1][y].visitado == 0 and (laberinto[x+1][y].tipo == 'galleta' or laberinto[x+1][y].tipo == 'meta'):
-            dfs_stack.append(laberinto[x+1][y])
-            laberinto[x+1][y].set_visitado()
-            laberinto[x+1][y].set_direccion('abajo')
-            sprite = Pared ( "trail.png", [laberinto[x+1][y].Pared_x,laberinto[x+1][y].Pared_y], [50,50] )
-            sprites.add (sprite)
-            if laberinto[x+1][y].tipo == 'meta':
-                break
-            x = x+1
-        elif laberinto[x][y-1].visitado == 0 and (laberinto[x][y-1].tipo == 'galleta' or laberinto[x][y-1].tipo == 'meta'):
-            dfs_stack.append(laberinto[x][y-1])
-            laberinto[x][y-1].set_visitado()
-            laberinto[x][y-1].set_direccion('izquierda')
-            sprite = Pared ( "trail.png", [laberinto[x][y-1].Pared_x,laberinto[x][y-1].Pared_y], [50,50] )
-            sprites.add (sprite)
-            if laberinto[x][y-1].tipo == 'meta':
-                break
-            y = y-1
-        else:
-            dfs_stack.pop()
-            x = dfs_stack[-1].x
-            y = dfs_stack[-1].y
-            sprite = Pared ( "backtrack.png", [dfs_stack[-1].Pared_x,dfs_stack[-1].Pared_y], [50,50] )
-            sprites.add (sprite)
-        #Fin Algoritmo DFS
-
-        reloj = pygame.time.Clock()
-        #if pacman.mover == 1 and bandera == 0:
-        #if bandera == 0:
-        #    tiempo = Tiempo ()
-        #    sprites.add ( tiempo )  
-        #    comida = Comida ()
-        #    sprites.add ( comida)
-        #    bandera = 1
-        #if bandera == 1:
-        #    if banderaTiempo == 0:
-        #        inicio = pygame.time.get_ticks()/1000
-        #        banderaTiempo = 1
-        #    segundos = pygame.time.get_ticks()/1000 - inicio
-        ManejarEventos ()
-        
-        sprites.update ()
-        sprites.clear (screen, background) 
-        
-        pygame.display.update (sprites.draw (screen))        
-        if bandera == 1:
-            reloj.tick (40) #tiempo de espera entre frames
-    
-    pygame.time.delay(2000) 
-    
-    #--el juego ha finalizado
-    sprites.empty()   
-    sonido_fondo.stop()
-    pantallaGameOver()
-     
-    while True:
-        eventos = pygame.event.get()
-        ManejarEventos()
-
-# -- Fin de Respaldo de Juego  ------------------------------------------------------------------------------------
-
 # -- Inicio de Pantalla ** GAME OVER ** ---------------------------------------------------
 
 def pantallaGameOver():
@@ -1471,6 +1120,7 @@ def pantallaGameOver():
 # -- Inicio de Seleccion de definidos -------------------------------------------------------------
 
 def menu_seleccion_definidos(intro):
+    pygame.time.delay(250)
     while intro:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -1739,7 +1389,8 @@ def menu_intro():
         if (screen.get_width()*0.40) < mouse[0] < (screen.get_width()*0.40 +170) and (screen.get_height()*0.60) < mouse[1] < (screen.get_height()*0.60 + 60):
             pygame.draw.rect(screen, [192,255,192],(screen.get_width()*0.40,screen.get_height()*0.60,170,60))
             if click[0] == 1:
-                menu_seleccion(intro)
+                #menu_seleccion(intro)
+                menu_seleccion_algoritmo(intro)
         else:
             pygame.draw.rect(screen, [0,255,0] , (screen.get_width()*0.4,screen.get_height()*0.60,170,60))
             
