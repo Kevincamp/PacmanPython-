@@ -915,14 +915,12 @@ def juego(numeroLaberinto):
             #********************************************************Inicio Algoritmo BFS ---------------------------------------
             if bfs_stack: #Pregunto si la cola NO esta vacia
                 proxCasilla = bfs_stack.popleft() # Saco el primero de la cola
-                x = proxCasilla.x
-                y = proxCasilla.y
-                print 'posicion x: '+ str(x) + 'Posicion en y:'+str(y)
                 if proxCasilla.tipo == 'meta':
-                    print 'meta'
                     break
                 else:
-                    print 'noMeta'
+                    x = proxCasilla.x
+                    y = proxCasilla.y
+                    
                     if laberinto[x-1][y].visitado == 0 and (laberinto[x-1][y].tipo == 'galleta' or laberinto[x-1][y].tipo == 'meta'):
                         laberinto[x][y].set_direccion('arriba')
                         sprite = Track ( "up.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
@@ -930,7 +928,7 @@ def juego(numeroLaberinto):
                         sprites.add (sprite)
                         laberinto[x-1][y].set_visitado()
                         bfs_stack.append(laberinto[x-1][y])
-                        print 'se metio a arriba'
+                        
                     if laberinto[x][y+1].visitado == 0 and (laberinto[x][y+1].tipo == 'galleta' or  laberinto[x][y+1].tipo =='meta'):
                         laberinto[x][y].set_direccion('derecha')
                         sprite = Track ( "right.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
@@ -938,7 +936,7 @@ def juego(numeroLaberinto):
                         sprites.add (sprite)
                         laberinto[x][y+1].set_visitado()
                         bfs_stack.append(laberinto[x][y+1])
-                        print 'se metio a derecha'
+                        
                     if laberinto[x+1][y].visitado == 0 and (laberinto[x+1][y].tipo == 'galleta' or laberinto[x+1][y].tipo=='meta'):
                         laberinto[x][y].set_direccion('abajo')
                         sprite = Track ( "down.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
@@ -946,7 +944,7 @@ def juego(numeroLaberinto):
                         sprites.add (sprite)
                         laberinto[x+1][y].set_visitado()
                         bfs_stack.append(laberinto[x+1][y])
-                        print 'se metio a abajo'
+                        
                     if laberinto[x][y-1].visitado == 0 and (laberinto[x][y-1].tipo == 'galleta' or laberinto[x][y-1].tipo=='meta'):
                         laberinto[x][y].set_direccion('izquierda')
                         sprite = Track ( "left.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
@@ -954,15 +952,6 @@ def juego(numeroLaberinto):
                         sprites.add (sprite)
                         laberinto[x][y-1].set_visitado()
                         bfs_stack.append(laberinto[x][y-1])
-                        print 'se metio a izq'
-                    #else:
-                        #proxCasilla = bfs_stack.popleft() # Saco el primero de la cola
-                        #x = proxCasilla.x
-                        #y = proxCasilla.y
-                        #print 'else'
-                for casilla in bfs_stack:
-                    print(casilla.direccion),
-                #print('\n'+str(x)+' '+str(y))
             #********************************************************Fin Algoritmo BFS ---------------------------------------
         reloj = pygame.time.Clock()
         ManejarEventos ()
