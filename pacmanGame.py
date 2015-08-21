@@ -939,13 +939,13 @@ def juego(numeroLaberinto):
                         laberinto[x][y+1].set_visitado()
                         bfs_stack.append(laberinto[x][y+1])
                         print 'se metio a derecha'
-                    if laberinto[x-1][y].visitado == 0 and (laberinto[x-1][y].tipo == 'galleta' or laberinto[x-1][y].tipo=='meta'):
+                    if laberinto[x+1][y].visitado == 0 and (laberinto[x+1][y].tipo == 'galleta' or laberinto[x+1][y].tipo=='meta'):
                         laberinto[x][y].set_direccion('abajo')
                         sprite = Track ( "down.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
                         sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
                         sprites.add (sprite)
-                        laberinto[x-1][y].set_visitado()
-                        bfs_stack.append(laberinto[x-1][y])
+                        laberinto[x+1][y].set_visitado()
+                        bfs_stack.append(laberinto[x+1][y])
                         print 'se metio a abajo'
                     if laberinto[x][y-1].visitado == 0 and (laberinto[x][y-1].tipo == 'galleta' or laberinto[x][y-1].tipo=='meta'):
                         laberinto[x][y].set_direccion('izquierda')
@@ -959,7 +959,7 @@ def juego(numeroLaberinto):
                         #proxCasilla = bfs_stack.popleft() # Saco el primero de la cola
                         #x = proxCasilla.x
                         #y = proxCasilla.y
-                        print 'else'
+                        #print 'else'
                 for casilla in bfs_stack:
                     print(casilla.direccion),
                 #print('\n'+str(x)+' '+str(y))
@@ -973,7 +973,6 @@ def juego(numeroLaberinto):
         pygame.display.update (sprites.draw (screen))
         if bandera == 1:
             reloj.tick (40) #tiempo de espera entre frames
-    #Algoritmo DFS animacion
     
     flag_blink = 0
     #Algoritmo DFS animacion
