@@ -844,8 +844,7 @@ def juego(numeroLaberinto):
     #Fin DFS inicializacion----------------------------------------------
     #Algoritmo BFS inicializacion----------------------------------------
     bfs_stack = deque([laberinto[x][y]])
-    bfs_goalPath2 = deque()
-    bfs_goalPath = list([laberinto[x][y]])
+    bfs_goalPath = list()
     #Fin BFS inicializacion----------------------------------------------
     
     laberinto[x][y].set_visitado()
@@ -952,18 +951,16 @@ def juego(numeroLaberinto):
                     print '\nPosMetax: '+ str(x) + 'PosMetay: '+ str(y)
                     while(laberinto[x][y].posPadrex != 0 and laberinto[x][y].posPadrey != 0 ):
                         # Se almacenara mi camino de salida en bfs_goalPath siendo una lista
-                        # bfs_goalPath2 - Cola ; bfs_goalPath - Pila
                         bfs_goalPath.append(laberinto[x][y])
                         x = laberinto[x][y].posPadrex
                         y = laberinto[x][y].posPadrey
                         print'\nPosPadrex: '+ str(x) + 'PosPadrey: '+ str(y)
-                    if (laberinto[x][y].posPadrex == 0 and laberinto[x][y].posPadrey == 0):
+                    if (laberinto[x][y].tipo == 'salida'):
+                        # Anadiendo al nodo Raiz
+                        print'\nPosPadreRaizx: '+ str(x) + 'PosPadreRaizy: '+ str(y)
                         bfs_goalPath.append(laberinto[x][y])
                     # Ordenandolos
                     bfs_goalPath.reverse()
-                    #list(reversed(bfs_goalPath))
-                        
-                        
                     break
                 else:
                     x = proxCasilla.x
