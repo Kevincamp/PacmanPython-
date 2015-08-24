@@ -983,7 +983,7 @@ def juego(numeroLaberinto):
                         sprites.add (sprite)
                         laberinto[x][y+1].set_visitado()
                         bfs_stack.append(laberinto[x][y+1])
-                        
+
                     if laberinto[x+1][y].visitado == 0 and (laberinto[x+1][y].tipo == 'galleta' or laberinto[x+1][y].tipo=='meta'):
                         laberinto[x+1][y].set_padre(x,y)
                         laberinto[x][y].set_direccion('abajo')
@@ -992,7 +992,7 @@ def juego(numeroLaberinto):
                         sprites.add (sprite)
                         laberinto[x+1][y].set_visitado()
                         bfs_stack.append(laberinto[x+1][y])
-                        
+
                     if laberinto[x][y-1].visitado == 0 and (laberinto[x][y-1].tipo == 'galleta' or laberinto[x][y-1].tipo=='meta'):
                         laberinto[x][y-1].set_padre(x,y)
                         laberinto[x][y].set_direccion('izquierda')
@@ -1001,6 +1001,12 @@ def juego(numeroLaberinto):
                         sprites.add (sprite)
                         laberinto[x][y-1].set_visitado()
                         bfs_stack.append(laberinto[x][y-1])
+
+                    if laberinto[x][y].direccion == '':
+                        sprite = Track ( "x.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
+                        sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
+                        sprites.add (sprite)
+
             #********************************************************Fin Algoritmo BFS ---------------------------------------
         reloj = pygame.time.Clock()
         ManejarEventos ()
