@@ -836,6 +836,8 @@ def juego(numeroLaberinto):
 
     x = posicionSalida[0]
     y = posicionSalida[1]
+    x_i = posicionSalida[0]
+    y_i = posicionSalida[1]
     
     #Algoritmo DFS inicializacion----------------------------------------
     dfs_stack = list()
@@ -948,19 +950,18 @@ def juego(numeroLaberinto):
                     print 'Entro a es Meta'
                     x = proxCasilla.x
                     y = proxCasilla.y
-                    print '\nPosMetax: '+ str(x) + 'PosMetay: '+ str(y)
-                    while(laberinto[x][y].posPadrex != 0 and laberinto[x][y].posPadrey != 0 ):
+                    print '\nPosMetax:'+ str(x) + ',PosMetay:'+ str(y)
+                    while(laberinto[x][y].posPadrex != 0 or laberinto[x][y].posPadrey != 0 ):
                         # Se almacenara mi camino de salida en bfs_goalPath siendo una lista
                         bfs_goalPath.append(laberinto[x][y])
                         x = laberinto[x][y].posPadrex
                         y = laberinto[x][y].posPadrey
-                        print'\nPosPadrex: '+ str(x) + 'PosPadrey: '+ str(y)
-                    if (laberinto[x][y].tipo == 'salida'):
-                        # Anadiendo al nodo Raiz
-                        print'\nPosPadreRaizx: '+ str(x) + 'PosPadreRaizy: '+ str(y)
-                        bfs_goalPath.append(laberinto[x][y])
-                    # Ordenandolos
+                        print'\nPosPadrex:'+ str(x) + ',PosPadrey:'+ str(y)
+                    # Ordenandolos de nodo inicial+1 hasta final
                     bfs_goalPath.reverse()
+                    #anadiendo el nodo raiz
+                    print '\nPosxinicial:'+str(x_i)+', Posyinicial:'+str(y_i)
+                    bfs_goalPath.append(laberinto[x_i][y_i])
                     break
                 else:
                     x = proxCasilla.x
@@ -968,6 +969,7 @@ def juego(numeroLaberinto):
                     
                     if laberinto[x-1][y].visitado == 0 and (laberinto[x-1][y].tipo == 'galleta' or laberinto[x-1][y].tipo == 'meta'):
                         laberinto[x-1][y].set_padre(x,y)  
+                        print '\n******Posicion x: '+str(x-1)+ ', Posicion y: '+str(y)+' Padrex: '+str(x)+ ' Padrey: '+str(y)
                         laberinto[x][y].set_direccion('arriba')
                         sprite = Track ( "up.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
                         sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
@@ -977,6 +979,7 @@ def juego(numeroLaberinto):
                         
                     if laberinto[x][y+1].visitado == 0 and (laberinto[x][y+1].tipo == 'galleta' or  laberinto[x][y+1].tipo =='meta'):
                         laberinto[x][y+1].set_padre(x,y)
+                        print '\n******Posicion x: '+str(x)+ ', Posicion y: '+str(y+1)+' Padrex: '+str(x)+ ' Padrey: '+str(y)
                         laberinto[x][y].set_direccion('derecha')
                         sprite = Track ( "right.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
                         sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
@@ -986,6 +989,7 @@ def juego(numeroLaberinto):
 
                     if laberinto[x+1][y].visitado == 0 and (laberinto[x+1][y].tipo == 'galleta' or laberinto[x+1][y].tipo=='meta'):
                         laberinto[x+1][y].set_padre(x,y)
+                        print '\n******Posicion x: '+str(x+1)+ ', Posicion y: '+str(y)+' Padrex: '+str(x)+ ' Padrey: '+str(y)
                         laberinto[x][y].set_direccion('abajo')
                         sprite = Track ( "down.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
                         sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
@@ -995,6 +999,7 @@ def juego(numeroLaberinto):
 
                     if laberinto[x][y-1].visitado == 0 and (laberinto[x][y-1].tipo == 'galleta' or laberinto[x][y-1].tipo=='meta'):
                         laberinto[x][y-1].set_padre(x,y)
+                        print '\n******Posicion x: '+str(x)+', Posicion y: '+str(y-1)+' Padrex: '+str(x)+ ' Padrey: '+str(y)
                         laberinto[x][y].set_direccion('izquierda')
                         sprite = Track ( "left.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
                         sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
@@ -1316,20 +1321,41 @@ def menu_seleccion_algoritmo(intro):
             pygame.draw.rect(screen, [215,194,7],(screen.get_width()*0.15,screen.get_height()*0.45,250,60))
             if click[0] == 1:
                 banderaModoJuego = 0
-                valor = menu_seleccion_definidos(intro)
-                juego(valor)
         else:
             pygame.draw.rect(screen, [160,143,10] , (screen.get_width()*0.15,screen.get_height()*0.45,250,60))
-            
+        
         #Boton de BFS
         if (screen.get_width()*0.55) < mouse[0] < (screen.get_width()*0.55 +250) and (screen.get_height()*0.45) < mouse[1] < (screen.get_height()*0.45 + 60):
             pygame.draw.rect(screen, [31,233,200],(screen.get_width()*0.55,screen.get_height()*0.45,250,60))
             if click[0] == 1:
                 banderaModoJuego = 1
+        else:
+            pygame.draw.rect(screen, [27,205,175] , (screen.get_width()*0.55 ,screen.get_height()*0.45,250,60))
+            
+        #Boton de A*
+        if (screen.get_width()*0.35) < mouse[0] < (screen.get_width()*0.35 +250) and (screen.get_height()*0.60) < mouse[1] < (screen.get_height()*0.60 + 60):
+            pygame.draw.rect(screen, [255,45,59],(screen.get_width()*0.35,screen.get_height()*0.60,250,60))
+            if click[0] == 1:
+                banderaModoJuego = 2
+        else:
+            pygame.draw.rect(screen, [145,28,29], (screen.get_width()*0.35 ,screen.get_height()*0.60,250,60))
+            
+        if banderaModoJuego == 0:
+            pygame.draw.rect(screen, [215,194,7],(screen.get_width()*0.15,screen.get_height()*0.45,250,60))
+        elif banderaModoJuego == 1:
+            pygame.draw.rect(screen, [31,233,200],(screen.get_width()*0.55,screen.get_height()*0.45,250,60))
+        elif banderaModoJuego == 2:
+            pygame.draw.rect(screen, [255,45,59],(screen.get_width()*0.35,screen.get_height()*0.60,250,60))
+            
+        #Boton de Siguiente
+        if (screen.get_width()*0.70) < mouse[0] < (screen.get_width()*0.70 +240) and (screen.get_height()*0.90) < mouse[1] < (screen.get_height()*0.90 + 50):
+            pygame.draw.rect(screen, [192,255,192],(screen.get_width()*0.70,screen.get_height()*0.90,240,50))
+            if click[0] == 1:
+                quitarColor = 1
                 valor = menu_seleccion_definidos(intro)
                 juego(valor)
         else:
-            pygame.draw.rect(screen, [27,205,175] , (screen.get_width()*0.55 ,screen.get_height()*0.45,250,60))
+            pygame.draw.rect(screen, [0,255,0] , (screen.get_width()*0.70 ,screen.get_height()*0.90,240,50))
         
         #Palabras: BFS y DFS
         mediumText = pygame.font.SysFont("Arial",50)
@@ -1339,6 +1365,15 @@ def menu_seleccion_algoritmo(intro):
         
         textSurf_jugar,textRect_jugar = text_objects_2("BFS",mediumText)
         textRect_jugar.center = (screen.get_width()*0.68,screen.get_height()*0.48)
+        screen.blit(textSurf_jugar,textRect_jugar)
+        
+        textSurf_jugar,textRect_jugar = text_objects_2("A *",mediumText)
+        textRect_jugar.center = (screen.get_width()*0.49,screen.get_height()*0.64)
+        screen.blit(textSurf_jugar,textRect_jugar)
+        
+        smallText = pygame.font.SysFont("Arial",40)
+        textSurf_jugar,textRect_jugar = text_objects_2("Siguiente >>",smallText)
+        textRect_jugar.center = (screen.get_width()*0.83,screen.get_height()*0.93)
         screen.blit(textSurf_jugar,textRect_jugar)
         
         pygame.display.update()
