@@ -80,7 +80,7 @@ class Casilla():
         self.posPadrey = 0
         self.esfuerzo = 10
         self.heuristica = 0
-        self.valor = 0
+        self.valor = 100
     def set_visitado(self):
         self.visitado = 1
     def set_direccion(self, direccion):
@@ -100,6 +100,8 @@ class Casilla():
         self.heuristica = round(math.sqrt(abs(goalx-x) + abs(goaly-y)))
     def set_valor(self):
         self.valor = self.esfuerzo + self.heuristica
+    def set_valorMax(self):
+        self.valor = 100
 
 #--- Fin de Clase de Casilla --------------------------------------------
     
@@ -1037,34 +1039,42 @@ def juego(numeroLaberinto):
             if laberinto[x-1][y].visitado == 0 and (laberinto[x-1][y].tipo == 'galleta' or laberinto[x-1][y].tipo == 'meta'):
                 laberinto[x-1][y].set_heuristica(x-1,y,xmeta,ymeta)
                 laberinto[x-1][y].set_valor()
-                print '/nValorArriba: '+ str(laberinto[x-1][y].valor)
+                print '\nValorArriba: '+ str(laberinto[x-1][y].valor)
+            elif laberinto[x-1][y].visitado == 1:
+                laberinto[x-1][y].set_valorMax()
                 
             if laberinto[x][y+1].visitado == 0 and (laberinto[x][y+1].tipo == 'galleta' or laberinto[x][y+1].tipo == 'meta'):
                 laberinto[x][y+1].set_heuristica(x,y+1,xmeta,ymeta)
                 laberinto[x][y+1].set_valor()
-                print '/nValorDerecha: '+ str(laberinto[x][y+1].valor)
+                print '\nValorDerecha: '+ str(laberinto[x][y+1].valor)
+            elif laberinto[x][y+1].visitado == 1:
+                laberinto[x][y+1].set_valorMax()
                 
             if laberinto[x+1][y].visitado == 0 and (laberinto[x+1][y].tipo == 'galleta' or laberinto[x+1][y].tipo == 'meta'):
                 laberinto[x+1][y].set_heuristica(x+1,y,xmeta,ymeta)
                 laberinto[x+1][y].set_valor()
-                print '/nValorAbajo: '+ str(laberinto[x+1][y].valor)
+                print '\nValorAbajo: '+ str(laberinto[x+1][y].valor)
+            elif laberinto[x+1][y].visitado == 1:
+                laberinto[x+1][y].set_valorMax()
                 
             if laberinto[x][y-1].visitado == 0 and (laberinto[x][y-1].tipo == 'galleta' or laberinto[x][y-1].tipo == 'meta'):
                 laberinto[x][y-1].set_heuristica(x,y+1,xmeta,ymeta)
                 laberinto[x][y-1].set_valor()
-                print '/nValorIzquierda: '+ str(laberinto[x][y-1].valor)
+                print '\nValorIzquierda: '+ str(laberinto[x][y-1].valor)
+            elif laberinto[x][y-1].visitado == 1:
+                laberinto[x][y-1].set_valorMax()
             #Escogiendo la mejor casilla y anadiendola a la lista
-            if laberinto[x-1][y].valor >= laberinto[x][y+1].valor and laberinto[x-1][y].valor >= laberinto[x+1][y].valor and laberinto[x-1][y].valor >= laberinto[x][y-1].valor:
+            if laberinto[x-1][y].valor <= laberinto[x][y+1].valor and laberinto[x-1][y].valor <= laberinto[x+1][y].valor and laberinto[x-1][y].valor <= laberinto[x][y-1].valor:
                 laberinto[x][y].set_direccion('arriba')
                 sprite = Track ( "up.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
                 sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
                 sprites.add (sprite)
-                
                 laberinto[x-1][y].set_visitado()                
                 aStar_goalPath.append(laberinto[x-1][y])
                 x = x - 1
+                print'\n Vamos Arriba -------'
             
-            elif laberinto[x][y+1].valor >= laberinto[x-1][y].valor and laberinto[x][y+1].valor >= laberinto[x+1][y].valor and laberinto[x][y+1].valor >= laberinto[x][y-1].valor:
+            if laberinto[x][y+1].valor <= laberinto[x-1][y].valor and laberinto[x][y+1].valor <= laberinto[x+1][y].valor and laberinto[x][y+1].valor <= laberinto[x][y-1].valor:
                 laberinto[x][y].set_direccion('derecha')
                 sprite = Track ( "right.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
                 sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
@@ -1072,8 +1082,9 @@ def juego(numeroLaberinto):
                 laberinto[x][y+1].set_visitado()
                 aStar_goalPath.append(laberinto[x][y+1])
                 y = y + 1
+                print'\n Vamos a la derecha -------'
             
-            elif laberinto[x+1][y].valor >= laberinto[x-1][y].valor and laberinto[x+1][y].valor >= laberinto[x][y+1].valor and laberinto[x+1][y].valor >= laberinto[x][y-1].valor:
+            if laberinto[x+1][y].valor <= laberinto[x-1][y].valor and laberinto[x+1][y].valor <= laberinto[x][y+1].valor and laberinto[x+1][y].valor <= laberinto[x][y-1].valor:
                 laberinto[x][y].set_direccion('abajo')
                 sprite = Track ( "down.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
                 sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
@@ -1081,8 +1092,9 @@ def juego(numeroLaberinto):
                 laberinto[x+1][y].set_visitado()
                 aStar_goalPath.append(laberinto[x+1][y])
                 x = x + 1
+                print'\n Vamos Abajo -------'
             
-            else:
+            if laberinto[x][y-1].valor <= laberinto[x-1][y].valor and laberinto[x][y-1].valor <= laberinto[x][y+1].valor and laberinto[x][y-1].valor <= laberinto[x+1][y].valor:
                 laberinto[x][y].set_direccion('izquierda')
                 sprite = Track ( "left.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
                 sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
@@ -1090,6 +1102,7 @@ def juego(numeroLaberinto):
                 laberinto[x][y-1].set_visitado()
                 aStar_goalPath.append(laberinto[x][y-1])
                 y = y - 1
+                print'\n Vamos a la Izquierda -------'
                 
             #******************************************************** Fin Algoritmo A* ---------------------------------------
         reloj = pygame.time.Clock()
