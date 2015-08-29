@@ -866,6 +866,7 @@ def juego(numeroLaberinto):
     #Algoritmo A* inicializacion----------------------------------------
     aStar_goalPath = list()
     aStar_nodes = list()
+    pop_listS = list()
     #Fin A* inicializacion----------------------------------------------
     
     laberinto[x][y].set_visitado()
@@ -1060,7 +1061,7 @@ def juego(numeroLaberinto):
                 laberinto[x+1][y].set_valorMax()
                 
             if laberinto[x][y-1].visitado == 0 and (laberinto[x][y-1].tipo == 'galleta' or laberinto[x][y-1].tipo == 'meta'):
-                laberinto[x][y-1].set_heuristica(x,y+1,xmeta,ymeta)
+                laberinto[x][y-1].set_heuristica(x,y-1,xmeta,ymeta)
                 laberinto[x][y-1].set_valor()
                 print '\nValorIzquierda: '+ str(laberinto[x][y-1].valor)
             elif laberinto[x][y-1].visitado == 1:
@@ -1131,6 +1132,9 @@ def juego(numeroLaberinto):
                         y = y - 1
                         print'\n Vamos a la Izquierda -------'
                         break
+            
+            if laberinto[x][y].tipo == 'meta':
+                break
 
                 
             #******************************************************** Fin Algoritmo A* ---------------------------------------
@@ -1245,9 +1249,9 @@ def juego(numeroLaberinto):
         for casilla in aStar_goalPath:
             sprite = Block([0,0,0],[casilla.Pared_x,casilla.Pared_y])
             sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
-        #for casilla in pop_list:
-        #    sprite = Block([0,0,0],[casilla.Pared_x,casilla.Pared_y])
-        #    sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
+        for casilla in pop_listS:
+            sprite = Block([0,0,0],[casilla.Pared_x,casilla.Pared_y])
+            sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
         sprites.add ( pacman )
         sprites.clear (screen, background)
         pygame.display.update (sprites.draw (screen))
