@@ -97,7 +97,8 @@ class Casilla():
     def set_esfuerzo(self,esfuerzo):
         self.esfuerzo = esfuerzo
     def set_heuristica(self,x,y,goalx,goaly):
-        self.heuristica = round(math.sqrt(abs(goalx-x) + abs(goaly-y)))
+        #self.heuristica = round(math.sqrt(abs(goalx-x) + abs(goaly-y)))
+        self.heuristica = math.sqrt(abs(goalx-x) + abs(goaly-y))
     def set_valor(self):
         self.valor = self.esfuerzo + self.heuristica
     def set_valorMax(self):
@@ -864,6 +865,7 @@ def juego(numeroLaberinto):
     #Fin BFS inicializacion----------------------------------------------
     #Algoritmo A* inicializacion----------------------------------------
     aStar_goalPath = list()
+    aStar_nodes = list()
     #Fin A* inicializacion----------------------------------------------
     
     laberinto[x][y].set_visitado()
@@ -1063,46 +1065,73 @@ def juego(numeroLaberinto):
                 print '\nValorIzquierda: '+ str(laberinto[x][y-1].valor)
             elif laberinto[x][y-1].visitado == 1:
                 laberinto[x][y-1].set_valorMax()
-            #Escogiendo la mejor casilla y anadiendola a la lista
-            if laberinto[x-1][y].valor <= laberinto[x][y+1].valor and laberinto[x-1][y].valor <= laberinto[x+1][y].valor and laberinto[x-1][y].valor <= laberinto[x][y-1].valor:
-                laberinto[x][y].set_direccion('arriba')
-                sprite = Track ( "up.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
-                sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
-                sprites.add (sprite)
-                laberinto[x-1][y].set_visitado()                
-                aStar_goalPath.append(laberinto[x-1][y])
-                x = x - 1
-                print'\n Vamos Arriba -------'
+            # ***********************************************************Escogiendo la mejor casilla y anadiendola a la lista
+            # Procedimiento:
+            # 1. Obtengo los valores de cada vecino y los coloco en una lista
+                # Vaciando lista de nodos
+            for c in aStar_nodes:
+                aStar_nodes.remove(c)
             
-            if laberinto[x][y+1].valor <= laberinto[x-1][y].valor and laberinto[x][y+1].valor <= laberinto[x+1][y].valor and laberinto[x][y+1].valor <= laberinto[x][y-1].valor:
-                laberinto[x][y].set_direccion('derecha')
-                sprite = Track ( "right.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
-                sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
-                sprites.add (sprite)
-                laberinto[x][y+1].set_visitado()
-                aStar_goalPath.append(laberinto[x][y+1])
-                y = y + 1
-                print'\n Vamos a la derecha -------'
+                # Metiendo los valores en la lista
+            aStar_nodes.append(laberinto[x-1][y].valor)
+            aStar_nodes.append(laberinto[x][y+1].valor)
+            aStar_nodes.append(laberinto[x+1][y].valor)
+            aStar_nodes.append(laberinto[x][y-1].valor)
+                
+            # 2. Ordeno la lista en orden Descendente ( Menor a Mayor )
+            aStar_nodes.sort()
             
-            if laberinto[x+1][y].valor <= laberinto[x-1][y].valor and laberinto[x+1][y].valor <= laberinto[x][y+1].valor and laberinto[x+1][y].valor <= laberinto[x][y-1].valor:
-                laberinto[x][y].set_direccion('abajo')
-                sprite = Track ( "down.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
-                sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
-                sprites.add (sprite)
-                laberinto[x+1][y].set_visitado()
-                aStar_goalPath.append(laberinto[x+1][y])
-                x = x + 1
-                print'\n Vamos Abajo -------'
-            
-            if laberinto[x][y-1].valor <= laberinto[x-1][y].valor and laberinto[x][y-1].valor <= laberinto[x][y+1].valor and laberinto[x][y-1].valor <= laberinto[x+1][y].valor:
-                laberinto[x][y].set_direccion('izquierda')
-                sprite = Track ( "left.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
-                sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
-                sprites.add (sprite)
-                laberinto[x][y-1].set_visitado()
-                aStar_goalPath.append(laberinto[x][y-1])
-                y = y - 1
-                print'\n Vamos a la Izquierda -------'
+            # 3. Voy recorriendo la lista para saber si ya ha sido visitado el nodo.
+            # 4. El nodo que no ha sido visitado es escogido colocandolo en la lista aStar_goalPath y ejecutando movimiento
+            for c in aStar_nodes:
+                if c == laberinto[x-1][y].valor:
+                    if laberinto[x-1][y].visitado == 0 and (laberinto[x-1][y].tipo == 'galleta' or laberinto[x-1][y].tipo == 'meta'):
+                        laberinto[x][y].set_direccion('arriba')
+                        sprite = Track ( "up.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
+                        sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
+                        sprites.add (sprite)
+                        laberinto[x-1][y].set_visitado()                
+                        aStar_goalPath.append(laberinto[x-1][y])
+                        x = x - 1
+                        print'\n Vamos Arriba -------'
+                        break
+                        
+                elif c == laberinto[x][y+1].valor:
+                    if laberinto[x][y+1].visitado == 0 and (laberinto[x][y+1].tipo == 'galleta' or laberinto[x][y+1].tipo == 'meta'):
+                        laberinto[x][y].set_direccion('derecha')
+                        sprite = Track ( "right.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
+                        sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
+                        sprites.add (sprite)
+                        laberinto[x][y+1].set_visitado()
+                        aStar_goalPath.append(laberinto[x][y+1])
+                        y = y + 1
+                        print'\n Vamos a la derecha -------'
+                        break
+                        
+                elif c == laberinto[x+1][y].valor:
+                    if laberinto[x+1][y].visitado == 0 and (laberinto[x+1][y].tipo == 'galleta' or laberinto[x+1][y].tipo == 'meta'):
+                        laberinto[x][y].set_direccion('abajo')
+                        sprite = Track ( "down.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
+                        sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
+                        sprites.add (sprite)
+                        laberinto[x+1][y].set_visitado()
+                        aStar_goalPath.append(laberinto[x+1][y])
+                        x = x + 1
+                        print'\n Vamos Abajo -------'
+                        break
+                        
+                elif c == laberinto[x][y-1].valor:
+                    if laberinto[x][y-1].visitado == 0 and (laberinto[x][y-1].tipo == 'galleta' or laberinto[x][y-1].tipo == 'meta'):
+                        laberinto[x][y].set_direccion('izquierda')
+                        sprite = Track ( "left.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
+                        sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
+                        sprites.add (sprite)
+                        laberinto[x][y-1].set_visitado()
+                        aStar_goalPath.append(laberinto[x][y-1])
+                        y = y - 1
+                        print'\n Vamos a la Izquierda -------'
+                        break
+
                 
             #******************************************************** Fin Algoritmo A* ---------------------------------------
         reloj = pygame.time.Clock()
