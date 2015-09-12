@@ -971,18 +971,34 @@ def juego(numeroLaberinto):
                     print 'Entro a es Meta'
                     x = proxCasilla.x
                     y = proxCasilla.y
-                    print '\nPosMetax:'+ str(x) + ',PosMetay:'+ str(y)
+                    #print '\nPosMetax:'+ str(x) + ',PosMetay:'+ str(y)
                     while(laberinto[x][y].posPadrex != 0 or laberinto[x][y].posPadrey != 0 ):
                         # Se almacenara mi camino de salida en bfs_goalPath siendo una lista
-                        bfs_goalPath.append(laberinto[x][y])
-                        x = laberinto[x][y].posPadrex
-                        y = laberinto[x][y].posPadrey
-                        print'\nPosPadrex:'+ str(x) + ',PosPadrey:'+ str(y)
+                        if laberinto[x][y].direccion != '':
+                            bfs_goalPath.append(laberinto[x][y])
+
+                        respaldox = x
+                        respaldoy = y
+                        x = laberinto[respaldox][respaldoy].posPadrex
+                        y = laberinto[respaldox][respaldoy].posPadrey
+                        if respaldox > x:
+                            laberinto[x][y].set_direccion('abajo')
+                        if respaldox < x:
+                            laberinto[x][y].set_direccion('arriba')
+                        if respaldoy > y:
+                            laberinto[x][y].set_direccion('derecha')
+                        if respaldoy < y:
+                            laberinto[x][y].set_direccion('izquierda')
+                     #   print'\nPosPadrex:'+ str(x) + ',PosPadrey:'+ str(y)
+
                     # Ordenandolos de nodo inicial+1 hasta final
+                    bfs_goalPath.append(laberinto[x_i][y_i])
                     bfs_goalPath.reverse()
                     #anadiendo el nodo raiz
                     print '\nPosxinicial:'+str(x_i)+', Posyinicial:'+str(y_i)
-                    bfs_goalPath.append(laberinto[x_i][y_i])
+                    
+                    for lab in bfs_goalPath:
+                        print lab.direccion
                     break
                 else:
                     x = proxCasilla.x
@@ -990,7 +1006,7 @@ def juego(numeroLaberinto):
                     
                     if laberinto[x-1][y].visitado == 0 and (laberinto[x-1][y].tipo == 'galleta' or laberinto[x-1][y].tipo == 'meta'):
                         laberinto[x-1][y].set_padre(x,y)  
-                        print '\n******Posicion x: '+str(x-1)+ ', Posicion y: '+str(y)+' Padrex: '+str(x)+ ' Padrey: '+str(y)
+#                        print '\n******Posicion x: '+str(x-1)+ ', Posicion y: '+str(y)+' Padrex: '+str(x)+ ' Padrey: '+str(y)
                         laberinto[x][y].set_direccion('arriba')
                         sprite = Track ( "up.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
                         sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
@@ -1000,7 +1016,7 @@ def juego(numeroLaberinto):
                         
                     if laberinto[x][y+1].visitado == 0 and (laberinto[x][y+1].tipo == 'galleta' or  laberinto[x][y+1].tipo =='meta'):
                         laberinto[x][y+1].set_padre(x,y)
-                        print '\n******Posicion x: '+str(x)+ ', Posicion y: '+str(y+1)+' Padrex: '+str(x)+ ' Padrey: '+str(y)
+ #                       print '\n******Posicion x: '+str(x)+ ', Posicion y: '+str(y+1)+' Padrex: '+str(x)+ ' Padrey: '+str(y)
                         laberinto[x][y].set_direccion('derecha')
                         sprite = Track ( "right.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
                         sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
@@ -1010,7 +1026,7 @@ def juego(numeroLaberinto):
 
                     if laberinto[x+1][y].visitado == 0 and (laberinto[x+1][y].tipo == 'galleta' or laberinto[x+1][y].tipo=='meta'):
                         laberinto[x+1][y].set_padre(x,y)
-                        print '\n******Posicion x: '+str(x+1)+ ', Posicion y: '+str(y)+' Padrex: '+str(x)+ ' Padrey: '+str(y)
+                        #print '\n******Posicion x: '+str(x+1)+ ', Posicion y: '+str(y)+' Padrex: '+str(x)+ ' Padrey: '+str(y)
                         laberinto[x][y].set_direccion('abajo')
                         sprite = Track ( "down.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
                         sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
@@ -1020,7 +1036,7 @@ def juego(numeroLaberinto):
 
                     if laberinto[x][y-1].visitado == 0 and (laberinto[x][y-1].tipo == 'galleta' or laberinto[x][y-1].tipo=='meta'):
                         laberinto[x][y-1].set_padre(x,y)
-                        print '\n******Posicion x: '+str(x)+', Posicion y: '+str(y-1)+' Padrex: '+str(x)+ ' Padrey: '+str(y)
+   #                     print '\n******Posicion x: '+str(x)+', Posicion y: '+str(y-1)+' Padrex: '+str(x)+ ' Padrey: '+str(y)
                         laberinto[x][y].set_direccion('izquierda')
                         sprite = Track ( "left.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
                         sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
