@@ -843,7 +843,7 @@ def juego(numeroLaberinto):
     
     
     
-    #sonido_fondo = cargar_sonido ("sonido_fondo.wav").play(-1) #este sonido se repetira indefinidamente al indicar -1 como parametro   
+    sonido_fondo = cargar_sonido ("sonido_fondo.wav").play(-1) #este sonido se repetira indefinidamente al indicar -1 como parametro   
     eventos = pygame.event.get()
     bandera = 0
     banderaTiempo = 0
@@ -1351,7 +1351,7 @@ def juego(numeroLaberinto):
             break
     #--el juego ha finalizado
     sprites.empty()   
-    #sonido_fondo.stop()
+    sonido_fondo.stop()
     pantallaGameOver()
      
     while True:
@@ -1369,7 +1369,7 @@ def pantallaGameOver():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                quit()
+
         screen.fill([0,0,0])
         pygame.display.update(sprites.draw(screen))
     
@@ -1411,7 +1411,6 @@ def menu_seleccion_definidos(intro):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                quit()
         
         screen.fill([0,0,0])
         
@@ -1558,7 +1557,6 @@ def menu_seleccion_algoritmo(intro):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                quit()
         
         screen.fill([0,0,0])
         
@@ -1637,7 +1635,6 @@ def menu_seleccion(intro):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                quit()
         
         screen.fill([0,0,0])
         
@@ -1685,7 +1682,6 @@ def menu_intro():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                quit()
         screen.fill([0,0,0])
         
         pacman_intro = cargar_imagen("intro_pacman.png")
