@@ -1071,9 +1071,9 @@ def juego(numeroLaberinto):
             aStar_nodes = []
             
                 # Metiendo los valores en la lista
-            aStar_nodes.append(laberinto[x-1][y].valor)
-            aStar_nodes.append(laberinto[x][y+1].valor)
             aStar_nodes.append(laberinto[x+1][y].valor)
+            aStar_nodes.append(laberinto[x][y+1].valor)
+            aStar_nodes.append(laberinto[x-1][y].valor)
             aStar_nodes.append(laberinto[x][y-1].valor)
             
             # 2. Ordeno la lista en orden Descendente ( Menor a Mayor )
@@ -1086,15 +1086,15 @@ def juego(numeroLaberinto):
             encontrado = 0
             c = aStar_nodes[0]
 
-            if c == laberinto[x-1][y].valor and laberinto[x-1][y].visitado == 0 and (laberinto[x-1][y].tipo == 'galleta' or laberinto[x-1][y].tipo == 'meta'):
-                laberinto[x][y].set_direccion('arriba')
+            if c == laberinto[x+1][y].valor and laberinto[x+1][y].visitado == 0 and (laberinto[x+1][y].tipo == 'galleta' or laberinto[x+1][y].tipo == 'meta'):
+                laberinto[x][y].set_direccion('abajo')
                 encontrado = 1
-                sprite = Track ( "up.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
+                sprite = Track ( "down.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
                 sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
                 sprites.add (sprite)
-                laberinto[x-1][y].set_visitado()                
-                aStar_goalPath.append(laberinto[x-1][y])
-                x = x - 1
+                laberinto[x+1][y].set_visitado()                
+                aStar_goalPath.append(laberinto[x+1][y])
+                x = x + 1
                 #break
                     
             elif c == laberinto[x][y+1].valor and laberinto[x][y+1].visitado == 0 and (laberinto[x][y+1].tipo == 'galleta' or laberinto[x][y+1].tipo == 'meta'):
@@ -1108,15 +1108,15 @@ def juego(numeroLaberinto):
                 y = y + 1
                 #break
                     
-            elif c == laberinto[x+1][y].valor and laberinto[x+1][y].visitado == 0 and (laberinto[x+1][y].tipo == 'galleta' or laberinto[x+1][y].tipo == 'meta'):
-                laberinto[x][y].set_direccion('abajo')
+            elif c == laberinto[x-1][y].valor and laberinto[x-1][y].visitado == 0 and (laberinto[x-1][y].tipo == 'galleta' or laberinto[x-1][y].tipo == 'meta'):
+                laberinto[x][y].set_direccion('arriba')
                 encontrado = 1
-                sprite = Track ( "down.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
+                sprite = Track ( "up.jpg", [laberinto[x][y].Pared_x,laberinto[x][y].Pared_y], [50,50] )
                 sprites.remove(pygame.sprite.spritecollideany(sprite,sprites))
                 sprites.add (sprite)
-                laberinto[x+1][y].set_visitado()
-                aStar_goalPath.append(laberinto[x+1][y])
-                x = x + 1
+                laberinto[x-1][y].set_visitado()
+                aStar_goalPath.append(laberinto[x-1][y])
+                x = x - 1
                 #break
                     
             elif c == laberinto[x][y-1].valor and laberinto[x][y-1].visitado == 0 and (laberinto[x][y-1].tipo == 'galleta' or laberinto[x][y-1].tipo == 'meta'):
