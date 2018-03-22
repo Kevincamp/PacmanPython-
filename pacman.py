@@ -7,7 +7,8 @@ try:
     import operator
 except ImportError, message:
     raise SystemExit,  "Unable to load module. %s" % message
- 
+
+#test 
 #hack which fixes the pygame mixer and pygame font
 origIsSystemDLL = py2exe.build_exe.isSystemDLL # save the orginal before we edit it
 def isSystemDLL(pathname):
